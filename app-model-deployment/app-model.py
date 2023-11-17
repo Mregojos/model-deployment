@@ -4,8 +4,8 @@ import psycopg2
 import os
 import time
 import vertexai
-from vertexai.language_models import TextGenerationModel
 from vertexai.language_models import ChatModel, InputOutputTextPair
+from vertexai.language_models import CodeChatModel
 
 #----------Database Credentials----------# 
 DBNAME=os.getenv("DBNAME") 
@@ -60,21 +60,18 @@ chat = chat_model.start_chat(
 # response = chat.send_message("""Hi""", **chat_parameters)
 # print(f"Response from Model: {response.text}")
 
-#----------Vertex AI Text----------#
-text_parameters = {
+#----------Vertex AI Code----------#
+code_chat_model = CodeChatModel.from_pretrained("codechat-bison")
+code_parameters = {
     "candidate_count": 1,
     "max_output_tokens": 1024,
-    "temperature": 0.2,
-    "top_p": 0.8,
-    "top_k": 40
+    "temperature": 0.2
 }
-text_model = TextGenerationModel.from_pretrained("text-bison")
-
-# response = model.predict(
-#    """Hi""",
-#    **parameters
-# )
-# st.write(f"Response from Model: {response.text}")
+code_chat = code_chat_model.start_chat()
+# response = code_chat.send_message("""My favorite color is white.""", **code_parameters)
+# print(f"Response from Model: {response.text}")
+# response = code_chat.send_message("""My favorite color is white.""", **parameters)
+# print(f"Response from Model: {response.text}")
 
 #---------Counter
 # count_prompt=""
@@ -97,7 +94,7 @@ with st.sidebar:
             credential = True
             st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
             st.caption(":warning: :red[Do not add sensitive data.]")
-            model = st.selectbox("Choose Chat, Code, or Text Generationt?", ('Chat', 'Code', 'Text'))
+            model = st.selectbox("Choose Chat or Code Generationt?", ('Chat', 'Code'))
             input_name = st.text_input("Your Name")
             # agent = st.toggle("**Let's go**")
             save = st.button("Save")
@@ -128,7 +125,7 @@ with st.sidebar:
         st.write("You will be my agent's :blue[guest].")
         st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
         st.caption(":warning: :red[Do not add sensitive data.]")
-        model = st.selectbox("Choose Chat, Code, or Text Generationt?", ('Chat', 'Code', 'Text'))
+        model = st.selectbox("Choose Chat or Code Generationt?", ('Chat', 'Code'))
         input_name = st.text_input("Your Name")
         # agent = st.toggle("**Let's go**")
         save = st.button("Save")
@@ -153,6 +150,7 @@ with st.sidebar:
                     st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
+#----------For Guest Limit
         
 
         
@@ -171,6 +169,7 @@ if login and not guest:
             if prompt_user:
                 current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
+                    current_model = "Chat"
                     cur.execute(f"""
                             SELECT * 
                             FROM chats
@@ -183,18 +182,23 @@ if login and not guest:
                     response = chat.send_message(prompt_user, **chat_parameters)
                     output = response.text
 
-                elif model == "Text":
-                    response = text_model.predict(prompt_user,
-                        **text_parameters
-                    )
+                elif model == "Code":
+                    current_model = "Code"
+                    cur.execute(f"""
+                            SELECT * 
+                            FROM chats
+                            WHERE name='{input_name}'
+                            ORDER BY time ASC
+                            """)
+                    for id, name, prompt, output, model, time in cur.fetchall():
+                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                    response = code_chat.send_message(prompt_history, **code_parameters)
+                    response = code_chat.send_message(prompt_user, **code_parameters)
                     output = response.text
-                    message.write(output)
-                    message.caption(f"{current_time} | Model: {model}")
-                    st.divider()
-
+                    
                 ### Insert into a database
                 SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
-                data = (input_name, prompt_user, output, model, current_time)
+                data = (input_name, prompt_user, output, current_model, current_time)
                 cur.execute(SQL, data)
                 con.commit()
 
@@ -246,6 +250,7 @@ elif guest and not login:
                 count_prompt = 1
                 current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
+                    current_model = "Chat"
                     cur.execute(f"""
                             SELECT * 
                             FROM guest_chats
@@ -258,18 +263,23 @@ elif guest and not login:
                     response = chat.send_message(prompt_user, **chat_parameters)
                     output = response.text
 
-                elif model == "Text":
-                    response = text_model.predict(prompt_user,
-                        **text_parameters
-                    )
+                elif model == "Code":
+                    current_model = "Code"
+                    cur.execute(f"""
+                            SELECT * 
+                            FROM guest_chats
+                            WHERE name='{input_name}'
+                            ORDER BY time ASC
+                            """)
+                    for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
+                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                    response = code_chat.send_message(prompt_history, **code_parameters)
+                    response = code_chat.send_message(prompt_user, **code_parameters)
                     output = response.text
-                    message.write(output)
-                    message.caption(f"{current_time} | Model: {model}")
-                    st.divider()
 
                 ### Insert into a database
                 SQL = "INSERT INTO guest_chats (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
-                data = (input_name, prompt_user, output, model, current_time, count_prompt)
+                data = (input_name, prompt_user, output, current_model, current_time, count_prompt)
                 cur.execute(SQL, data)
                 con.commit()
 
