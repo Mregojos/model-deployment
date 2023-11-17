@@ -65,7 +65,7 @@ ADMIN_PASSWORD='password'
 # For App Development
 cd app-dev
 # Build
-docker build -t $APP_NAME .
+docker build -t $APP_NAME Dockerfile
 
 # Run
 docker run -d -p 9000:9000 -v $(pwd):/app --env-file env.sh --name $APP_NAME $APP_NAME
