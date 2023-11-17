@@ -120,7 +120,6 @@ with st.sidebar:
         
     
 
-
 if credential is False:
     st.info("Login first or continue as a guest")
 elif credential is True and agent is False:
@@ -145,9 +144,6 @@ elif credential is True and agent is True:
                 response = chat.send_message(prompt_history, **chat_parameters)
                 response = chat.send_message(prompt_user, **chat_parameters)
                 output = response.text
-                message.write(output)
-                message.caption(f"{current_time} | Model: {model}")
-                st.divider()
 
             elif model == "Text":
                 response = text_model.predict(prompt_user,
@@ -159,7 +155,7 @@ elif credential is True and agent is True:
                 st.divider()
 
             ### Insert into a database
-            SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s);"
+            SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
             data = (input_name, prompt_user, output, model, current_time)
             cur.execute(SQL, data)
             con.commit()
@@ -172,25 +168,12 @@ elif credential is True and agent is True:
             """)
             for id, name, prompt, output, model, time in cur.fetchall():
                 message = st.chat_message("user")
-                message.write(f":blue[{name}]: {prompt}")
-                message.caption(f"{time}")
+                message.write(f":blue[{name}]") 
+                message.text(f"{prompt}")
+                message.caption(f"{time} | {model}")
                 message = st.chat_message("assistant")
                 message.write(output)
-                message.caption(f"{time}")
-            cur.execute(f"""
-            SELECT * 
-            FROM chats
-            WHERE name='{input_name}'
-            ORDER BY time ASC
-            """)
-            for id, name, prompt, output, model, time in cur.fetchall():
-                message = st.chat_message("user")
-                message.write(f":blue[{name}]: {prompt}")
-                message.caption(f"{time}")
-                message = st.chat_message("assistant")
-                message.write(output)
-                message.caption(f"{time}")
-            
+                message.caption(f"{time} | {model}")            
 
         else:
             st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
