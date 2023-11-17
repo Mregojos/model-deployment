@@ -4,13 +4,18 @@
 # Objective
 # * To create a web app and use model apis
 
-# Environment Variables
+#----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
+# !gcloud services list --available
+gcloud services enable cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
+echo "\n #----------Services have been successfully enabled.----------# \n"
+
+#----------Environment Variables
 VERSION="i"
 APP_NAME="app-model-dev-$VERSION"
 # APP_NAME="simple-app"
 FIREWALL_RULES_NAME="ports"
 
-# Database
+#----------Database
 # With volume/data connected
 # cd app-model 
 # cd app-model
@@ -33,6 +38,10 @@ source env/bin/activate
 # cd app-dev
 pip install -U -r requirements.txt -q
 streamlit run app-model.py --server.address=0.0.0.0 --server.port=9000
+
+# Create a firewall (GCP)
+gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
+    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000,tcp:9000 --source-ranges=0.0.0.0/0 
 
 #----------Local Development using container----------#
 # Environment Variables for the app
@@ -64,10 +73,7 @@ gcloud compute --project=$(gcloud config get project) firewall-rules create $FIR
 # Docker exec
 # docker exec -it $APP_NAME sh
 
-# Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
-# !gcloud services list --available
-gcloud services enable cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
-echo "\n #----------Services have been successfully enabled.----------# \n"
+
 
 #----------Delete Resources----------#
 gcloud compute instances delete $DB_NAME --zone=$ZONE --quiet
