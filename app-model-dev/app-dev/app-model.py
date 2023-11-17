@@ -185,11 +185,12 @@ elif credential is True and agent is True:
             """)
             for id, name, prompt, output, model, time in cur.fetchall():
                 message = st.chat_message("user")
-                message.write(f":blue[{name}]: {prompt}")
-                message.caption(f"{time}")
+                message.write(f":blue[{name}]") 
+                message.text(f"{prompt}")
+                message.caption(f"{time} | {model}")
                 message = st.chat_message("assistant")
                 message.write(output)
-                message.caption(f"{time}")
+                message.caption(f"{time} | {model}") 
             
 
 #----------Close Connection----------#
