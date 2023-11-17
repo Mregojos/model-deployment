@@ -1,6 +1,3 @@
-# app-dev
-# Version Five
-
 #----------Import libraries----------#
 import streamlit as st
 import psycopg2
