@@ -75,6 +75,8 @@ text_model = TextGenerationModel.from_pretrained("text-bison")
 # )
 # st.write(f"Response from Model: {response.text}")
 
+#---------Counter
+count_prompt=0
 #----------Agent----------#
 with st.sidebar:
     st.header(":computer: Agent ",divider="rainbow")
@@ -85,7 +87,7 @@ with st.sidebar:
     login = st.checkbox("Stay login")
     guest = st.checkbox("Continue as a guest")
     credential = False
-    count_prompt = 0
+    st.write(f"{count_prompt}") 
 #----------For Admin Login
     if login and guest:
         st.info("Choose only one")
@@ -230,7 +232,7 @@ if login and not guest:
                     message.caption(f"{time} | Model: {model}") 
 
 #----------For Guest    
-if guest and not login:
+elif guest and not login:
     if credential is False:
         st.info("Login first or continue as a guest")
     elif credential is True and agent is False:
@@ -243,7 +245,6 @@ if guest and not login:
             prompt_user = st.chat_input("What do you want to talk about?")
             if prompt_user:
                 count_prompt = count_prompt + 1
-                st.text(count_prompt)
                 current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
                     cur.execute(f"""
@@ -307,8 +308,11 @@ if guest and not login:
     if credential is False and count_prompt >= 3:
         st.info("You've reached your limit.")
 
-if login and guest:
+elif login and guest:
     st.info("Choose only one")
+    
+elif not login and not guest:
+    st.info("Login first or continue as a guest")
 
 #----------Close Connection----------#
 cur.close()
