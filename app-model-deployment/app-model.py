@@ -150,7 +150,7 @@ with st.sidebar:
                 else:
                     total_count = total
                     # st.write(f"{total_count}")
-            if input_name is not "":
+            if input_name is not "" and total_count < LIMIT:
                 reset = st.button(":red[Reset Conversation]")
                 if reset:
                     st.rerun()
