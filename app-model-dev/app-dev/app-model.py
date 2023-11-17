@@ -13,6 +13,7 @@ USER=os.getenv("USER")
 HOST= os.getenv("HOST")
 DBPORT=os.getenv("DBPORT")
 DBPASSWORD=os.getenv("DBPASSWORD")
+ADMIN_PASSWORD=os.getenv("ADMIN_PASSWORD")
 #----------Cloud Credentials----------# 
 PROJECT_NAME=os.getenv("PROJECT_NAME")
 vertexai.init(project=PROJECT_NAME, location="us-central1")
@@ -85,12 +86,12 @@ with st.sidebar:
     guest = st.checkbox("Continue as a guest")
     credential = False
     if login:
-        if username == "admin" and password == "password":
+        if username == "admin" and password == ADMIN_PASSWORD:
             credential = True
             st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
             st.caption(":warning: :red[Do not add sensitive data.]")
             model = st.selectbox("Choose Chat, Code, or Text Generationt?", ('Chat', 'Code', 'Text'))
-            input_name = st.text_input("Your Name:")
+            input_name = st.text_input("Your Name")
             # agent = st.toggle("**Let's go**")
             save = st.button("Save")
             if save and input_name:
@@ -128,31 +129,18 @@ elif credential is True and agent is True:
     prompt_history = "Hi"
     import time
     st.write("### :gray[Start the Conversation]")
-    
     if agent:
         prompt_user = st.chat_input("What do you want to talk about?")
         if prompt_user:
             time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-            cur.execute(f"""
-                        SELECT * 
-                        FROM chats
-                        WHERE name='{input_name}'
-                        ORDER BY time ASC
-                        """)
-            for id, name, prompt, output, model, datetime in cur.fetchall():
-                message = st.chat_message("user")
-                message.write(f":blue[{name}]: {prompt}")
-                message.caption(f"{time}")
-                message = st.chat_message("assistant")
-                message.write(output)
-                message.caption(f"{time}")
+
 
             if model == "Chat":
                 cur.execute(f"""
                         SELECT * 
                         FROM chats
                         WHERE name='{input_name}'
-                        ORDER BY time ASC
+                        ORDER BY datetime ASC
                         """)
                 for id, name, prompt, output, model, datetime in cur.fetchall():
                     prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
@@ -180,6 +168,19 @@ elif credential is True and agent is True:
 
         else:
             st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
+            cur.execute(f"""
+            SELECT * 
+            FROM chats
+            WHERE name='{input_name}'
+            ORDER BY datetime ASC
+            """)
+            for id, name, prompt, output, model, datetime in cur.fetchall():
+                message = st.chat_message("user")
+                message.write(f":blue[{name}]: {prompt}")
+                message.caption(f"{time}")
+                message = st.chat_message("assistant")
+                message.write(output)
+                message.caption(f"{time}")
 
 
             
