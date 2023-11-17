@@ -30,8 +30,9 @@ docker run -p 8000:80 \
 # Virtual Environment
 virtualenv env
 source env/bin/activate
-pip install -r -U requirements.txt -q
-streamlit app.py
+# cd app-dev
+pip install -U -r requirements.txt -q
+streamlit run app-model.py --server.address=0.0.0.0 --server.port=9000
 
 #----------Local Development using container----------#
 # Environment Variables for the app
