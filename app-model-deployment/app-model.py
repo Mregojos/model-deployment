@@ -158,17 +158,17 @@ with st.sidebar:
                 reset = st.button(":red[Refresh Conversation]")
                 if reset:
                     st.rerun()
-                # Only for Name Matt
-                if input_name == "Matt":
-                    prune = st.button(":red[Prune History]")
-                    if prune:
-                        cur.execute(f"""
-                                    DELETE  
-                                    FROM guest_chats
-                                    WHERE name='{input_name}'
-                                    """)
-                        con.commit()
-                        st.info(f"History by {input_name} is successfully deleted.")
+            # Only for Name Matt
+            if input_name == "Matt":
+                prune = st.button(":red[Prune History]")
+                if prune:
+                    cur.execute(f"""
+                                DELETE  
+                                FROM guest_chats
+                                WHERE name='{input_name}'
+                                """)
+                    con.commit()
+                    st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
 
@@ -188,32 +188,38 @@ if login and not guest:
             current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             if prompt_user:
                 if model == "Chat":
-                    current_model = "Chat"
-                    cur.execute(f"""
-                            SELECT * 
-                            FROM chats
-                            WHERE name='{input_name}'
-                            ORDER BY time ASC
-                            """)
-                    for id, name, prompt, output, model, time in cur.fetchall():
-                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
-                    response = chat.send_message(prompt_history, **chat_parameters)
-                    response = chat.send_message(prompt_user, **chat_parameters)
-                    output = response.text
+                    try:
+                        current_model = "Chat"
+                        cur.execute(f"""
+                                SELECT * 
+                                FROM chats
+                                WHERE name='{input_name}'
+                                ORDER BY time ASC
+                                """)
+                        for id, name, prompt, output, model, time in cur.fetchall():
+                            prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                        response = chat.send_message(prompt_history, **chat_parameters)
+                        response = chat.send_message(prompt_user, **chat_parameters)
+                        output = response.text
+                    except:
+                        output = "Sorry for that. Could your repeat the prompt?"
 
                 elif model == "Code":
-                    current_model = "Code"
-                    cur.execute(f"""
-                            SELECT * 
-                            FROM chats
-                            WHERE name='{input_name}'
-                            ORDER BY time ASC
-                            """)
-                    for id, name, prompt, output, model, time in cur.fetchall():
-                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
-                    response = code_chat.send_message(prompt_history, **code_parameters)
-                    response = code_chat.send_message(prompt_user, **code_parameters)
-                    output = response.text
+                    try:
+                        current_model = "Code"
+                        cur.execute(f"""
+                                SELECT * 
+                                FROM chats
+                                WHERE name='{input_name}'
+                                ORDER BY time ASC
+                                """)
+                        for id, name, prompt, output, model, time in cur.fetchall():
+                            prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                        response = code_chat.send_message(prompt_history, **code_parameters)
+                        response = code_chat.send_message(prompt_user, **code_parameters)
+                        output = response.text
+                    except:
+                        output = "I didn't catch that. Could your repeat the prompt?"
                     
                 ### Insert into a database
                 SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
