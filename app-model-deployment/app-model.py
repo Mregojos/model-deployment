@@ -85,6 +85,7 @@ with st.sidebar:
     login = st.checkbox("Stay login")
     guest = st.checkbox("Continue as a guest")
     credential = False
+    count_prompt = 0
 #----------For Admin Login
     if login:
         if username == "admin" and password == ADMIN_PASSWORD:
@@ -119,7 +120,6 @@ with st.sidebar:
 #----------For Guest Login            
     elif guest:
         username="guest"
-        count_prompt = 0
         if count_prompt < 3:
             credential = True
             st.write("You will be my agent's :blue[guest].")
@@ -150,10 +150,13 @@ with st.sidebar:
                         st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
+    elif login and guest:
+        st.write("Choose only one")
+        
 
         
 #----------For Admin    
-if login:
+if login and not guest:
     if credential is False:
         st.info("Login first or continue as a guest")
     elif credential is True and agent is False:
@@ -227,7 +230,7 @@ if login:
                     message.caption(f"{time} | Model: {model}") 
 
 #----------For Guest    
-if guest:
+if guest and not login:
     if credential is False:
         st.info("Login first or continue as a guest")
     elif credential is True and agent is False:
@@ -240,6 +243,7 @@ if guest:
             prompt_user = st.chat_input("What do you want to talk about?")
             if prompt_user:
                 count_prompt += 1
+                st.text(count_prompt)
                 current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
                     cur.execute(f"""
@@ -302,6 +306,9 @@ if guest:
                     message.caption(f"{time} | Model: {model}") 
     if credential is False and count_prompt >= 3:
         st.info("You've reached your limit.")
+
+if login and guest:
+    st.info("Choose only one")
 
 #----------Close Connection----------#
 cur.close()
