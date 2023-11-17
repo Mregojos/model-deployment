@@ -85,8 +85,8 @@ with st.sidebar:
     login = st.checkbox("Stay login")
     guest = st.checkbox("Continue as a guest")
     credential = False
-    # guest limit
-    LIMIT = 3
+    # guest daily limit
+    LIMIT = 20
     total_count= 0
 #----------
     if login and guest:
@@ -137,11 +137,14 @@ with st.sidebar:
         elif save and input_name == "":
             st.info("Save your name first.")
         agent = st.toggle("**:violet[Let's talk to Agent]**")
+        time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+        time_date = time[0:15]
         if agent:
-#----------For Guest Limit
+#----------For Guest Daily Limit
             cur.execute(f"""
                     SELECT SUM(count_prompt)
                     FROM guest_chats
+                    WHERE time LIKE '{time_date}%'
                     """)
             for total in cur.fetchone():
                 if total is None:
@@ -150,19 +153,22 @@ with st.sidebar:
                 else:
                     total_count = total
                     # st.write(f"{total_count}")
+                    
             if input_name is not "" and total_count < LIMIT:
-                reset = st.button(":red[Reset Conversation]")
+                reset = st.button(":red[Refresh Conversation]")
                 if reset:
                     st.rerun()
-                prune = st.button(":red[Prune History]")
-                if prune:
-                    cur.execute(f"""
-                                DELETE  
-                                FROM guest_chats
-                                WHERE name='{input_name}'
-                                """)
-                    con.commit()
-                    st.info(f"History by {input_name} is successfully deleted.")
+                # Only for Name Matt
+                if input_name == "Matt":
+                    prune = st.button(":red[Prune History]")
+                    if prune:
+                        cur.execute(f"""
+                                    DELETE  
+                                    FROM guest_chats
+                                    WHERE name='{input_name}'
+                                    """)
+                        con.commit()
+                        st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
 
