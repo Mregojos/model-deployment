@@ -12,7 +12,6 @@ echo "\n #----------Services have been successfully enabled.----------# \n"
 #----------Environment Variables
 VERSION="ii"
 APP_NAME="app-model-dev-$VERSION"
-# APP_NAME="simple-app"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt-nb"
 
@@ -33,6 +32,7 @@ docker run -p 8000:80 \
     -d dpage/pgadmin4
     
 #----------Local Development----------#
+# ***** Use with container instead of this 
 # Virtual Environment
 virtualenv env
 source env/bin/activate
@@ -47,7 +47,7 @@ gcloud compute --project=$(gcloud config get project) firewall-rules create $FIR
 # For Local Development
 export DBNAME='matt'
 export USER='matt' 
-export HOST='' 
+export HOST='$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")' 
 export DBPORT='5000'
 export DBPASSWORD='password' 
 export PROJECT_NAME='$(gcloud config get project)'
@@ -61,10 +61,10 @@ DBPORT='5000'
 DBPASSWORD='password' 
 PROJECT_NAME='$(gcloud config get project)'
 ADMIN_PASSWORD='password'
-""" > env.sh
+""" > app-model-dev/env.sh
 
 # For App Development
-cd app-dev
+cd app-model-dev
 # Build
 docker build -t $APP_NAME .
 
