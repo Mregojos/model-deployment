@@ -170,10 +170,10 @@ elif credential is True and agent is True:
                 message = st.chat_message("user")
                 message.write(f":blue[{name}]") 
                 message.text(f"{prompt}")
-                message.caption(f"{time} | {model}")
+                message.caption(f"{time}")
                 message = st.chat_message("assistant")
                 message.write(output)
-                message.caption(f"{time} | {model}")            
+                message.caption(f"{time} | Model: {model}")            
 
         else:
             st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
@@ -187,10 +187,10 @@ elif credential is True and agent is True:
                 message = st.chat_message("user")
                 message.write(f":blue[{name}]") 
                 message.text(f"{prompt}")
-                message.caption(f"{time} | {model}")
+                message.caption(f"{time}")
                 message = st.chat_message("assistant")
                 message.write(output)
-                message.caption(f"{time} | {model}") 
+                message.caption(f"{time} | Model: {model}") 
             
 
 #----------Close Connection----------#
