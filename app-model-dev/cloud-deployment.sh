@@ -68,7 +68,7 @@ DBNAME:
 USER:
     'matt'
 HOST:
-    ''
+    '$(gcloud compute instances list --filter="name=matt" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
 DBPORT:
     '5000'
 DBPASSWORD:

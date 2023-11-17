@@ -55,7 +55,7 @@ export PROJECT_NAME='$(gcloud config get project)'
 # Environment Variables for the app
 echo """DBNAME='matt'
 USER='matt' 
-HOST='' 
+HOST='$(gcloud compute instances list --filter="name=matt" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")' 
 DBPORT='5000'
 DBPASSWORD='password' 
 PROJECT_NAME='$(gcloud config get project)'
