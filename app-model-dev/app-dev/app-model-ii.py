@@ -1,6 +1,3 @@
-# Development
-# Version Two
-
 # Import libraries
 import streamlit as st
 import psycopg2
