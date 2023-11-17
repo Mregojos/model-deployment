@@ -85,6 +85,9 @@ with st.sidebar:
     login = st.checkbox("Stay login")
     guest = st.checkbox("Continue as a guest")
     credential = False
+    # guest limit
+    LIMIT = 3
+    total_count= 0
 #----------
     if login and guest:
         st.info("Choose only one")
@@ -135,6 +138,18 @@ with st.sidebar:
             st.info("Save your name first.")
         agent = st.toggle("**:violet[Let's talk to Agent]**")
         if agent:
+#----------For Guest Limit
+            cur.execute(f"""
+                    SELECT SUM(count_prompt)
+                    FROM guest_chats
+                    """)
+            for total in cur.fetchone():
+                if total is None:
+                    total_count = 0
+                    # st.write(f"{total_count}")
+                else:
+                    total_count = total
+                    # st.write(f"{total_count}")
             if input_name is not "":
                 reset = st.button(":red[Reset Conversation]")
                 if reset:
@@ -150,10 +165,8 @@ with st.sidebar:
                     st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
-#----------For Guest Limit
-        
 
-        
+
 #----------For Admin    
 if login and not guest:
     if credential is False:
@@ -240,7 +253,7 @@ elif guest and not login:
         st.info("Login first or continue as a guest")
     elif credential is True and agent is False:
         st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
-    elif credential is True and agent is True:
+    elif credential is True and agent is True and total_count < LIMIT:
         prompt_history = "Hi"
         import time
         st.write("### :gray[Start the Conversation]")
@@ -314,8 +327,8 @@ elif guest and not login:
                     message = st.chat_message("assistant")
                     message.write(output)
                     message.caption(f"{time} | Model: {model}") 
-    # if credential is False and total_count >= LIMIT:
-      #  st.info("You've reached your limit.")
+    if total_count >= LIMIT:
+        st.info("You've reached your limit.")
 
 elif login and guest:
     st.info("Choose only one")
