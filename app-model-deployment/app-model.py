@@ -85,8 +85,9 @@ with st.sidebar:
     login = st.checkbox("Stay login")
     guest = st.checkbox("Continue as a guest")
     credential = False
+#----------For Admin Login
     if login:
-        if username == "admin" and password == "password":
+        if username == "admin" and password == ADMIN_PASSWORD:
             credential = True
             st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
             st.caption(":warning: :red[Do not add sensitive data.]")
@@ -113,85 +114,194 @@ with st.sidebar:
                                     """)
                         con.commit()
                         st.info(f"History by {input_name} is successfully deleted.")
-        elif guest:
-            input_name="guest"
         else:
             st.info("Wrong credential")
-        
-    
-
-if credential is False:
-    st.info("Login first or continue as a guest")
-elif credential is True and agent is False:
-    st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
-elif credential is True and agent is True:
-    prompt_history = "Hi"
-    import time
-    st.write("### :gray[Start the Conversation]")
-    if agent:
-        prompt_user = st.chat_input("What do you want to talk about?")
-        if prompt_user:
-            current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-            if model == "Chat":
-                cur.execute(f"""
-                        SELECT * 
-                        FROM chats
-                        WHERE name='{input_name}'
-                        ORDER BY time ASC
-                        """)
-                for id, name, prompt, output, model, time in cur.fetchall():
-                    prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
-                response = chat.send_message(prompt_history, **chat_parameters)
-                response = chat.send_message(prompt_user, **chat_parameters)
-                output = response.text
-
-            elif model == "Text":
-                response = text_model.predict(prompt_user,
-                    **text_parameters
-                )
-                output = response.text
-                message.write(output)
-                message.caption(f"{current_time} | Model: {model}")
-                st.divider()
-
-            ### Insert into a database
-            SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
-            data = (input_name, prompt_user, output, model, current_time)
-            cur.execute(SQL, data)
-            con.commit()
-            
-            cur.execute(f"""
-            SELECT * 
-            FROM chats
-            WHERE name='{input_name}'
-            ORDER BY time ASC
-            """)
-            for id, name, prompt, output, model, time in cur.fetchall():
-                message = st.chat_message("user")
-                message.write(f":blue[{name}]") 
-                message.text(f"{prompt}")
-                message.caption(f"{time}")
-                message = st.chat_message("assistant")
-                message.write(output)
-                message.caption(f"{time} | Model: {model}")            
-
+#----------For Guest Login            
+    elif guest:
+        username="guest"
+        count_prompt = 0
+        if count_prompt < 3:
+            credential = True
+            st.write("You will be my agent's :blue[guest].")
+            st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
+            st.caption(":warning: :red[Do not add sensitive data.]")
+            model = st.selectbox("Choose Chat, Code, or Text Generationt?", ('Chat', 'Code', 'Text'))
+            input_name = st.text_input("Your Name")
+            # agent = st.toggle("**Let's go**")
+            save = st.button("Save")
+            if save and input_name:
+                st.info(f"Your name for this conversation is :blue[{input_name}]")
+            elif save and input_name == "":
+                st.info("Save your name first.")
+            agent = st.toggle("**:violet[Let's talk to Agent]**")
+            if agent:
+                if input_name is not "":
+                    reset = st.button(":red[Reset Conversation]")
+                    if reset:
+                        st.rerun()
+                    prune = st.button(":red[Prune History]")
+                    if prune:
+                        cur.execute(f"""
+                                    DELETE  
+                                    FROM chats
+                                    WHERE name='{input_name}'
+                                    """)
+                        con.commit()
+                        st.info(f"History by {input_name} is successfully deleted.")
         else:
-            st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
-            cur.execute(f"""
-            SELECT * 
-            FROM chats
-            WHERE name='{input_name}'
-            ORDER BY time ASC
-            """)
-            for id, name, prompt, output, model, time in cur.fetchall():
-                message = st.chat_message("user")
-                message.write(f":blue[{name}]") 
-                message.text(f"{prompt}")
-                message.caption(f"{time}")
-                message = st.chat_message("assistant")
-                message.write(output)
-                message.caption(f"{time} | Model: {model}") 
-            
+            credential = False
+
+        
+#----------For Admin    
+if login:
+    if credential is False:
+        st.info("Login first or continue as a guest")
+    elif credential is True and agent is False:
+        st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
+    elif credential is True and agent is True:
+        prompt_history = "Hi"
+        import time
+        st.write("### :gray[Start the Conversation]")
+        if agent:
+            prompt_user = st.chat_input("What do you want to talk about?")
+            if prompt_user:
+                current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+                if model == "Chat":
+                    cur.execute(f"""
+                            SELECT * 
+                            FROM chats
+                            WHERE name='{input_name}'
+                            ORDER BY time ASC
+                            """)
+                    for id, name, prompt, output, model, time in cur.fetchall():
+                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                    response = chat.send_message(prompt_history, **chat_parameters)
+                    response = chat.send_message(prompt_user, **chat_parameters)
+                    output = response.text
+
+                elif model == "Text":
+                    response = text_model.predict(prompt_user,
+                        **text_parameters
+                    )
+                    output = response.text
+                    message.write(output)
+                    message.caption(f"{current_time} | Model: {model}")
+                    st.divider()
+
+                ### Insert into a database
+                SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
+                data = (input_name, prompt_user, output, model, current_time)
+                cur.execute(SQL, data)
+                con.commit()
+
+                cur.execute(f"""
+                SELECT * 
+                FROM chats
+                WHERE name='{input_name}'
+                ORDER BY time ASC
+                """)
+                for id, name, prompt, output, model, time in cur.fetchall():
+                    message = st.chat_message("user")
+                    message.write(f":blue[{name}]") 
+                    message.text(f"{prompt}")
+                    message.caption(f"{time}")
+                    message = st.chat_message("assistant")
+                    message.write(output)
+                    message.caption(f"{time} | Model: {model}")            
+
+            else:
+                st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
+                cur.execute(f"""
+                SELECT * 
+                FROM chats
+                WHERE name='{input_name}'
+                ORDER BY time ASC
+                """)
+                for id, name, prompt, output, model, time in cur.fetchall():
+                    message = st.chat_message("user")
+                    message.write(f":blue[{name}]") 
+                    message.text(f"{prompt}")
+                    message.caption(f"{time}")
+                    message = st.chat_message("assistant")
+                    message.write(output)
+                    message.caption(f"{time} | Model: {model}") 
+
+#----------For Guest    
+if guest:
+    if credential is False:
+        st.info("Login first or continue as a guest")
+    elif credential is True and agent is False:
+        st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
+    elif credential is True and agent is True:
+        prompt_history = "Hi"
+        import time
+        st.write("### :gray[Start the Conversation]")
+        if agent:
+            prompt_user = st.chat_input("What do you want to talk about?")
+            if prompt_user:
+                count_prompt += 1
+                current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+                if model == "Chat":
+                    cur.execute(f"""
+                            SELECT * 
+                            FROM chats
+                            WHERE name='{input_name}'
+                            ORDER BY time ASC
+                            """)
+                    for id, name, prompt, output, model, time in cur.fetchall():
+                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                    response = chat.send_message(prompt_history, **chat_parameters)
+                    response = chat.send_message(prompt_user, **chat_parameters)
+                    output = response.text
+
+                elif model == "Text":
+                    response = text_model.predict(prompt_user,
+                        **text_parameters
+                    )
+                    output = response.text
+                    message.write(output)
+                    message.caption(f"{current_time} | Model: {model}")
+                    st.divider()
+
+                ### Insert into a database
+                SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
+                data = (input_name, prompt_user, output, model, current_time)
+                cur.execute(SQL, data)
+                con.commit()
+
+                cur.execute(f"""
+                SELECT * 
+                FROM chats
+                WHERE name='{input_name}'
+                ORDER BY time ASC
+                """)
+                for id, name, prompt, output, model, time in cur.fetchall():
+                    message = st.chat_message("user")
+                    message.write(f":blue[{name}]") 
+                    message.text(f"{prompt}")
+                    message.caption(f"{time}")
+                    message = st.chat_message("assistant")
+                    message.write(output)
+                    message.caption(f"{time} | Model: {model}")            
+
+            else:
+                st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
+                cur.execute(f"""
+                SELECT * 
+                FROM chats
+                WHERE name='{input_name}'
+                ORDER BY time ASC
+                """)
+                for id, name, prompt, output, model, time in cur.fetchall():
+                    message = st.chat_message("user")
+                    message.write(f":blue[{name}]") 
+                    message.text(f"{prompt}")
+                    message.caption(f"{time}")
+                    message = st.chat_message("assistant")
+                    message.write(output)
+                    message.caption(f"{time} | Model: {model}") 
+    if credential is False and count_prompt >= 3:
+        st.info("You've reached your limit.")
 
 #----------Close Connection----------#
 cur.close()
