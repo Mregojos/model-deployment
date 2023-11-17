@@ -87,7 +87,9 @@ with st.sidebar:
     credential = False
     count_prompt = 0
 #----------For Admin Login
-    if login:
+    if login and guest:
+        st.info("Choose only one")
+    elif login:
         if username == "admin" and password == ADMIN_PASSWORD:
             credential = True
             st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
@@ -150,8 +152,6 @@ with st.sidebar:
                         st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
-    elif login and guest:
-        st.write("Choose only one")
         
 
         
