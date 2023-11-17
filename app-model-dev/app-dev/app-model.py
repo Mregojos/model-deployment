@@ -138,7 +138,7 @@ elif credential is True and agent is True:
                         SELECT * 
                         FROM chats
                         WHERE name='{input_name}'
-                        ORDER BY datetime ASC
+                        ORDER BY time ASC
                         """)
                 for id, name, prompt, output, model, time in cur.fetchall():
                     prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
@@ -168,7 +168,7 @@ elif credential is True and agent is True:
             SELECT * 
             FROM chats
             WHERE name='{input_name}'
-            ORDER BY datetime ASC
+            ORDER BY time ASC
             """)
             for id, name, prompt, output, model, time in cur.fetchall():
                 message = st.chat_message("user")
@@ -177,6 +177,20 @@ elif credential is True and agent is True:
                 message = st.chat_message("assistant")
                 message.write(output)
                 message.caption(f"{time}")
+            cur.execute(f"""
+            SELECT * 
+            FROM chats
+            WHERE name='{input_name}'
+            ORDER BY time ASC
+            """)
+            for id, name, prompt, output, model, time in cur.fetchall():
+                message = st.chat_message("user")
+                message.write(f":blue[{name}]: {prompt}")
+                message.caption(f"{time}")
+                message = st.chat_message("assistant")
+                message.write(output)
+                message.caption(f"{time}")
+            
 
         else:
             st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
@@ -184,7 +198,7 @@ elif credential is True and agent is True:
             SELECT * 
             FROM chats
             WHERE name='{input_name}'
-            ORDER BY datetime ASC
+            ORDER BY time ASC
             """)
             for id, name, prompt, output, model, time in cur.fetchall():
                 message = st.chat_message("user")

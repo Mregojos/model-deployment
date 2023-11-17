@@ -36,8 +36,7 @@ con = psycopg2.connect(f"""
                        """)
 cur = con.cursor()
 # Create a table if not exists
-cur.execute("DROP TABLE chats")
-cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, time varchar)")
+cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar)")
 con.commit()
 
 #----------Vertex AI----------#
@@ -125,7 +124,7 @@ with columnB:
                         WHERE name='{input_name}'
                         ORDER BY time ASC
                         """)
-            for id, name, prompt, output, time in cur.fetchall():
+            for id, name, prompt, output, model, time in cur.fetchall():
                 message = st.chat_message("user")
                 message.write(f":blue[{name}]: {prompt}")
                 message.caption(f"{time}")
@@ -144,7 +143,7 @@ with columnB:
                             WHERE name='{input_name}'
                             ORDER BY time ASC
                             """)
-                for id, name, prompt, output, time in cur.fetchall():
+                for id, name, prompt, output, model, time in cur.fetchall():
                     message = st.chat_message("user")
                     message.write(f":blue[{name}]: {prompt}")
                     message.caption(f"{time}")
