@@ -39,6 +39,7 @@ con = psycopg2.connect(f"""
 cur = con.cursor()
 # Create a table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar)")
+cur.execute("CREATE TABLE IF NOT EXISTS guest_chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt int)")
 cur.execute("CREATE TABLE IF NOT EXISTS users(id serial PRIMARY KEY, name varchar, password varchar)")
 con.commit()
 
@@ -76,7 +77,7 @@ text_model = TextGenerationModel.from_pretrained("text-bison")
 # st.write(f"Response from Model: {response.text}")
 
 #---------Counter
-count_prompt=0
+# count_prompt=""
 #----------Agent----------#
 with st.sidebar:
     st.header(":computer: Agent ",divider="rainbow")
@@ -87,10 +88,10 @@ with st.sidebar:
     login = st.checkbox("Stay login")
     guest = st.checkbox("Continue as a guest")
     credential = False
-    st.write(f"{count_prompt}") 
-#----------For Admin Login
+#----------
     if login and guest:
         st.info("Choose only one")
+#----------For Admin Login
     elif login:
         if username == "admin" and password == ADMIN_PASSWORD:
             credential = True
@@ -123,35 +124,33 @@ with st.sidebar:
             st.info("Wrong credential")
 #----------For Guest Login            
     elif guest:
-        username="guest"
-        if count_prompt < 3:
-            credential = True
-            st.write("You will be my agent's :blue[guest].")
-            st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
-            st.caption(":warning: :red[Do not add sensitive data.]")
-            model = st.selectbox("Choose Chat, Code, or Text Generationt?", ('Chat', 'Code', 'Text'))
-            input_name = st.text_input("Your Name")
-            # agent = st.toggle("**Let's go**")
-            save = st.button("Save")
-            if save and input_name:
-                st.info(f"Your name for this conversation is :blue[{input_name}]")
-            elif save and input_name == "":
-                st.info("Save your name first.")
-            agent = st.toggle("**:violet[Let's talk to Agent]**")
-            if agent:
-                if input_name is not "":
-                    reset = st.button(":red[Reset Conversation]")
-                    if reset:
-                        st.rerun()
-                    prune = st.button(":red[Prune History]")
-                    if prune:
-                        cur.execute(f"""
-                                    DELETE  
-                                    FROM chats
-                                    WHERE name='{input_name}'
-                                    """)
-                        con.commit()
-                        st.info(f"History by {input_name} is successfully deleted.")
+        credential = True
+        st.write("You will be my agent's :blue[guest].")
+        st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
+        st.caption(":warning: :red[Do not add sensitive data.]")
+        model = st.selectbox("Choose Chat, Code, or Text Generationt?", ('Chat', 'Code', 'Text'))
+        input_name = st.text_input("Your Name")
+        # agent = st.toggle("**Let's go**")
+        save = st.button("Save")
+        if save and input_name:
+            st.info(f"Your name for this conversation is :blue[{input_name}]")
+        elif save and input_name == "":
+            st.info("Save your name first.")
+        agent = st.toggle("**:violet[Let's talk to Agent]**")
+        if agent:
+            if input_name is not "":
+                reset = st.button(":red[Reset Conversation]")
+                if reset:
+                    st.rerun()
+                prune = st.button(":red[Prune History]")
+                if prune:
+                    cur.execute(f"""
+                                DELETE  
+                                FROM guest_chats
+                                WHERE name='{input_name}'
+                                """)
+                    con.commit()
+                    st.info(f"History by {input_name} is successfully deleted.")
         else:
             credential = False
         
@@ -230,7 +229,7 @@ if login and not guest:
                     message = st.chat_message("assistant")
                     message.write(output)
                     message.caption(f"{time} | Model: {model}") 
-
+    
 #----------For Guest    
 elif guest and not login:
     if credential is False:
@@ -244,16 +243,16 @@ elif guest and not login:
         if agent:
             prompt_user = st.chat_input("What do you want to talk about?")
             if prompt_user:
-                count_prompt = count_prompt + 1
+                count_prompt = 1
                 current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
                     cur.execute(f"""
                             SELECT * 
-                            FROM chats
+                            FROM guest_chats
                             WHERE name='{input_name}'
                             ORDER BY time ASC
                             """)
-                    for id, name, prompt, output, model, time in cur.fetchall():
+                    for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
                         prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                     response = chat.send_message(prompt_history, **chat_parameters)
                     response = chat.send_message(prompt_user, **chat_parameters)
@@ -269,18 +268,18 @@ elif guest and not login:
                     st.divider()
 
                 ### Insert into a database
-                SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
-                data = (input_name, prompt_user, output, model, current_time)
+                SQL = "INSERT INTO guest_chats (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
+                data = (input_name, prompt_user, output, model, current_time, count_prompt)
                 cur.execute(SQL, data)
                 con.commit()
 
                 cur.execute(f"""
                 SELECT * 
-                FROM chats
+                FROM guest_chats
                 WHERE name='{input_name}'
                 ORDER BY time ASC
                 """)
-                for id, name, prompt, output, model, time in cur.fetchall():
+                for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
                     message = st.chat_message("user")
                     message.write(f":blue[{name}]") 
                     message.text(f"{prompt}")
@@ -293,11 +292,11 @@ elif guest and not login:
                 st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
                 cur.execute(f"""
                 SELECT * 
-                FROM chats
+                FROM guest_chats
                 WHERE name='{input_name}'
                 ORDER BY time ASC
                 """)
-                for id, name, prompt, output, model, time in cur.fetchall():
+                for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
                     message = st.chat_message("user")
                     message.write(f":blue[{name}]") 
                     message.text(f"{prompt}")
@@ -305,8 +304,8 @@ elif guest and not login:
                     message = st.chat_message("assistant")
                     message.write(output)
                     message.caption(f"{time} | Model: {model}") 
-    if credential is False and count_prompt >= 3:
-        st.info("You've reached your limit.")
+    # if credential is False and total_count >= LIMIT:
+      #  st.info("You've reached your limit.")
 
 elif login and guest:
     st.info("Choose only one")
