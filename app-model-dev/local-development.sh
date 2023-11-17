@@ -5,7 +5,8 @@
 # * To create a web app and use model apis
 
 # Environment Variables
-APP_NAME="app-model-dev"
+VERSION="i"
+APP_NAME="app-model-dev-$VERSION"
 # APP_NAME="simple-app"
 FIREWALL_RULES_NAME="ports"
 
@@ -24,7 +25,15 @@ docker run -p 8000:80 \
     -e 'PGADMIN_DEFAULT_EMAIL=matt@example.com' \
     -e 'PGADMIN_DEFAULT_PASSWORD=password' \
     -d dpage/pgadmin4
+    
+#----------Local Development----------#
+# Virtual Environment
+virtualenv env
+source env/bin/activate
+pip install -r -U requirements.txt -q
+streamlit app.py
 
+#----------Local Development using container----------#
 # Environment Variables for the app
 echo """DBNAME='matt'
 USER='matt' 
@@ -32,7 +41,7 @@ HOST=''
 DBPORT='5000'
 DBPASSWORD='password' 
 PROJECT_NAME='$(gcloud config get project)'
-""" > env.sh
+""" > app-dev/env.sh
 
 # For App Development
 cd app-dev
