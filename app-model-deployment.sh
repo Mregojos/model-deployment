@@ -39,8 +39,7 @@ gcloud artifacts repositories create $APP_ARTIFACT_NAME \
 echo "\n #----------Artifact Repository has been successfully created.----------# \n"
 
 # Change the directory
-cd ..
-cd app
+cd app-model-deployment
 
 # build and submnit an image to Artifact Registry
 gcloud builds submit \
@@ -62,8 +61,7 @@ gcloud projects add-iam-policy-binding \
 echo "\n #----------App Service Account has been successfully binded.----------# \n"
 
 # Change the directory
-cd ..
-cd sh-files
+cd app-model-deployment
 # touch env.yaml
 
 # Environment Variables for the app
@@ -80,7 +78,9 @@ DBPASSWORD:
     'password'
 PROJECT_NAME:
     '$(gcloud config get project)'
-""" > env.yaml
+ADMIN_PASSWORD:
+    'password'
+""" > app-model-deployment/env.yaml
 
 
 # Deploy the app using Cloud Run
