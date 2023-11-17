@@ -6,14 +6,15 @@
 
 #----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
 # !gcloud services list --available
-gcloud services enable cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
+gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #----------Environment Variables
-VERSION="i"
+VERSION="ii"
 APP_NAME="app-model-dev-$VERSION"
 # APP_NAME="simple-app"
 FIREWALL_RULES_NAME="ports"
+INSTANCE_NAME="matt-nb"
 
 #----------Database
 # With volume/data connected
@@ -55,7 +56,7 @@ export PROJECT_NAME='$(gcloud config get project)'
 # Environment Variables for the app
 echo """DBNAME='matt'
 USER='matt' 
-HOST='$(gcloud compute instances list --filter="name=matt" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")' 
+HOST='$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")' 
 DBPORT='5000'
 DBPASSWORD='password' 
 PROJECT_NAME='$(gcloud config get project)'

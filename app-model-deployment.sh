@@ -3,6 +3,11 @@
 # Objective
 # * To deploy a pre-trained model on GCP
 
+#----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
+# !gcloud services list --available
+gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
+echo "\n #----------Services have been successfully enabled.----------# \n"
+
 # Environment Variables
 DB_NAME="db"
 MACHINE_TYPE="e2-micro"
@@ -12,10 +17,10 @@ BOOT_DISK_SIZE="30"
 TAGS="db"
 FIREWALL_RULES_NAME="ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
-
+INSTANCE_NAME="matt-nb"
 
 # Change the APP_NAME
-VERSION="i"
+VERSION="ii"
 APP_NAME="app-model-dev-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="app"
@@ -68,7 +73,7 @@ DBNAME:
 USER:
     'matt'
 HOST:
-    '$(gcloud compute instances list --filter="name=matt" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
+    '$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
 DBPORT:
     '5000'
 DBPASSWORD:
