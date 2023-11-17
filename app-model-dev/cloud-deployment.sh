@@ -15,7 +15,8 @@ STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 
 
 # Change the APP_NAME
-APP_NAME="app-v-model-dev"
+VERSION="i"
+APP_NAME="app-model-dev-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="app"
 APP_VERSION="latest"
