@@ -38,7 +38,7 @@ con = psycopg2.connect(f"""
                        """)
 cur = con.cursor()
 # Create a table if not exists
-cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, datetime varchar)")
+cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar)")
 cur.execute("CREATE TABLE IF NOT EXISTS users(id serial PRIMARY KEY, name varchar, password varchar)")
 con.commit()
 
@@ -86,7 +86,7 @@ with st.sidebar:
     guest = st.checkbox("Continue as a guest")
     credential = False
     if login:
-        if username == "admin" and password == ADMIN_PASSWORD:
+        if username == "admin" and password == "password":
             credential = True
             st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
             st.caption(":warning: :red[Do not add sensitive data.]")
@@ -114,7 +114,7 @@ with st.sidebar:
                         con.commit()
                         st.info(f"History by {input_name} is successfully deleted.")
         elif guest:
-            pass
+            input_name="guest"
         else:
             st.info("Wrong credential")
         
@@ -132,9 +132,7 @@ elif credential is True and agent is True:
     if agent:
         prompt_user = st.chat_input("What do you want to talk about?")
         if prompt_user:
-            time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-
-
+            current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             if model == "Chat":
                 cur.execute(f"""
                         SELECT * 
@@ -142,13 +140,13 @@ elif credential is True and agent is True:
                         WHERE name='{input_name}'
                         ORDER BY datetime ASC
                         """)
-                for id, name, prompt, output, model, datetime in cur.fetchall():
+                for id, name, prompt, output, model, time in cur.fetchall():
                     prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                 response = chat.send_message(prompt_history, **chat_parameters)
                 response = chat.send_message(prompt_user, **chat_parameters)
                 output = response.text
                 message.write(output)
-                message.caption(f"{time} | Model: {model}")
+                message.caption(f"{current_time} | Model: {model}")
                 st.divider()
 
             elif model == "Text":
@@ -157,14 +155,28 @@ elif credential is True and agent is True:
                 )
                 output = response.text
                 message.write(output)
-                message.caption(f"{time} | Model: {model}")
+                message.caption(f"{current_time} | Model: {model}")
                 st.divider()
 
             ### Insert into a database
             SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s);"
-            data = (input_name, prompt_user, output, model, time)
+            data = (input_name, prompt_user, output, model, current_time)
             cur.execute(SQL, data)
             con.commit()
+            
+            cur.execute(f"""
+            SELECT * 
+            FROM chats
+            WHERE name='{input_name}'
+            ORDER BY datetime ASC
+            """)
+            for id, name, prompt, output, model, time in cur.fetchall():
+                message = st.chat_message("user")
+                message.write(f":blue[{name}]: {prompt}")
+                message.caption(f"{time}")
+                message = st.chat_message("assistant")
+                message.write(output)
+                message.caption(f"{time}")
 
         else:
             st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
@@ -174,15 +186,13 @@ elif credential is True and agent is True:
             WHERE name='{input_name}'
             ORDER BY datetime ASC
             """)
-            for id, name, prompt, output, model, datetime in cur.fetchall():
+            for id, name, prompt, output, model, time in cur.fetchall():
                 message = st.chat_message("user")
                 message.write(f":blue[{name}]: {prompt}")
                 message.caption(f"{time}")
                 message = st.chat_message("assistant")
                 message.write(output)
                 message.caption(f"{time}")
-
-
             
 
 #----------Close Connection----------#

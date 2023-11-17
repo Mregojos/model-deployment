@@ -36,6 +36,7 @@ con = psycopg2.connect(f"""
                        """)
 cur = con.cursor()
 # Create a table if not exists
+cur.execute("DROP TABLE chats")
 cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, time varchar)")
 con.commit()
 
@@ -134,7 +135,7 @@ with columnB:
     else:
         if not agent:
             st.info("Start the conversation now by saving your name and toggling the Let's go toggle.")
-        if agent: 
+        if agent and input_name is not "": 
             st.info("You can now start the conversation by prompting to the text bar. Enjoy. :smile:")
             with st.expander(f"See Previous Conversation for {input_name}"):
                 cur.execute(f"""
