@@ -42,6 +42,13 @@ streamlit run app-model.py --server.address=0.0.0.0 --server.port=9000
 # Create a firewall (GCP)
 gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
     --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000,tcp:9000 --source-ranges=0.0.0.0/0 
+# For Local Development
+export DBNAME='matt'
+export USER='matt' 
+export HOST='' 
+export DBPORT='5000'
+export DBPASSWORD='password' 
+export PROJECT_NAME='$(gcloud config get project)'
 
 #----------Local Development using container----------#
 # Environment Variables for the app
