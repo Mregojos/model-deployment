@@ -185,8 +185,8 @@ if login and not guest:
         st.write("### :gray[Start the Conversation]")
         if agent:
             prompt_user = st.chat_input("What do you want to talk about?")
+            current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             if prompt_user:
-                current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
                     current_model = "Chat"
                     cur.execute(f"""
@@ -265,37 +265,44 @@ elif guest and not login:
         st.write("### :gray[Start the Conversation]")
         if agent:
             prompt_user = st.chat_input("What do you want to talk about?")
+            current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             if prompt_user:
                 count_prompt = 1
-                current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if model == "Chat":
-                    current_model = "Chat"
-                    cur.execute(f"""
-                            SELECT * 
-                            FROM guest_chats
-                            WHERE name='{input_name}'
-                            ORDER BY time ASC
-                            """)
-                    for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
-                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
-                    response = chat.send_message(prompt_history, **chat_parameters)
-                    response = chat.send_message(prompt_user, **chat_parameters)
-                    output = response.text
+                    try:
+                        current_model = "Chat"
+                        cur.execute(f"""
+                                SELECT * 
+                                FROM guest_chats
+                                WHERE name='{input_name}'
+                                ORDER BY time ASC
+                                """)
+                        for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
+                            prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                        response = chat.send_message(prompt_history, **chat_parameters)
+                        response = chat.send_message(prompt_user, **chat_parameters)
+                        output = response.text
+                    except:
+                        output = "Sorry for that. Could your repeat the prompt?"
+                        
 
                 elif model == "Code":
                     current_model = "Code"
-                    cur.execute(f"""
-                            SELECT * 
-                            FROM guest_chats
-                            WHERE name='{input_name}'
-                            ORDER BY time ASC
-                            """)
-                    for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
-                        prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
-                    response = code_chat.send_message(prompt_history, **code_parameters)
-                    response = code_chat.send_message(prompt_user, **code_parameters)
-                    output = response.text
-
+                    try:
+                        cur.execute(f"""
+                                SELECT * 
+                                FROM guest_chats
+                                WHERE name='{input_name}'
+                                ORDER BY time ASC
+                                """)
+                        for id, name, prompt, output, model, time, count_prompt in cur.fetchall():
+                            prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
+                        response = code_chat.send_message(prompt_history, **code_parameters)
+                        response = code_chat.send_message(prompt_user, **code_parameters)
+                        output = response.text
+                    except:
+                        output = "I didn't catch that. Could your repeat the prompt?"
+                        
                 ### Insert into a database
                 SQL = "INSERT INTO guest_chats (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
                 data = (input_name, prompt_user, output, current_model, current_time, count_prompt)
