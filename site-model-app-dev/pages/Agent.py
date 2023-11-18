@@ -27,7 +27,7 @@ st.set_page_config(page_title="Matt Cloud Tech",
                        'About':"# Matt Cloud Tech"})
 
 # Title
-st.write("### Pre-Trained Model Deployment")
+st.write("#### Pre-Trained Model Deployment")
 
 #----------Connect to a database----------# 
 con = psycopg2.connect(f"""
@@ -41,7 +41,8 @@ cur = con.cursor()
 # Create a table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar)")
 cur.execute("CREATE TABLE IF NOT EXISTS guest_chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt int)")
-cur.execute("CREATE TABLE IF NOT EXISTS users(id serial PRIMARY KEY, name varchar, password varchar)")
+# cur.execute("CREATE TABLE IF NOT EXISTS users(id serial PRIMARY KEY, name varchar, password varchar)")
+cur.execute("CREATE TABLE IF NOT EXISTS total_prompts(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt varchar)")
 con.commit()
 
 #----------Vertex AI Chat----------#
@@ -74,8 +75,6 @@ code_chat = code_chat_model.start_chat()
 # response = code_chat.send_message("""My favorite color is white.""", **parameters)
 # print(f"Response from Model: {response.text}")
 
-#---------Counter
-# count_prompt=""
 #----------Agent----------#
 with st.sidebar:
     st.header(":computer: Agent ",divider="rainbow")
@@ -87,12 +86,12 @@ with st.sidebar:
     guest = st.checkbox("Continue as a guest")
     credential = False
     # guest daily limit
-    LIMIT = 20
+    LIMIT = 8
     total_count= 0
-#----------
+#----------Login or Guest----------#
     if login and guest:
         st.info("Choose only one")
-#----------For Admin Login
+#----------For Admin Login----------#
     elif login:
         if username == "admin" and password == ADMIN_PASSWORD:
             credential = True
@@ -109,7 +108,7 @@ with st.sidebar:
             agent = st.toggle("**:violet[Let's talk to Agent]**")
             if agent:
                 if input_name is not "":
-                    reset = st.button(":red[Reset Conversation]")
+                    reset = st.button(":white[Refresh Conversation]")
                     if reset:
                         st.rerun()
                     prune = st.button(":red[Prune History]")
@@ -123,7 +122,7 @@ with st.sidebar:
                         st.info(f"History by {input_name} is successfully deleted.")
         else:
             st.info("Wrong credential")
-#----------For Guest Login            
+#----------For Guest Login----------#            
     elif guest:
         credential = True
         st.write("You will be my agent's :blue[guest].")
@@ -141,7 +140,7 @@ with st.sidebar:
         time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
         time_date = time[0:15]
         if agent:
-#----------For Guest Daily Limit
+#----------For Guest Daily Limit----------#
             cur.execute(f"""
                     SELECT SUM(count_prompt)
                     FROM guest_chats
@@ -156,7 +155,7 @@ with st.sidebar:
                     # st.write(f"{total_count}")
                     
             if input_name is not "" and total_count < LIMIT:
-                reset = st.button(":red[Refresh Conversation]")
+                reset = st.button(":white[Refresh Conversation]")
                 if reset:
                     st.rerun()
             # Only for Name Matt
@@ -177,13 +176,15 @@ with st.sidebar:
 #----------For Admin    
 if login and not guest:
     if credential is False:
-        st.info("Login first or continue as a guest")
+        st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation.")
     elif credential is True and agent is False:
         st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
+    elif credential is True and agent is True and input_name == "":
+        st.info("Don't forget to save your name to continue.")
     elif credential is True and agent is True:
         prompt_history = "Hi"
         import time
-        st.write("### :gray[Start the Conversation]")
+        st.write("#### :gray[Start the Conversation]")
         if agent:
             prompt_user = st.chat_input("What do you want to talk about?")
             current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
@@ -263,13 +264,15 @@ if login and not guest:
 #----------For Guest    
 elif guest and not login:
     if credential is False:
-        st.info("Login first or continue as a guest")
+        st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation.")
     elif credential is True and agent is False:
         st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
+    elif credential is True and agent is True and input_name == "":
+        st.info("Don't forget to save your name to continue.")
     elif credential is True and agent is True and total_count < LIMIT:
         prompt_history = "Hi"
         import time
-        st.write("### :gray[Start the Conversation]")
+        st.write("#### :gray[Start the Conversation]")
         if agent:
             prompt_user = st.chat_input("What do you want to talk about?")
             current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
