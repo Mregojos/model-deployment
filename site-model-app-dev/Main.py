@@ -39,26 +39,26 @@ st.write("""
 #----------End of About Section----------#
 
 #----------Connect to a database----------#
-try:
-    con = psycopg2.connect(f"""
-                           dbname={DB_NAME}
-                           user={DB_USER}
-                           host={DB_HOST}
-                           port={DB_PORT}
-                           password={DB_PASSWORD}
-                           """)
-    cur = con.cursor()
-    # Create a Portfolio table if not exists
-    cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
-    con.commit()
-    # Create a Notes table if not exists
-    cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
-    con.commit()
-    # Create a table if not exists
-    cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
-    con.commit()
-except:
-    st.info("Database not connected. Please try again later.")
+con = psycopg2.connect(f"""
+                       dbname={DB_NAME}
+                       user={DB_USER}
+                       host={DB_HOST}
+                       port={DB_PORT}
+                       password={DB_PASSWORD}
+                       """)
+cur = con.cursor()
+# Create a Portfolio table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
+con.commit()
+# Create a Message table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS messages(id serial PRIMARY KEY, email_address varchar, message varchar, time varchar)")
+con.commit()
+# Create a Notes table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
+con.commit()
+# Create a table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
+con.commit()
 
 #----------Agent Section----------#
 #----------Vertex AI----------#
@@ -114,6 +114,23 @@ with st.expander(' :notebook: Portfolio'):
                     st.button(":blue[Done]")
 #----------End of Portfolio Section----------#
 
+#----------Message Section----------#
+with st.expander(' :email: Message me'):
+    st.header(" :email: Message me",divider="rainbow")
+    # Inputs
+    email_address = st.text_input("Email address")
+    message = st.text_area("Message")
+    if st.button("Send"):
+        ### Insert into adatabase
+        time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+        SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
+        data = (email_address, message, time)
+        cur.execute(SQL, data)
+        con.commit()
+        st.info("Email sent.")
+        st.snow()
+#----------End of Message Section----------#
+
 #----------Notepad Section----------#
 with st.expander(' :pencil: Notepad'):
     st.header(" :pencil: Notepad",divider="rainbow")
@@ -127,12 +144,11 @@ with st.expander(' :pencil: Notepad'):
     note = st.text_area("Note")
     if st.button("Add a note"):
         time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-        st.write(f""" \n
-                ##### :pencil: {header} \n
-                #### {note} \n
-                :man: {name} \n""")
+        st.write(f"#### :pencil: {header} \n")
+        st.text(f"{note} \n")
+        st.write(f":man: {name}")
         st.caption(f":watch: {time}")
-        st.success("Successfully Added.")
+        st.info("Successfully Added.")
         # st.balloons()
         ### Insert into adatabase
         SQL = "INSERT INTO notes (name, header, note, time) VALUES(%s, %s, %s, %s);"
@@ -151,10 +167,9 @@ with st.expander(' :pencil: Notepad'):
                     ORDER BY time DESC
                     """)
         for id, name, header, note, time in cur.fetchall():
-            st.write(f""" \n
-                    ##### :pencil: {header} \n
-                    #### {note} \n
-                    :man: {name} \n""")
+            st.write(f"##### :pencil: {header} \n")
+            st.text(f"{note} \n")
+            st.write(f":man: {name}")
             st.caption(f":watch: {time}")
 
             modify = st.toggle(f"Edit or Delete (ID #: {id})")
@@ -175,7 +190,7 @@ with st.expander(' :pencil: Notepad'):
                     # data = (id)
                     # cur.execute(SQL, data)
                     con.commit()
-                    st.success("Successfully Deleted.")
+                    st.info("Successfully Deleted.")
                     st.button(":blue[Done]")
             st.subheader("",divider="gray")
 #----------End of Notepad Section----------#
@@ -187,8 +202,6 @@ with st.expander(' :watch: Counter'):
                 Count every request in this app.
                 """)
     st.subheader("",divider="rainbow")
-
-
     # Counter
     import time
     time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
