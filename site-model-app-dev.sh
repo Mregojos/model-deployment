@@ -62,6 +62,8 @@ DBPASSWORD='password'
 PROJECT_NAME='$(gcloud config get project)'
 ADMIN_PASSWORD=password
 APP_PORT=9000
+APP_ADRESS=
+DOMAIN_NAME=
 """ > env.sh
 
 # For App Development
