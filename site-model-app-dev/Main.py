@@ -20,11 +20,12 @@ PROJECT_NAME=os.getenv("PROJECT_NAME")
 #----------Page Configuration----------# 
 st.set_page_config(page_title="Matt Cloud Tech",
                    page_icon=":cloud:",
+                   initial_sidebar_state="collapsed",
                    menu_items={
                        'About':"# Matt Cloud Tech"})
 
 #----------About Me Section----------#
-st.title(":cloud: Matt Cloud Tech")
+st.write("### :cloud: Matt Cloud Tech")
 st.header("", divider="rainbow")
 
 st.write("""
@@ -34,6 +35,7 @@ st.write("""
         """) 
 # st.divider()
 #----------End of About Me Section----------#
+st.sidebar.empty()
 
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
