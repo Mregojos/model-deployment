@@ -58,9 +58,9 @@ echo """DBNAME='matt'
 USER='matt' 
 HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DBPORT=5000
-DBPASSWORD='password' 
-PROJECT_NAME=$(gcloud config get project)
-ADMIN_PASSWORD='password'
+DBPASSWORD='password'
+PROJECT_NAME='$(gcloud config get project)'
+ADMIN_PASSWORD=password
 APP_PORT=9000
 """ > env.sh
 
