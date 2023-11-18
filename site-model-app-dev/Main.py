@@ -252,7 +252,7 @@ with st.expander(' :link: External Links'):
 
 #----------Agent Section----------#
 #----------Vertex AI----------#
-st.info(f":computer: :technologist: [Talk to my Agent](http://{HOST}:{APP_PORT}/Agent)")
+st.info(":computer: :technologist: [Talk to my Agent](https://)")
 
 #----------End of Agent Section----------#
 
