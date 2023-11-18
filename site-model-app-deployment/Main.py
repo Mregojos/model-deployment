@@ -1,29 +1,31 @@
-# Deployment
-# Import libraries
+#----------Import libraries----------# 
 import streamlit as st
 import psycopg2
 import os
 import time
 # from env import *
 
-# Database Credentials
+#----------Database Credentials----------# 
 DBNAME=os.getenv("DBNAME")
 USER=os.getenv("USER")
 HOST= os.getenv("HOST")
 DBPORT=os.getenv("DBPORT")
 DBPASSWORD=os.getenv("DBPASSWORD")
 APP_PORT=os.getenv("APP_PORT")
-# Cloud
+APP_ADDRESS=os.getenv("APP_ADDRESS")
+DOMAIN_NAME=os.getenv("DOMAIN_NAME")
+# Cloud Credentials
 PROJECT_NAME=os.getenv("PROJECT_NAME")
 
 #----------Page Configuration----------# 
 st.set_page_config(page_title="Matt Cloud Tech",
                    page_icon=":cloud:",
+                   initial_sidebar_state="collapsed",
                    menu_items={
                        'About':"# Matt Cloud Tech"})
 
 #----------About Me Section----------#
-st.title(":cloud: Matt Cloud Tech")
+st.write("### :cloud: Matt Cloud Tech")
 st.header("", divider="rainbow")
 
 st.write("""
@@ -33,6 +35,7 @@ st.write("""
         """) 
 # st.divider()
 #----------End of About Me Section----------#
+st.sidebar.empty()
 
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
