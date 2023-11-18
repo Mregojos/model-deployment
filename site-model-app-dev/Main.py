@@ -6,16 +6,17 @@ import time
 # from env import *
 
 #----------Database Credentials----------# 
-DBNAME=os.getenv("DBNAME")
-USER=os.getenv("USER")
-HOST= os.getenv("HOST")
-DBPORT=os.getenv("DBPORT")
-DBPASSWORD=os.getenv("DBPASSWORD")
+DB_NAME=os.getenv("DB_NAME")
+DB_USER=os.getenv("DB_USER")
+DB_HOST= os.getenv("DB_HOST")
+DB_PORT=os.getenv("DB_PORT")
+DB_PASSWORD=os.getenv("DB_PASSWORD")
 APP_PORT=os.getenv("APP_PORT")
 APP_ADDRESS=os.getenv("APP_ADDRESS")
 DOMAIN_NAME=os.getenv("DOMAIN_NAME")
 # Cloud Credentials
 PROJECT_NAME=os.getenv("PROJECT_NAME")
+SPECIAL_NAME=os.getenv("SPECIAL_NAME")
 
 #----------Page Configuration----------# 
 st.set_page_config(page_title="Matt Cloud Tech",
@@ -41,11 +42,11 @@ st.sidebar.empty()
 with st.expander(' :notebook: Portfolio'):
     # Connect to a database
     con = psycopg2.connect(f"""
-                           dbname={DBNAME}
-                           user={USER}
-                           host={HOST}
-                           port={DBPORT}
-                           password={DBPASSWORD}
+                           dbname={DB_NAME}
+                           user={DB_USER}
+                           host={DB_HOST}
+                           port={DB_PORT}
+                           password={DB_PASSWORD}
                            """)
     cur = con.cursor()
 
@@ -104,11 +105,11 @@ with st.expander(' :pencil: Notepad'):
                 """)
     # Connect to a database
     con = psycopg2.connect(f"""
-                           dbname={DBNAME}
-                           user={USER}
-                           host={HOST}
-                           port={DBPORT}
-                           password={DBPASSWORD}
+                           dbname={DB_NAME}
+                           user={DB_USER}
+                           host={DB_HOST}
+                           port={DB_PORT}
+                           password={DB_PASSWORD}
                            """)
     cur = con.cursor()
 
@@ -188,11 +189,11 @@ with st.expander(' :watch: Counter'):
     st.subheader("",divider="rainbow")
 
     con = psycopg2.connect(f"""
-                           dbname={DBNAME}
-                           user={USER}
-                           host={HOST}
-                           port={DBPORT}
-                           password={DBPASSWORD}
+                           dbname={DB_NAME}
+                           user={DB_USER}
+                           host={DB_HOST}
+                           port={DB_PORT}
+                           password={DB_PASSWORD}
                            """)
     cur = con.cursor()
     # Create a table if not exists
