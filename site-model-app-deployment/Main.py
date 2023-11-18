@@ -12,6 +12,7 @@ USER=os.getenv("USER")
 HOST= os.getenv("HOST")
 DBPORT=os.getenv("DBPORT")
 DBPASSWORD=os.getenv("DBPASSWORD")
+APP_PORT=os.getenv("APP_PORT")
 # Cloud
 PROJECT_NAME=os.getenv("PROJECT_NAME")
 
@@ -251,7 +252,7 @@ with st.expander(' :link: External Links'):
 
 #----------Agent Section----------#
 #----------Vertex AI----------#
-# st.write(f":computer: :technologist: [Agent](http://HOST:PORT/Agent)")
+st.info(":computer: :technologist: [Talk to my Agent](https://)")
 
 #----------End of Agent Section----------#
 
