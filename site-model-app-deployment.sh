@@ -82,6 +82,10 @@ ADMIN_PASSWORD:
     'password'
 APP_PORT:
     '9000'
+APP_ADDRESS:
+    ''
+DOMAIN_NAME:
+    ''
 """ > env.yaml
 
 
