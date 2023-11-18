@@ -1,4 +1,5 @@
 # site-model-app-dev
+# sh site-model-app-dev.sh
 
 # Objective
 # * To create a web app and use model apis
@@ -9,7 +10,7 @@ gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregi
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #----------Environment Variables----------#
-VERSION="ii"
+VERSION="iii"
 APP_NAME="site-model-app-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt"
