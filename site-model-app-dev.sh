@@ -3,24 +3,24 @@
 # Objective
 # * To create a web app and use model apis
 
-#----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
+#----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI----------#
 # !gcloud services list --available
 gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
-#----------Environment Variables
+#----------Environment Variables----------#
 VERSION="ii"
 APP_NAME="site-model-app-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt"
 
-# Database Credentials
-DBCONTAINERNAME='postgres-sql'
-DBNAME='matt'
-USER='matt' 
-HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
-DBPORT=5000
-DBPASSWORD='password'
+#---------Database Credentials----------#
+DB_CONTAINER_NAME='postgres-sql'
+DB_NAME='matt'
+DB_USER='matt' 
+DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DB_PORT=5000
+DB_PASSWORD='password'
 PROJECT_NAME='$(gcloud config get project)'
 ADMIN_PASSWORD=password
 APP_PORT=9000
@@ -29,16 +29,16 @@ DOMAIN_NAME=
 SPECIAL_NAME='Matt'
 
 
-#----------Database
+#----------Database----------#
 # With volume/data connected
 # cd app-model 
 # cd app-model
 docker run -d \
-    --name $DBCONTAINERNAME \
-    -e POSTGRES_USER=$USER \
-    -e POSTGRES_PASSWORD=$DBPASSWORD \
+    --name $DB_CONTAINER_NAME \
+    -e POSTGRES_USER=$DB_USER \
+    -e POSTGRES_PASSWORD=$DB_PASSWORD \
     -v $(pwd)/data/:/var/lib/postgresql/data/ \
-    -p $DBPORT:5432 \
+    -p $DB_PORT:5432 \
     postgres
 docker run -p 8000:80 \
     -e 'PGADMIN_DEFAULT_EMAIL=matt@example.com' \
@@ -71,11 +71,11 @@ docker run -p 8000:80 \
 cd site-model-app-dev
 
 # Environment Variables for the app
-echo """DBNAME='matt'
-USER='matt' 
-HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
-DBPORT=5000
-DBPASSWORD='password'
+echo """DB_NAME='matt'
+DB_USER='matt' 
+DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DB_PORT=5000
+DB_PASSWORD='password'
 PROJECT_NAME='$(gcloud config get project)'
 ADMIN_PASSWORD=password
 APP_PORT=9000
@@ -99,7 +99,6 @@ gcloud compute --project=$(gcloud config get project) firewall-rules create $FIR
 # Remove docker container
 # docker rm -f $APP_NAME
 
-
 # Remove docker container all
 # docker rm -f $(docker ps -aq)
 # sudo rm -f data
@@ -108,5 +107,3 @@ gcloud compute --project=$(gcloud config get project) firewall-rules create $FIR
 
 
 
-#----------Delete Resources----------#
-gcloud compute instances delete $DB_NAME --zone=$ZONE --quiet

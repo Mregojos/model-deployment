@@ -1,8 +1,8 @@
-DBNAME='matt'
-USER='matt' 
-HOST=34.70.73.44 
-DBPORT=5000
-DBPASSWORD='password'
+DB_NAME='matt'
+DB_USER='matt' 
+DB_HOST=34.70.73.44 
+DB_PORT=5000
+DB_PASSWORD='password'
 PROJECT_NAME='matttrainings'
 ADMIN_PASSWORD=password
 APP_PORT=9000
