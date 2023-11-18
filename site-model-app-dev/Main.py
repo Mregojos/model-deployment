@@ -31,9 +31,9 @@ st.write("### :cloud: Matt Cloud Tech")
 st.header("", divider="rainbow")
 
 st.write("""
-        #### Good day :wave:.
-        #### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
-        #### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
+        ##### Good day :wave:.
+        ##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
+        ##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
         """) 
 # st.divider()
 #----------End of About Section----------#
