@@ -39,27 +39,40 @@ st.write("""
 #----------End of About Section----------#
 
 #----------Connect to a database----------#
-con = psycopg2.connect(f"""
-                       dbname={DB_NAME}
-                       user={DB_USER}
-                       host={DB_HOST}
-                       port={DB_PORT}
-                       password={DB_PASSWORD}
-                       """)
-cur = con.cursor()
-# Create a Portfolio table if not exists
-cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
-con.commit()
-# Create a Notes table if not exists
-cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
-con.commit()
-# Create a table if not exists
-cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
-con.commit()
+try:
+    con = psycopg2.connect(f"""
+                           dbname={DB_NAME}
+                           user={DB_USER}
+                           host={DB_HOST}
+                           port={DB_PORT}
+                           password={DB_PASSWORD}
+                           """)
+    cur = con.cursor()
+    # Create a Portfolio table if not exists
+    cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
+    con.commit()
+    # Create a Notes table if not exists
+    cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
+    con.commit()
+    # Create a table if not exists
+    cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
+    con.commit()
+except:
+    st.info("Database not connected. Please try again later.")
+
+#----------Agent Section----------#
+#----------Vertex AI----------#
+st.info(":computer: :technologist: [Talk to my Agent](https://)")
+#----------End of Agent Section----------#
 
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
     st.write("### Project Collection")
+    # Using Markdown
+    st.markdown("""
+    #### Project #1
+    """)
+    # Using Database
     cur.execute("""
                 SELECT * 
                 FROM portfolio
@@ -226,15 +239,11 @@ with st.expander(' :watch: Counter'):
 with st.expander(' :link: External Links'):
     st.write(":link: :computer: [Personal Website](https://)")
     st.write(":link: :book: [Project Repository](https://)")
-    st.write(":link: :notebook: [Blog](https://)")
+    # st.write(":link: :notebook: [Blog](https://)")
     st.write(":link: :hand: [Connect with me](https://)")
 #----------End of External links---------#
 
-#----------Agent Section----------#
-#----------Vertex AI----------#
-st.info(":computer: :technologist: [Talk to my Agent](https://)")
 
-#----------End of Agent Section----------#
 
 # Close Connection
 cur.close()
