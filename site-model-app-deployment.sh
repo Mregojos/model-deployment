@@ -1,4 +1,4 @@
-# Cloud Deployment
+# site-model-app-deployment
 
 # Objective
 # * To deploy a pre-trained model on GCP
@@ -39,7 +39,7 @@ DOMAIN_NAME=
 SPECIAL_NAME='Matt'
 
 #----------Deployment Environment Variables----------#
-VERSION="i"
+VERSION="ii"
 APP_NAME="site-model-app-deployment-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="app"
