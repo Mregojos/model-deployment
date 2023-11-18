@@ -80,7 +80,7 @@ gcloud projects add-iam-policy-binding \
 echo "\n #----------App Service Account has been successfully binded.----------# \n"
 
 # Change the directory
-cd site-model-app-deployment
+# cd site-model-app-deployment
 # touch env.yaml
 
 # Environment Variables for the app

@@ -26,7 +26,7 @@ st.set_page_config(page_title="Matt Cloud Tech",
                    menu_items={
                        'About':"# Matt Cloud Tech"})
 
-#----------About Me Section----------#
+#----------About Section----------#
 st.write("### :cloud: Matt Cloud Tech")
 st.header("", divider="rainbow")
 
@@ -36,24 +36,29 @@ st.write("""
         ### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
         """) 
 # st.divider()
-#----------End of About Me Section----------#
-st.sidebar.empty()
+#----------End of About Section----------#
+
+#----------Connect to a database----------#
+con = psycopg2.connect(f"""
+                       dbname={DB_NAME}
+                       user={DB_USER}
+                       host={DB_HOST}
+                       port={DB_PORT}
+                       password={DB_PASSWORD}
+                       """)
+cur = con.cursor()
+# Create a Portfolio table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
+con.commit()
+# Create a Notes table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
+con.commit()
+# Create a table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
+con.commit()
 
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
-    # Connect to a database
-    con = psycopg2.connect(f"""
-                           dbname={DB_NAME}
-                           user={DB_USER}
-                           host={DB_HOST}
-                           port={DB_PORT}
-                           password={DB_PASSWORD}
-                           """)
-    cur = con.cursor()
-
-    # Create a table if not exists
-    cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
-    con.commit()    
     st.write("### Project Collection")
     cur.execute("""
                 SELECT * 
@@ -94,7 +99,6 @@ with st.expander(' :notebook: Portfolio'):
                     con.commit()
                     st.success("Successfully Deleted.")
                     st.button(":blue[Done]")
-            
 #----------End of Portfolio Section----------#
 
 #----------Notepad Section----------#
@@ -104,20 +108,6 @@ with st.expander(' :pencil: Notepad'):
                 Add your thoughts here. It will be stored in a database. \n
                 :warning: :red[Do not add sensitive data.]
                 """)
-    # Connect to a database
-    con = psycopg2.connect(f"""
-                           dbname={DB_NAME}
-                           user={DB_USER}
-                           host={DB_HOST}
-                           port={DB_PORT}
-                           password={DB_PASSWORD}
-                           """)
-    cur = con.cursor()
-
-    # Create a table if not exists
-    cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
-    con.commit()
-
     # Inputs
     name = st.text_input("Your Name")
     header = st.text_input("Header")
@@ -175,10 +165,6 @@ with st.expander(' :pencil: Notepad'):
                     st.success("Successfully Deleted.")
                     st.button(":blue[Done]")
             st.subheader("",divider="gray")
-
-    # Close Connection
-    cur.close()
-    con.close()
 #----------End of Notepad Section----------#
 
 #----------Counter----------#
@@ -189,17 +175,6 @@ with st.expander(' :watch: Counter'):
                 """)
     st.subheader("",divider="rainbow")
 
-    con = psycopg2.connect(f"""
-                           dbname={DB_NAME}
-                           user={DB_USER}
-                           host={DB_HOST}
-                           port={DB_PORT}
-                           password={DB_PASSWORD}
-                           """)
-    cur = con.cursor()
-    # Create a table if not exists
-    cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
-    con.commit()
 
     # Counter
     import time
