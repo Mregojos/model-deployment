@@ -61,7 +61,7 @@ DBPORT='5000'
 DBPASSWORD='password' 
 PROJECT_NAME='$(gcloud config get project)'
 ADMIN_PASSWORD='password'
-""" > app-model-dev/env.sh
+""" > site-model-app-dev/env.sh
 
 # For App Development
 cd site-model-app-dev

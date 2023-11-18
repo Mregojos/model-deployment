@@ -61,7 +61,7 @@ gcloud projects add-iam-policy-binding \
 echo "\n #----------App Service Account has been successfully binded.----------# \n"
 
 # Change the directory
-cd app-model-deployment
+cd site-model-app-deployment
 # touch env.yaml
 
 # Environment Variables for the app
@@ -80,7 +80,7 @@ PROJECT_NAME:
     '$(gcloud config get project)'
 ADMIN_PASSWORD:
     'password'
-""" > app-model-deployment/env.yaml
+""" > site-model-app-deployment/env.yaml
 
 
 # Deploy the app using Cloud Run
