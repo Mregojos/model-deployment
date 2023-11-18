@@ -42,7 +42,8 @@ cur = con.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar)")
 cur.execute("CREATE TABLE IF NOT EXISTS guest_chats(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt int)")
 # cur.execute("CREATE TABLE IF NOT EXISTS users(id serial PRIMARY KEY, name varchar, password varchar)")
-cur.execute("CREATE TABLE IF NOT EXISTS total_prompts(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt varchar)")
+# cur.execute("DROP TABLE total_prompts")
+cur.execute("CREATE TABLE IF NOT EXISTS total_prompts(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt int)")
 con.commit()
 
 #----------Vertex AI Chat----------#
@@ -189,6 +190,7 @@ if login and not guest:
             prompt_user = st.chat_input("What do you want to talk about?")
             current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             if prompt_user:
+                count_prompt = 1
                 if model == "Chat":
                     try:
                         current_model = "Chat"
@@ -223,9 +225,14 @@ if login and not guest:
                     except:
                         output = "I didn't catch that. Could your repeat the prompt?"
                     
-                ### Insert into a database
+                ### Insert into a table
                 SQL = "INSERT INTO chats (name, prompt, output, model, time) VALUES(%s, %s, %s, %s, %s);"
                 data = (input_name, prompt_user, output, current_model, current_time)
+                cur.execute(SQL, data)
+                con.commit()
+                ### Insert into a table (total_prompts)
+                SQL = "INSERT INTO total_prompts (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
+                data = (input_name, prompt_user, output, current_model, current_time, count_prompt)
                 cur.execute(SQL, data)
                 con.commit()
 
@@ -315,6 +322,11 @@ elif guest and not login:
                         
                 ### Insert into a database
                 SQL = "INSERT INTO guest_chats (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
+                data = (input_name, prompt_user, output, current_model, current_time, count_prompt)
+                cur.execute(SQL, data)
+                con.commit()
+                ### Insert into a table (total_prompts)
+                SQL = "INSERT INTO total_prompts (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
                 data = (input_name, prompt_user, output, current_model, current_time, count_prompt)
                 cur.execute(SQL, data)
                 con.commit()
