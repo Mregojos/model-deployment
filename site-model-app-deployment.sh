@@ -82,7 +82,7 @@ ADMIN_PASSWORD:
     'password'
 APP_PORT:
     '9000'
-""" > site-model-app-deployment/env.yaml
+""" > env.yaml
 
 
 # Deploy the app using Cloud Run
