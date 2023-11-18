@@ -3,6 +3,8 @@
 ./*/*/.ipynb_checkpoints*
 ./env.*
 ./*/env.*
+./*/env.sh
+./*/env.yaml
 ./*/*/env.*
 data
 ./data
