@@ -14,9 +14,10 @@ DB_PASSWORD=os.getenv("DB_PASSWORD")
 APP_PORT=os.getenv("APP_PORT")
 APP_ADDRESS=os.getenv("APP_ADDRESS")
 DOMAIN_NAME=os.getenv("DOMAIN_NAME")
+SPECIAL_NAME=os.getenv("SPECIAL_NAME")
 # Cloud Credentials
 PROJECT_NAME=os.getenv("PROJECT_NAME")
-SPECIAL_NAME=os.getenv("SPECIAL_NAME")
+
 
 #----------Page Configuration----------# 
 st.set_page_config(page_title="Matt Cloud Tech",
