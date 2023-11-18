@@ -80,6 +80,8 @@ PROJECT_NAME:
     '$(gcloud config get project)'
 ADMIN_PASSWORD:
     'password'
+APP_PORT:
+    '9000'
 """ > site-model-app-deployment/env.yaml
 
 
