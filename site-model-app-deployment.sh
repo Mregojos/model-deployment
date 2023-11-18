@@ -20,8 +20,8 @@ STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 INSTANCE_NAME="matt"
 
 # Change the APP_NAME
-VERSION="iii"
-APP_NAME="app-model-dev-$VERSION"
+VERSION="i"
+APP_NAME="site-model-app-deployment-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="app"
 APP_VERSION="latest"

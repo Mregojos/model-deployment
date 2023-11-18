@@ -10,8 +10,8 @@ gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregi
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #----------Environment Variables
-VERSION="iii"
-APP_NAME="app-model-dev-$VERSION"
+VERSION="i"
+APP_NAME="site-model-app-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt"
 
