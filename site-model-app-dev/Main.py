@@ -31,9 +31,9 @@ st.write("### :cloud: Matt Cloud Tech")
 st.header("", divider="rainbow")
 
 st.write("""
-        ### Good day :wave:.
-        ### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
-        ### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
+        #### Good day :wave:.
+        #### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
+        #### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
         """) 
 # st.divider()
 #----------End of About Section----------#
@@ -62,7 +62,7 @@ con.commit()
 
 #----------Agent Section----------#
 #----------Vertex AI----------#
-st.info(":computer: :technologist: [Talk to my Agent](https://)")
+st.info("###### :computer: :technologist: [You can now talk to my Intelligent Agent, try it now. :link:](https://)")
 #----------End of Agent Section----------#
 
 #----------Portfolio Section----------#
@@ -251,6 +251,7 @@ with st.expander(' :watch: Counter'):
 #----------External links---------#
 with st.expander(' :link: External Links'):
     st.write(":link: :computer: [Personal Website](https://)")
+    st.write(":link: :computer: [Intelligent Agent Website](https://)")
     st.write(":link: :book: [Project Repository](https://)")
     # st.write(":link: :notebook: [Blog](https://)")
     st.write(":link: :hand: [Connect with me](https://)")
