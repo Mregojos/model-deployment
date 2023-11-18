@@ -1,5 +1,4 @@
-# Local Development
-# app-dev
+# site-model-app-dev
 
 # Objective
 # * To create a web app and use model apis
@@ -10,21 +9,36 @@ gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregi
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #----------Environment Variables
-VERSION="i"
+VERSION="ii"
 APP_NAME="site-model-app-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt"
+
+# Database Credentials
+DBCONTAINERNAME='postgres-sql'
+DBNAME='matt'
+USER='matt' 
+HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DBPORT=5000
+DBPASSWORD='password'
+PROJECT_NAME='$(gcloud config get project)'
+ADMIN_PASSWORD=password
+APP_PORT=9000
+APP_ADRESS=
+DOMAIN_NAME=
+SPECIAL_NAME='Matt'
+
 
 #----------Database
 # With volume/data connected
 # cd app-model 
 # cd app-model
 docker run -d \
-    --name postgres-sql \
-    -e POSTGRES_USER=matt \
-    -e POSTGRES_PASSWORD=password \
+    --name $DBCONTAINERNAME \
+    -e POSTGRES_USER=$USER \
+    -e POSTGRES_PASSWORD=$DBPASSWORD \
     -v $(pwd)/data/:/var/lib/postgresql/data/ \
-    -p 5000:5432 \
+    -p $DBPORT:5432 \
     postgres
 docker run -p 8000:80 \
     -e 'PGADMIN_DEFAULT_EMAIL=matt@example.com' \
@@ -34,25 +48,28 @@ docker run -p 8000:80 \
 #----------Local Development----------#
 # ***** Use with container instead of this 
 # Virtual Environment
-virtualenv env
-source env/bin/activate
+# virtualenv env
+# source env/bin/activate
 # cd app-dev
-pip install -U -r requirements.txt -q
-streamlit run app-model.py --server.address=0.0.0.0 --server.port=9000
+# pip install -U -r requirements.txt -q
+# streamlit run app-model.py --server.address=0.0.0.0 --server.port=9000
 
 # Create a firewall (GCP)
-gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
-    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000,tcp:9000 --source-ranges=0.0.0.0/0 
+# gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
+#     --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000,tcp:9000 --source-ranges=0.0.0.0/0 
 
 # For Local Development
-export DBNAME='matt'
-export USER='matt' 
-export HOST='$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")' 
-export DBPORT='5000'
-export DBPASSWORD='password' 
-export PROJECT_NAME='$(gcloud config get project)'
+# export DBNAME='matt'
+# export USER='matt' 
+# export HOST='$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")' 
+# export DBPORT='5000'
+# export DBPASSWORD='password' 
+# export PROJECT_NAME='$(gcloud config get project)'
 
 #----------Local Development using container----------#
+# For App Development
+cd site-model-app-dev
+
 # Environment Variables for the app
 echo """DBNAME='matt'
 USER='matt' 
@@ -64,10 +81,12 @@ ADMIN_PASSWORD=password
 APP_PORT=9000
 APP_ADRESS=
 DOMAIN_NAME=
+SPECIAL_NAME='Matt'
 """ > env.sh
 
-# For App Development
-cd site-model-app-dev
+# Remove docker container
+# docker rm -f $APP_NAME
+
 # Build
 docker build -t $APP_NAME .
 
