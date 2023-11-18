@@ -10,10 +10,10 @@ gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregi
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #----------Environment Variables
-VERSION="ii"
+VERSION="iii"
 APP_NAME="app-model-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
-INSTANCE_NAME="matt-nb"
+INSTANCE_NAME="matt"
 
 #----------Database
 # With volume/data connected
@@ -64,7 +64,7 @@ ADMIN_PASSWORD='password'
 """ > app-model-dev/env.sh
 
 # For App Development
-cd app-model-dev
+cd site-model-app-dev
 # Build
 docker build -t $APP_NAME .
 

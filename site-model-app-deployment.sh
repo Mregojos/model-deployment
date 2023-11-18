@@ -17,10 +17,10 @@ BOOT_DISK_SIZE="30"
 TAGS="db"
 FIREWALL_RULES_NAME="ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
-INSTANCE_NAME="matt-nb"
+INSTANCE_NAME="matt"
 
 # Change the APP_NAME
-VERSION="ii"
+VERSION="iii"
 APP_NAME="app-model-dev-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="app"
@@ -39,7 +39,7 @@ gcloud artifacts repositories create $APP_ARTIFACT_NAME \
 echo "\n #----------Artifact Repository has been successfully created.----------# \n"
 
 # Change the directory
-cd app-model-deployment
+cd site-model-app-deployment
 
 # build and submnit an image to Artifact Registry
 gcloud builds submit \
