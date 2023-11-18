@@ -80,6 +80,7 @@ gcloud compute --project=$(gcloud config get project) firewall-rules create $FIR
 
 # Remove docker container all
 # docker rm -f $(docker ps -aq)
+# sudo rm -f data
 # Docker exec
 # docker exec -it $APP_NAME sh
 
