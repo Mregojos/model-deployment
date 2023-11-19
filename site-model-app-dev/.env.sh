@@ -1,7 +1,7 @@
-DB_NAME=site-model-app-dev-v-admin
-DB_USER=site-model-app-dev-v-admin 
+DB_NAME=site-model-app-deployment-v-admin
+DB_USER=site-model-app-deployment-v-admin 
 # DB_HOST=34.135.223.190 
-DB_HOST= 
+DB_HOST=35.233.169.99
 DB_PORT=5000
 DB_PASSWORD=password
 PROJECT_NAME='matttcloudtech'

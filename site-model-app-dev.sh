@@ -77,7 +77,7 @@ cd site-model-app-dev
 echo """DB_NAME=$DB_USER
 DB_USER=$DB_USER 
 # DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
-DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DB_HOST=$DB_HOST
 DB_PORT=5000
 DB_PASSWORD=$DB_PASSWORD
 PROJECT_NAME='$(gcloud config get project)'
