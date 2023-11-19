@@ -15,20 +15,22 @@ APP_NAME="site-model-app-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt"
 
-#---------Database Credentials----------#
-DB_CONTAINER_NAME='postgres-sql'
-DB_NAME='matt'
-DB_USER='matt' 
-DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
-DB_PORT=5000
-DB_PASSWORD='password'
-PROJECT_NAME='$(gcloud config get project)'
-ADMIN_PASSWORD=password
-APP_PORT=9000
-APP_ADRESS=
-DOMAIN_NAME=
-SPECIAL_NAME='Matt'
+#----------Database Instance Environment Variables----------#
+DB_INSTANCE_NAME="$APP_NAME-db"
 
+#---------Database Credentials----------#
+DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
+# DB_NAME="$APP_NAME-db"
+DB_USER="$APP_NAME-admin" 
+DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DB_PORT=5000
+DB_PASSWORD='password' # change the value in production 
+PROJECT_NAME='$(gcloud config get project)'
+ADMIN_PASSWORD=password # change the value in production
+APP_PORT=9000
+APP_ADRESS= # change the value in production
+DOMAIN_NAME= # change the value in production
+SPECIAL_NAME='Matt' # change the value in production
 
 #----------Database----------#
 # With volume/data connected
@@ -72,18 +74,19 @@ docker run -p 8000:80 \
 cd site-model-app-dev
 
 # Environment Variables for the app
-echo """DB_NAME='matt'
-DB_USER='matt' 
-DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+echo """DB_NAME=$DB_USER
+DB_USER=$DB_USER 
+# DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
-DB_PASSWORD='password'
+DB_PASSWORD=$DB_PASSWORD
 PROJECT_NAME='$(gcloud config get project)'
-ADMIN_PASSWORD=password
+ADMIN_PASSWORD=$ADMIN_PASSWORD
 APP_PORT=9000
 APP_ADRESS=
 DOMAIN_NAME=
-SPECIAL_NAME='Matt'
-""" > env.sh
+SPECIAL_NAME=$SPECIAL_NAME
+""" > .env.sh
 
 # Remove docker container
 # docker rm -f $APP_NAME
@@ -92,7 +95,7 @@ SPECIAL_NAME='Matt'
 docker build -t $APP_NAME .
 
 # Run
-docker run -d -p 9000:9000 -v $(pwd):/app --env-file env.sh --name $APP_NAME $APP_NAME
+docker run -d -p 9000:9000 -v $(pwd):/app --env-file .env.sh --name $APP_NAME $APP_NAME
 
 # Create a firewall (GCP)
 gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
