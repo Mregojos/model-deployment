@@ -22,13 +22,13 @@ TAGS="db"
 FIREWALL_RULES_NAME="$APP_NAME-ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
-STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-startup-script-bucket-service-account"
+STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-startup-script-bucket-sa"
 STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
-DB_CONTAINER_NAME='postgres-sql'
+DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
 DB_NAME="$APP_NAME-db"
-DB_USER='$APP_NAME-admin' 
+DB_USER="$APP_NAME-admin" 
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
 DB_PASSWORD='password' # change the value in production 
@@ -43,7 +43,7 @@ SPECIAL_NAME='Matt' # change the value in production
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
-APP_SERVICE_ACCOUNT_NAME="$APP_NAME-service-account"
+APP_SERVICE_ACCOUNT_NAME="$APP_NAME-sa"
 
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
@@ -57,7 +57,7 @@ gcloud storage buckets create gs://$BUCKET_NAME
 echo "\n #----------THe bucket has been successfully created.---------- # \n"
 
 # Startup-script.sh
-touch startup-script.sh
+# touch startup-script.sh
 
 # Copy the file to Cloud Storage
 gcloud storage cp startup-script.sh gs://$BUCKET_NAME
@@ -67,6 +67,7 @@ echo "\n #----------Startup script has been successfully copied.----------# \n"
 gcloud iam service-accounts create $STARTUP_SCRIPT_BUCKET_SA
 echo "\n #----------Bucket Service Account has been successfully created.----------# \n"
 
+# TO DO: In prodution change this to custom IAM service account
 # Add IAM Policy Binding to the Bucket Service Account
 gcloud projects add-iam-policy-binding \
     $(gcloud config get project) \

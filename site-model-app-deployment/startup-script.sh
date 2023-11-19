@@ -1,6 +1,11 @@
 # Environment
-export USER="matt" # DB_NAME
-export DBPASSWORD="password"
+# TO DO: In production, change the values to be more secure. 
+export VERSION="iv"
+export APP_NAME="site-model-app-deployment-$VERSION"
+export DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
+export DB_NAME="$APP_NAME-db"
+export DB_USER="$APP_NAME-admin" 
+export DB_PASSWORD='password' # change the value in production 
 
 # docs.docker.com
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -14,9 +19,9 @@ docker rm -f $(docker ps -aq)
 
 # Create a database 
 docker run -d \
-    --name postgres-sql \
-    -e POSTGRES_USER=$USER \
-    -e POSTGRES_PASSWORD=$DBPASSWORD \
+    --name $DB_CONTAINER_NAME \
+    -e POSTGRES_USER=$DB_USER \
+    -e POSTGRES_PASSWORD=$DB_PASSWORD \
     -v $(pwd)/data/:/var/lib/postgresql/data/ \
     -p 5000:5432 \
     postgres
