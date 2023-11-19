@@ -66,7 +66,7 @@ st.info("###### :computer: :technologist: [You can now talk to my Intelligent Ag
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
     st.write("### Project Collection")
-    # Using portfolio_section
+    # Using portfolio_section table
     cur.execute("""
                 SELECT *
                 FROM portfolio_section
@@ -86,21 +86,22 @@ with st.expander(' :notebook: Portfolio'):
         st.divider()
     
     # Modify portfolio
+    st.divider()
     modify = st.checkbox("Modify")
     if modify:
         password = st.text_input("Password", type="password")
         if password == DB_PASSWORD:
             option = st.text_input("Portfolio or Manual")
             if option == "Portfolio":
-                name = st.text_input("Name")
-                portfolio_section = st.text_area("Portfolio")
+                name = st.text_input("Name", name)
+                portfolio_section = st.text_area("Portfolio", portfolio_section)
                 save = st.button("Save changes")
                 if save:
                     SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
                     data = (name, portfolio_section)
                     cur.execute(SQL, data)
                     con.commit()
-                    st.write("Successfully Added.")
+                    st.info("Successfully Added.")
                     st.button(":blue[Done]")                
             elif option == "Manual":
                 modify = st.text_input("Add or Delete")
