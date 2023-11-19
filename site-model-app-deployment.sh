@@ -22,7 +22,7 @@ TAGS="db"
 FIREWALL_RULES_NAME="$APP_NAME-ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
-STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-startup-script-bucket-sa"
+STARTUP_SCRIPT_BUCKET_SA="startup-script-bucket-sa"
 STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
