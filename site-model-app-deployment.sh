@@ -26,7 +26,7 @@ FIREWALL_RULES_NAME="$APP_NAME-ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
 STARTUP_SCRIPT_BUCKET_SA="startup-script-bucket-sa"
-STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
+# STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
@@ -86,7 +86,7 @@ gcloud compute instances create $DB_INSTANCE_NAME \
     --machine-type=$MACHINE_TYPE --zone=$ZONE --tags=$TAGS \
     --boot-disk-size=$BOOT_DISK_SIZE \
     --service-account=$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com  \
-    --metadata=startup-script-url=gs://$BUCKET_NAME/$STARTUP_SCRIPT_NAME \
+    --metadata=startup-script-url=gs://$BUCKET_NAME/startup-script.sh \
     --network-interface=address=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
 echo "\n #----------Compute Instance has been successfully created.----------# \n"
 
@@ -154,13 +154,13 @@ DOMAIN_NAME:
     ''
 SPECIAL_NAME:
     'Matt'
-""" > env.yaml
+""" > .env.yaml
 
 
 # Deploy the app using Cloud Run
 gcloud run deploy $APP_NAME \
     --max-instances=1 --min-instances=1 --port=9000 \
-    --env-vars-file=env.yaml \
+    --env-vars-file=.env.yaml \
     --image=$REGION-docker.pkg.dev/$(gcloud config get project)/$APP_ARTIFACT_NAME/$APP_NAME:$APP_VERSION \
     --allow-unauthenticated \
     --region=$REGION \
