@@ -13,7 +13,7 @@ VERSION="iv"
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
-DB_INSTANCE_NAME="db"
+DB_INSTANCE_NAME="$APP_NAME-db"
 MACHINE_TYPE="e2-micro"
 REGION="us-west1"
 ZONE="us-west1-a"
@@ -43,7 +43,7 @@ SPECIAL_NAME='Matt' # change the value in production
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
-APP_SERVICE_ACCOUNT_NAME="$APP_NAME-sa"
+APP_SERVICE_ACCOUNT_NAME="app-service-account"
 
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
@@ -79,7 +79,7 @@ echo "\n #----------Bucket Service Account IAM has been successfully binded.----
 # gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2
 
 # Create an instance with these specifications
-gcloud compute instances create $DB_NAME \
+gcloud compute instances create $DB_INSTANCE_NAME \
     --machine-type=$MACHINE_TYPE --zone=$ZONE --tags=$TAGS \
     --boot-disk-size=$BOOT_DISK_SIZE \
     --service-account=$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com  \
