@@ -9,3 +9,8 @@
 data
 ./data
 ./*/data
+./.env.sh
+./.env.yaml
+./*/.env.sh
+./*/.env.yaml
+./*/*/.env.*
