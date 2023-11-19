@@ -70,7 +70,9 @@ code_parameters = {
     "max_output_tokens": 1024,
     "temperature": 0.2
 }
-code_chat = code_chat_model.start_chat()
+code_chat = code_chat_model.start_chat(
+    context="""I am an agent for Matt."""
+)
 # response = code_chat.send_message("""My favorite color is white.""", **code_parameters)
 # print(f"Response from Model: {response.text}")
 # response = code_chat.send_message("""My favorite color is white.""", **parameters)
@@ -87,7 +89,7 @@ with st.sidebar:
     guest = st.checkbox("Continue as a guest")
     credential = False
     # guest daily limit
-    LIMIT = 8
+    LIMIT = 20
     total_count= 0
 #----------Login or Guest----------#
     if login and guest:
@@ -98,7 +100,7 @@ with st.sidebar:
             credential = True
             st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
             st.caption(":warning: :red[Do not add sensitive data.]")
-            model = st.selectbox("Choose Chat or Code Generationt?", ('Chat', 'Code'))
+            model = st.selectbox("Choose Chat or Code Generation?", ('Chat', 'Code'))
             input_name = st.text_input("Your Name")
             # agent = st.toggle("**Let's go**")
             save = st.button("Save")
@@ -129,7 +131,7 @@ with st.sidebar:
         st.write("You will be my agent's :blue[guest].")
         st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
         st.caption(":warning: :red[Do not add sensitive data.]")
-        model = st.selectbox("Choose Chat or Code Generationt?", ('Chat', 'Code'))
+        model = st.selectbox("Choose Chat or Code Generation?", ('Chat', 'Code'))
         input_name = st.text_input("Your Name")
         # agent = st.toggle("**Let's go**")
         save = st.button("Save")
@@ -159,17 +161,18 @@ with st.sidebar:
                 reset = st.button(":white[Refresh Conversation]")
                 if reset:
                     st.rerun()
-            # Only for Name Matt
-            if input_name == "Matt":
+            # Only for Special Name
+            if input_name == SPECIAL_NAME:
                 prune = st.button(":red[Prune History]")
                 if prune:
                     cur.execute(f"""
                                 DELETE  
                                 FROM guest_chats
-                                WHERE name='{input_name}'
+                                --WHERE name='{input_name}'
                                 """)
                     con.commit()
-                    st.info(f"History by {input_name} is successfully deleted.")
+                    # st.info(f"History by {input_name} is successfully deleted.")
+                    st.info(f"Prompt history is successfully deleted.")
         else:
             credential = False
 
@@ -362,7 +365,7 @@ elif guest and not login:
                     message = st.chat_message("assistant")
                     message.write(output)
                     message.caption(f"{time} | Model: {model}") 
-    if total_count >= LIMIT:
+    elif total_count >= LIMIT:
         st.info("You've reached your limit.")
 
 elif login and guest:
