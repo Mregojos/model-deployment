@@ -66,7 +66,7 @@ st.info("###### :computer: :technologist: [You can now talk to my Intelligent Ag
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
     st.write("### Project Collection")
-    # Using portfolio_git
+    # Using portfolio_section
     cur.execute("""
                 SELECT *
                 FROM portfolio_section
@@ -75,7 +75,7 @@ with st.expander(' :notebook: Portfolio'):
     for id, name, portfolio in cur.fetchall():
         portfolio_section = portfolio
     st.markdown(portfolio_section)
-    # Using Database
+    # Manual modification
     cur.execute("""
                 SELECT * 
                 FROM portfolio
