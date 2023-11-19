@@ -102,9 +102,6 @@ gcloud artifacts repositories create $APP_ARTIFACT_NAME \
     --description="Docker repository"
 echo "\n #----------Artifact Repository has been successfully created.----------# \n"
 
-# Change the directory
-cd site-model-app-deployment
-
 # build and submnit an image to Artifact Registry
 gcloud builds submit \
     --region=$CLOUD_BUILD_REGION \
@@ -135,7 +132,7 @@ DB_NAME:
 DB_USER:
     '$APP_NAME-admin'
 DB_HOST:
-    '$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
+    '$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
 DB_PORT:
     '5000'
 DB_PASSWORD:
