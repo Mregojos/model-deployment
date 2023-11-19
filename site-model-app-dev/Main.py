@@ -86,7 +86,7 @@ with st.expander(' :notebook: Portfolio'):
     add = st.checkbox("Modify")
     if add:
         password = st.text_input("Password", type="password")
-        if password == DBPASSWORD:
+        if password == DB_PASSWORD:
             modify = st.text_input("Add or Delete")
             if modify == "Add":
                 project_name = st.text_input("Project Name")
