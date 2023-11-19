@@ -114,6 +114,7 @@ echo "\n #----------Docker image has been successfully built.----------# \n"
 # For Cloud Run Deploy, use a Service Account with Cloud Run Admin
 # For Cloud Run Deployed App Service, use a Service Account with Vertex AI User or with (prefered in production) custom IAM Role 
 # Create IAM Service Account for the app
+# TO DO: In prodution change this to custom IAM service account
 gcloud iam service-accounts create $APP_SERVICE_ACCOUNT_NAME
 echo "\n #----------Service Account has been successfully created.----------# \n"
 
@@ -129,6 +130,7 @@ echo "\n #----------App Service Account has been successfully binded.----------#
 # touch env.yaml
 
 # Environment Variables for the app
+# TO DO: In prodcution, change these values.
 echo """
 DB_NAME:
     '$APP_NAME-admin'
