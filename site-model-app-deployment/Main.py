@@ -3,7 +3,6 @@ import streamlit as st
 import psycopg2
 import os
 import time
-# from env import *
 
 #----------Database Credentials----------# 
 DB_NAME=os.getenv("DB_NAME")
@@ -47,16 +46,15 @@ con = psycopg2.connect(f"""
                        password={DB_PASSWORD}
                        """)
 cur = con.cursor()
-# Create a Portfolio table if not exists
+# Create a portfolio_section table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS portfolio_section(id serial PRIMARY KEY, name varchar, portfolio varchar)")
+# Create a portfolio table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
-con.commit()
-# Create a Message table if not exists
+# Create a message table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS messages(id serial PRIMARY KEY, email_address varchar, message varchar, time varchar)")
-con.commit()
-# Create a Notes table if not exists
+# Create a notes table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
-con.commit()
-# Create a table if not exists
+# Create a counter table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
 con.commit()
 
@@ -68,11 +66,16 @@ st.info("###### :computer: :technologist: [You can now talk to my Intelligent Ag
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
     st.write("### Project Collection")
-    # Using Markdown
-    st.markdown("""
-    #### Project #1
-    """)
-    # Using Database
+    # Using portfolio_section table
+    cur.execute("""
+                SELECT *
+                FROM portfolio_section
+                """)
+    portfolio_section = "##### Project "
+    for id, name, portfolio in cur.fetchall():
+        portfolio_section = portfolio
+    st.markdown(portfolio_section)
+    # Manual modification
     cur.execute("""
                 SELECT * 
                 FROM portfolio
@@ -82,36 +85,50 @@ with st.expander(' :notebook: Portfolio'):
         st.write(f"{description}")
         st.divider()
     
-    # Add new project
-    add = st.checkbox("Modify")
-    if add:
+    # Modify portfolio
+    st.divider()
+    modify = st.checkbox("Modify")
+    if modify:
         password = st.text_input("Password", type="password")
-        if password == DBPASSWORD:
-            modify = st.text_input("Add or Delete")
-            if modify == "Add":
-                project_name = st.text_input("Project Name")
-                description = st.text_input("Description")
-                link = st.text_input("Link")
-                ### Insert into adatabase
-                save = st.button("Save")
+        if password == DB_PASSWORD:
+            option = st.text_input("Portfolio or Manual")
+            if option == "Portfolio":
+                name = st.text_input("Name", name)
+                portfolio_section = st.text_area("Portfolio", portfolio_section)
+                save = st.button("Save changes")
                 if save:
-                    SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
-                    data = (project_name, description, link)
+                    SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
+                    data = (name, portfolio_section)
                     cur.execute(SQL, data)
                     con.commit()
-                    st.write("Successfully Added.")
-                    st.button(":blue[Done]")
-            elif modify == "Delete":
-                project_name = st.text_input("Project Name")
-                delete = st.button("Delete")
-                if delete:
-                    cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
-                    # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
-                    # data = (project_name)
-                    # cur.execute(SQL, data)
-                    con.commit()
-                    st.success("Successfully Deleted.")
-                    st.button(":blue[Done]")
+                    st.info("Successfully Added.")
+                    st.button(":blue[Done]")                
+            elif option == "Manual":
+                modify = st.text_input("Add or Delete")
+                if modify == "Add":
+                    project_name = st.text_input("Project Name")
+                    description = st.text_input("Description")
+                    link = st.text_input("Link")
+                    ### Insert into adatabase
+                    save = st.button("Save")
+                    if save:
+                        SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
+                        data = (project_name, description, link)
+                        cur.execute(SQL, data)
+                        con.commit()
+                        st.write("Successfully Added.")
+                        st.button(":blue[Done]")
+                elif modify == "Delete":
+                    project_name = st.text_input("Project Name")
+                    delete = st.button("Delete")
+                    if delete:
+                        cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
+                        # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
+                        # data = (project_name)
+                        # cur.execute(SQL, data)
+                        con.commit()
+                        st.success("Successfully Deleted.")
+                        st.button(":blue[Done]")
 #----------End of Portfolio Section----------#
 
 #----------Message Section----------#
@@ -120,15 +137,17 @@ with st.expander(' :email: Message me'):
     # Inputs
     email_address = st.text_input("Email address")
     message = st.text_area("Message")
-    if st.button("Send"):
+    if st.button("Send") and email_address is not "" and message is not "":
         ### Insert into adatabase
         time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
         SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
         data = (email_address, message, time)
         cur.execute(SQL, data)
         con.commit()
-        st.info("Email sent.")
+        st.info("Message sent")
         st.snow()
+    else:
+        st.info("Please Add Email Address and Message before sending.")
 #----------End of Message Section----------#
 
 #----------Notepad Section----------#
@@ -143,18 +162,21 @@ with st.expander(' :pencil: Notepad'):
     header = st.text_input("Header")
     note = st.text_area("Note")
     if st.button("Add a note"):
-        time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-        st.write(f"#### :pencil: {header} \n")
-        st.text(f"{note} \n")
-        st.write(f":man: {name}")
-        st.caption(f":watch: {time}")
-        st.info("Successfully Added.")
-        # st.balloons()
-        ### Insert into adatabase
-        SQL = "INSERT INTO notes (name, header, note, time) VALUES(%s, %s, %s, %s);"
-        data = (name, header, note, time)
-        cur.execute(SQL, data)
-        con.commit()
+        if name is not "" and header is not "" and note is not "":
+            time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+            st.write(f"#### :pencil: {header} \n")
+            st.text(f"{note} \n")
+            st.write(f":man: {name}")
+            st.caption(f":watch: {time}")
+            st.info("Successfully Added.")
+            # st.balloons()
+            ### Insert into adatabase
+            SQL = "INSERT INTO notes (name, header, note, time) VALUES(%s, %s, %s, %s);"
+            data = (name, header, note, time)
+            cur.execute(SQL, data)
+            con.commit()
+        else:
+            st.info("Please add Name, Header, and Note.")
 
     # Previous Notes 
     st.divider()
@@ -256,8 +278,6 @@ with st.expander(' :link: External Links'):
     # st.write(":link: :notebook: [Blog](https://)")
     st.write(":link: :hand: [Connect with me](https://)")
 #----------End of External links---------#
-
-
 
 # Close Connection
 cur.close()
