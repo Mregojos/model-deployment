@@ -3,7 +3,6 @@ import streamlit as st
 import psycopg2
 import os
 import time
-# from env import *
 
 #----------Database Credentials----------# 
 DB_NAME=os.getenv("DB_NAME")
@@ -47,16 +46,15 @@ con = psycopg2.connect(f"""
                        password={DB_PASSWORD}
                        """)
 cur = con.cursor()
-# Create a Portfolio table if not exists
+# Create a portfolio_section table if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS portfolio_section(id serial PRIMARY KEY, name varchar, portfolio varchar)")
+# Create a portfolio table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS portfolio(id serial PRIMARY KEY, project_name varchar, description varchar, link varchar)")
-con.commit()
-# Create a Message table if not exists
+# Create a message table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS messages(id serial PRIMARY KEY, email_address varchar, message varchar, time varchar)")
-con.commit()
-# Create a Notes table if not exists
+# Create a notes table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS notes(id serial PRIMARY KEY, name varchar, header varchar, note varchar, time varchar)")
-con.commit()
-# Create a table if not exists
+# Create a counter table if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS counter(id serial PRIMARY KEY, view int, time varchar)")
 con.commit()
 
@@ -68,10 +66,15 @@ st.info("###### :computer: :technologist: [You can now talk to my Intelligent Ag
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
     st.write("### Project Collection")
-    # Using Markdown
-    st.markdown("""
-    #### Project #1
-    """)
+    # Using portfolio_git
+    cur.execute("""
+                SELECT *
+                FROM portfolio_section
+                """)
+    portfolio_section = "##### Project "
+    for id, name, portfolio in cur.fetchall():
+        portfolio_section = portfolio
+    st.markdown(portfolio_section)
     # Using Database
     cur.execute("""
                 SELECT * 
@@ -82,36 +85,49 @@ with st.expander(' :notebook: Portfolio'):
         st.write(f"{description}")
         st.divider()
     
-    # Add new project
-    add = st.checkbox("Modify")
-    if add:
+    # Modify portfolio
+    modify = st.checkbox("Modify")
+    if modify:
         password = st.text_input("Password", type="password")
         if password == DB_PASSWORD:
-            modify = st.text_input("Add or Delete")
-            if modify == "Add":
-                project_name = st.text_input("Project Name")
-                description = st.text_input("Description")
-                link = st.text_input("Link")
-                ### Insert into adatabase
-                save = st.button("Save")
+            option = st.text_input("Portfolio or Manual")
+            if option == "Portfolio":
+                name = st.text_input("Name")
+                portfolio_section = st.text_area("Portfolio")
+                save = st.button("Save changes")
                 if save:
-                    SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
-                    data = (project_name, description, link)
+                    SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
+                    data = (name, portfolio_section)
                     cur.execute(SQL, data)
                     con.commit()
                     st.write("Successfully Added.")
-                    st.button(":blue[Done]")
-            elif modify == "Delete":
-                project_name = st.text_input("Project Name")
-                delete = st.button("Delete")
-                if delete:
-                    cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
-                    # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
-                    # data = (project_name)
-                    # cur.execute(SQL, data)
-                    con.commit()
-                    st.success("Successfully Deleted.")
-                    st.button(":blue[Done]")
+                    st.button(":blue[Done]")                
+            elif option == "Manual":
+                modify = st.text_input("Add or Delete")
+                if modify == "Add":
+                    project_name = st.text_input("Project Name")
+                    description = st.text_input("Description")
+                    link = st.text_input("Link")
+                    ### Insert into adatabase
+                    save = st.button("Save")
+                    if save:
+                        SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
+                        data = (project_name, description, link)
+                        cur.execute(SQL, data)
+                        con.commit()
+                        st.write("Successfully Added.")
+                        st.button(":blue[Done]")
+                elif modify == "Delete":
+                    project_name = st.text_input("Project Name")
+                    delete = st.button("Delete")
+                    if delete:
+                        cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
+                        # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
+                        # data = (project_name)
+                        # cur.execute(SQL, data)
+                        con.commit()
+                        st.success("Successfully Deleted.")
+                        st.button(":blue[Done]")
 #----------End of Portfolio Section----------#
 
 #----------Message Section----------#
@@ -127,7 +143,7 @@ with st.expander(' :email: Message me'):
         data = (email_address, message, time)
         cur.execute(SQL, data)
         con.commit()
-        st.info("Email sent.")
+        st.info("Message sent")
         st.snow()
 #----------End of Message Section----------#
 
