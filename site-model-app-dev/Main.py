@@ -65,7 +65,7 @@ st.info("###### :computer: :technologist: [You can now talk to my Intelligent Ag
 
 #----------Portfolio Section----------#
 with st.expander(' :notebook: Portfolio'):
-    st.write("### Project Collection")
+    st.write("#### Project Collection")
     # Using portfolio_section table
     cur.execute("""
                 SELECT *
@@ -137,17 +137,18 @@ with st.expander(' :email: Message me'):
     # Inputs
     email_address = st.text_input("Email address")
     message = st.text_area("Message")
-    if st.button("Send") and email_address is not "" and message is not "":
-        ### Insert into adatabase
-        time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-        SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
-        data = (email_address, message, time)
-        cur.execute(SQL, data)
-        con.commit()
-        st.info("Message sent")
-        st.snow()
-    else:
-        st.info("Please Add Email Address and Message before sending.")
+    if st.button("Send"):
+        if email_address is not "" and message is not "":
+            ### Insert into adatabase
+            time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+            SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
+            data = (email_address, message, time)
+            cur.execute(SQL, data)
+            con.commit()
+            st.info("Message sent")
+            st.snow()
+        else:
+            st.info("Please add Email Address and Message before sending.")
 #----------End of Message Section----------#
 
 #----------Notepad Section----------#
@@ -164,7 +165,7 @@ with st.expander(' :pencil: Notepad'):
     if st.button("Add a note"):
         if name is not "" and header is not "" and note is not "":
             time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-            st.write(f"#### :pencil: {header} \n")
+            st.write(f"##### :pencil: {header} \n")
             st.text(f"{note} \n")
             st.write(f":man: {name}")
             st.caption(f":watch: {time}")
@@ -189,7 +190,7 @@ with st.expander(' :pencil: Notepad'):
                     ORDER BY time DESC
                     """)
         for id, name, header, note, time in cur.fetchall():
-            st.write(f"##### :pencil: {header} \n")
+            st.write(f"###### :pencil: {header} \n")
             st.text(f"{note} \n")
             st.write(f":man: {name}")
             st.caption(f":watch: {time}")
