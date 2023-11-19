@@ -92,9 +92,9 @@ gcloud compute instances create $DB_INSTANCE_NAME \
 echo "\n #----------Compute Instance has been successfully created.----------# \n"
 
 # Create a firewall rule (GCP)
-# TO DO: In production, only use the DB port
+# TO DO: In production, only open the DB port 
 gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
-    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000 --source-ranges=0.0.0.0/0 \
+    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000,tcp:9000 --source-ranges=0.0.0.0/0 \
     --target-tags=$TAGS
 echo "\n #----------Firewall Rules has been successfully created.----------# \n"
 
