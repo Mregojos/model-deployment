@@ -3,13 +3,16 @@
 # Objective
 # * To deploy a pre-trained model on GCP
 
+# Directory
+cd site-model-app-deployment
+
 #----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
 # !gcloud services list --available
 gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #---------Application Name Environment Variables----------#
-VERSION="iv"
+VERSION="v"
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
@@ -27,7 +30,7 @@ STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
-DB_NAME="$APP_NAME-db"
+# DB_NAME="$APP_NAME-db"
 DB_USER="$APP_NAME-admin" 
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
@@ -87,7 +90,7 @@ gcloud compute instances create $DB_INSTANCE_NAME \
     --network-interface=address=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
 echo "\n #----------Compute Instance has been successfully created.----------# \n"
 
-# Create a firewall (GCP)
+# Create a firewall rule (GCP)
 gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
     --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000 --source-ranges=0.0.0.0/0 \
     --target-tags=$TAGS
@@ -109,7 +112,7 @@ gcloud builds submit \
 echo "\n #----------Docker image has been successfully built.----------# \n"
 
 # For Cloud Run Deploy, use a Service Account with Cloud Run Admin
-# For Clou Run Deployed Add (Service), use a Service Account with Vertex AI User or with custom IAM Role 
+# For Cloud Run Deployed App Service, use a Service Account with Vertex AI User or with (prefered in production) custom IAM Role 
 # Create IAM Service Account for the app
 gcloud iam service-accounts create $APP_SERVICE_ACCOUNT_NAME
 echo "\n #----------Service Account has been successfully created.----------# \n"
@@ -128,7 +131,7 @@ echo "\n #----------App Service Account has been successfully binded.----------#
 # Environment Variables for the app
 echo """
 DB_NAME:
-    '$APP_NAME-db'
+    '$APP_NAME-admin'
 DB_USER:
     '$APP_NAME-admin'
 DB_HOST:
