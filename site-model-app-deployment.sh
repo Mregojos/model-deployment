@@ -61,6 +61,7 @@ echo "\n #----------THe bucket has been successfully created.---------- # \n"
 
 # Startup-script.sh
 # touch startup-script.sh
+# Change the version
 
 # Copy the file to Cloud Storage
 gcloud storage cp startup-script.sh gs://$BUCKET_NAME
