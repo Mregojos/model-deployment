@@ -8,12 +8,6 @@
 gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
-#----------Local Development Environment Variables----------#
-# VERSION="iii"
-APP_NAME="site-model-app-dev-$VERSION"
-FIREWALL_RULES_NAME="ports"
-INSTANCE_NAME="matt"
-
 #----------Database Instance Environment Variables----------#
 DB_INSTANCE_NAME="db"
 MACHINE_TYPE="e2-micro"
@@ -39,7 +33,7 @@ DOMAIN_NAME=
 SPECIAL_NAME='Matt'
 
 #----------Deployment Environment Variables----------#
-VERSION="iii"
+VERSION="iv"
 APP_NAME="site-model-app-deployment-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="app"
@@ -122,19 +116,3 @@ echo "\n #----------The application has been successfully deployed.----------# \
 
 
 
-#----------Build and Run only----------#
-# build and submnit an image to Artifact Registry
-gcloud builds submit \
-    --region=$CLOUD_BUILD_REGION \
-    --tag $REGION-docker.pkg.dev/$(gcloud config get-value project)/$APP_ARTIFACT_NAME/$APP_NAME:$APP_VERSION
-echo "\n #----------Docker image has been successfully built.----------# \n"
-
-# Deploy the app using Cloud Run
-gcloud run deploy $APP_NAME \
-    --max-instances=1 --min-instances=1 --port=9000 \
-    --env-vars-file=env.yaml \
-    --image=$REGION-docker.pkg.dev/$(gcloud config get project)/$APP_ARTIFACT_NAME/$APP_NAME:$APP_VERSION \
-    --allow-unauthenticated \
-    --region=$REGION \
-    --service-account=$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com 
-echo "\n #----------The application has been successfully deployed.----------# \n"
