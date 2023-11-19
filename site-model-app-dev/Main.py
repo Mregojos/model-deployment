@@ -137,7 +137,7 @@ with st.expander(' :email: Message me'):
     # Inputs
     email_address = st.text_input("Email address")
     message = st.text_area("Message")
-    if st.button("Send"):
+    if st.button("Send") and email_address is not "" and message is not "":
         ### Insert into adatabase
         time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
         SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
@@ -146,6 +146,8 @@ with st.expander(' :email: Message me'):
         con.commit()
         st.info("Message sent")
         st.snow()
+    else:
+        st.info("Please Add Email Address and Message before sending.")
 #----------End of Message Section----------#
 
 #----------Notepad Section----------#
@@ -160,18 +162,21 @@ with st.expander(' :pencil: Notepad'):
     header = st.text_input("Header")
     note = st.text_area("Note")
     if st.button("Add a note"):
-        time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-        st.write(f"#### :pencil: {header} \n")
-        st.text(f"{note} \n")
-        st.write(f":man: {name}")
-        st.caption(f":watch: {time}")
-        st.info("Successfully Added.")
-        # st.balloons()
-        ### Insert into adatabase
-        SQL = "INSERT INTO notes (name, header, note, time) VALUES(%s, %s, %s, %s);"
-        data = (name, header, note, time)
-        cur.execute(SQL, data)
-        con.commit()
+        if name is not "" and header is not "" and note is not "":
+            time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+            st.write(f"#### :pencil: {header} \n")
+            st.text(f"{note} \n")
+            st.write(f":man: {name}")
+            st.caption(f":watch: {time}")
+            st.info("Successfully Added.")
+            # st.balloons()
+            ### Insert into adatabase
+            SQL = "INSERT INTO notes (name, header, note, time) VALUES(%s, %s, %s, %s);"
+            data = (name, header, note, time)
+            cur.execute(SQL, data)
+            con.commit()
+        else:
+            st.info("Please add Name, Header, and Note.")
 
     # Previous Notes 
     st.divider()
@@ -273,8 +278,6 @@ with st.expander(' :link: External Links'):
     # st.write(":link: :notebook: [Blog](https://)")
     st.write(":link: :hand: [Connect with me](https://)")
 #----------End of External links---------#
-
-
 
 # Close Connection
 cur.close()
