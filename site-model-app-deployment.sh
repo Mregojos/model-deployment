@@ -8,6 +8,10 @@
 gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
+#---------Application Name Environment Variables----------#
+VERSION="iv"
+APP_NAME="site-model-app-deployment-$VERSION"
+
 #----------Database Instance Environment Variables----------#
 DB_INSTANCE_NAME="db"
 MACHINE_TYPE="e2-micro"
@@ -15,34 +19,80 @@ REGION="us-west1"
 ZONE="us-west1-a"
 BOOT_DISK_SIZE="30"
 TAGS="db"
-FIREWALL_RULES_NAME="ports"
+FIREWALL_RULES_NAME="$APP_NAME-ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
+BUCKET_NAME="$APP_NAME-startup-script"
+STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-startup-script-bucket-service-account"
+STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME='postgres-sql'
-DB_NAME='matt'
-DB_USER='matt' 
-DB_HOST=$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+DB_NAME="$APP_NAME-db"
+DB_USER='$APP_NAME-admin' 
+DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
-DB_PASSWORD='password'
+DB_PASSWORD='password' # change the value in production 
 PROJECT_NAME='$(gcloud config get project)'
-ADMIN_PASSWORD=password
+ADMIN_PASSWORD=password # change the value in production
 APP_PORT=9000
-APP_ADRESS=
-DOMAIN_NAME=
-SPECIAL_NAME='Matt'
+APP_ADRESS= # change the value in production
+DOMAIN_NAME= # change the value in production
+SPECIAL_NAME='Matt' # change the value in production
 
 #----------Deployment Environment Variables----------#
-VERSION="iv"
-APP_NAME="site-model-app-deployment-$VERSION"
 CLOUD_BUILD_REGION="us-west2"
-APP_ARTIFACT_NAME="app"
+APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
-APP_SERVICE_ACCOUNT_NAME='app-service-account'
-BUCKET_NAME='matt-startup-script'
-STARTUP_SCRIPT_BUCKET_SA='startup-script-bucket-sa'
-STARTUP_SCRIPT_NAME='startup-script.sh'
+APP_SERVICE_ACCOUNT_NAME="$APP_NAME-service-account"
+
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
+
+#----------Database Instance Section----------#
+# Create a static external ip address
+gcloud compute addresses create $STATIC_IP_ADDRESS_NAME --region $REGION
+echo "\n #----------Static IP Address has been successfully created.----------# \n"
+
+# Make a bucket
+gcloud storage buckets create gs://$BUCKET_NAME
+echo "\n #----------THe bucket has been successfully created.---------- # \n"
+
+# Startup-script.sh
+touch startup-script.sh
+
+# Copy the file to Cloud Storage
+gcloud storage cp startup-script.sh gs://$BUCKET_NAME
+echo "\n #----------Startup script has been successfully copied.----------# \n"
+
+# Create a service account
+gcloud iam service-accounts create $STARTUP_SCRIPT_BUCKET_SA
+echo "\n #----------Bucket Service Account has been successfully created.----------# \n"
+
+# Add IAM Policy Binding to the Bucket Service Account
+gcloud projects add-iam-policy-binding \
+    $(gcloud config get project) \
+    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
+    --role=roles/storage.objectViewer
+echo "\n #----------Bucket Service Account IAM has been successfully binded.----------# \n"
+
+# Print the Static IP Address
+# gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2
+
+# Create an instance with these specifications
+gcloud compute instances create $DB_NAME \
+    --machine-type=$MACHINE_TYPE --zone=$ZONE --tags=$TAGS \
+    --boot-disk-size=$BOOT_DISK_SIZE \
+    --service-account=$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com  \
+    --metadata=startup-script-url=gs://$BUCKET_NAME/$STARTUP_SCRIPT_NAME \
+    --network-interface=address=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
+echo "\n #----------Compute Instance has been successfully created.----------# \n"
+
+# Create a firewall (GCP)
+gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
+    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000 --source-ranges=0.0.0.0/0 \
+    --target-tags=$TAGS
+echo "\n #----------Firewall Rules has been successfully created.----------# \n"
+
+#----------Deployment Section----------#
 
 # Create a Docker repository in Artifact Registry
 gcloud artifacts repositories create $APP_ARTIFACT_NAME \
@@ -80,9 +130,9 @@ echo "\n #----------App Service Account has been successfully binded.----------#
 # Environment Variables for the app
 echo """
 DB_NAME:
-    'matt'
+    '$APP_NAME-db'
 DB_USER:
-    'matt'
+    '$APP_NAME-admin'
 DB_HOST:
     '$(gcloud compute instances list --filter="name=$INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
 DB_PORT:
