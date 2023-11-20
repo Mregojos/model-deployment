@@ -12,8 +12,8 @@ echo "\n #----------Services have been successfully enabled.----------# \n"
 #----------Environment Variables for local development----------#
 VERSION="vi"
 # APP_NAME="site-model-app-dev-$VERSION" # Development
-FIREWALL_RULES_NAME="ports"
-INSTANCE_NAME="matt"
+# FIREWALL_RULES_NAME="ports"
+# INSTANCE_NAME=""
 
 #----------Database Instance Environment Variables----------#
 APP_NAME="site-model-app-deployment-$VERSION" # Deployment
