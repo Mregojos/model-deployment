@@ -48,6 +48,7 @@ CLOUD_BUILD_REGION="us-west2"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
 APP_SERVICE_ACCOUNT_NAME="app-service-account"
+APP_CUSTOM_ROLE="appCustomRole.$VERSION"
 
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
@@ -112,13 +113,12 @@ gcloud projects remove-iam-policy-binding \
     --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE
     
 # Delete
-gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
+gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
     --project=$(gcloud config get project)
 
 # Undelete
-gcloud iam roles undelete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
+gcloud iam roles undelete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
     --project=$(gcloud config get project)
-
 
 # Print the Static IP Address
 # gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2
@@ -157,7 +157,6 @@ echo "\n #----------Docker image has been successfully built.----------# \n"
 # For Cloud Run Deploy, use a Service Account with Cloud Run Admin
 # For Cloud Run Deployed App Service, use a Service Account with Vertex AI User or with (prefered in production) custom IAM Role 
 # Create IAM Service Account for the app
-# TO DO: In prodution change this to custom IAM service account
 gcloud iam service-accounts create $APP_SERVICE_ACCOUNT_NAME
 echo "\n #----------Service Account has been successfully created.----------# \n"
 
@@ -167,6 +166,38 @@ gcloud projects add-iam-policy-binding \
     --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
     --role=roles/aiplatform.user
 echo "\n #----------App Service Account has been successfully binded.----------# \n"
+
+# TO DO: In prodution change this to custom IAM service account
+# To create a custom role it needs Project Owner Role
+
+APP_CUSTOM_ROLE_NAME='Prediction'
+
+gcloud iam roles create $APP_CUSTOM_ROLE \
+    --project=$(gcloud config get project) \
+    --title=$APP_CUSTOM_ROLE \
+    --description="Predict Only" \
+    --permissions=aiplatform.endpoints.predict \
+    --stage=GA
+
+# Add IAM Policy Binding to the App Service Account
+gcloud projects add-iam-policy-binding \
+    $(gcloud config get project) \
+    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
+    --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
+
+# Remove IAM Policy Binding to the App Service Account
+gcloud projects remove-iam-policy-binding \
+    $(gcloud config get project) \
+    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
+    --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
+    
+# Delete
+gcloud iam roles delete $APP_CUSTOM_ROLEE \
+    --project=$(gcloud config get project)
+
+# Undelete
+gcloud iam roles undelete $APP_CUSTOM_ROLE \
+    --project=$(gcloud config get project) 
 
 # Change the directory
 # cd site-model-app-deployment
