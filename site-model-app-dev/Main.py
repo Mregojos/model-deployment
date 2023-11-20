@@ -133,7 +133,7 @@ with st.expander(' :notebook: Portfolio'):
 #----------End of Portfolio Section----------#
 
 #----------Message Section----------#
-with st.expander(' :email: Message me'):
+with st.expander(' :email: Message Me'):
     st.header(" :email: Message me",divider="rainbow")
     # Inputs
     email_address = st.text_input("Email address")
@@ -284,4 +284,20 @@ with st.expander(' :link: External Links'):
 # Close Connection
 cur.close()
 con.close()
-#----------End of Agent Section----------#
+
+#----------Footer----------#
+
+#----------Sidebar Footer----------#
+with st.sidebar:
+    # st.markdown(""""
+    #            <footer> Created by: Matt R.
+    #            <footer/>
+    #            """)
+    # st.divider()
+    st.markdown("""
+                * :gray[:copyright: Built by [Matt R.](https://)]
+                * :gray[:cloud: Deployed using Google Cloud]
+                """)
+    # st.divider()
+    
+
