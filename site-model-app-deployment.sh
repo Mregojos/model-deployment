@@ -75,18 +75,10 @@ gcloud iam service-accounts create $STARTUP_SCRIPT_BUCKET_SA
 echo "\n #----------Bucket Service Account has been successfully created.----------# \n"
 
 # Add IAM Policy Binding to the Bucket Service Account
-gcloud projects add-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=roles/storage.objectViewer
-echo "\n #----------Bucket Service Account IAM has been successfully binded.----------# \n"
-
-# Remove IAM Policy Binding to the Bucket Service Account
-gcloud projects remove-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=roles/storage.objectViewer
-echo "\n #----------Bucket Service Account IAM has been successfully removed.----------# \n"
+# gcloud projects add-iam-policy-binding \
+#    $(gcloud config get project) \
+#    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
+#    --role=roles/storage.objectViewer
 
 #----------To create a custom role. Use this in Production.----------#
 # It needs Project Owner Role.
@@ -105,6 +97,7 @@ gcloud projects add-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
     --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE
+echo "\n #----------Bucket Service Account IAM has been successfully binded.----------# \n"
 
 # Print the Static IP Address
 # gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2
@@ -147,22 +140,13 @@ gcloud iam service-accounts create $APP_SERVICE_ACCOUNT_NAME
 echo "\n #----------Service Account has been successfully created.----------# \n"
 
 # Add IAM Policy Binding to the App Service Account
-gcloud projects add-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=roles/aiplatform.user
-echo "\n #----------App Service Account has been successfully binded.----------# \n"
+# gcloud projects add-iam-policy-binding \
+#    $(gcloud config get project) \
+#    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
+#    --role=roles/aiplatform.user
 
-# Add IAM Policy Binding to the App Service Account
-gcloud projects remove-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=roles/aiplatform.user
-echo "\n #----------App Service Account has been successfully binded.----------# \n"
-
-
-# TO DO: In prodution change this to custom IAM service account
 # To create a custom role it needs Project Owner Role
+# App Custom Role
 gcloud iam roles create $APP_CUSTOM_ROLE \
     --project=$(gcloud config get project) \
     --title=$APP_CUSTOM_ROLE \
@@ -175,20 +159,7 @@ gcloud projects add-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
     --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
-
-# Remove IAM Policy Binding to the App Service Account
-gcloud projects remove-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
-    
-# Delete
-gcloud iam roles delete $APP_CUSTOM_ROLEE \
-    --project=$(gcloud config get project)
-
-# Undelete
-gcloud iam roles undelete $APP_CUSTOM_ROLE \
-    --project=$(gcloud config get project) 
+echo "\n #----------App Service Account has been successfully binded.----------# \n"
 
 # Change the directory
 # cd site-model-app-deployment
