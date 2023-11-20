@@ -73,6 +73,7 @@ with st.expander(' :notebook: Portfolio'):
                 FROM portfolio_section
                 """)
     portfolio_section = "##### Project "
+    name = ""
     for id, name, portfolio in cur.fetchall():
         portfolio_section = portfolio
     st.markdown(portfolio_section)
@@ -88,7 +89,7 @@ with st.expander(' :notebook: Portfolio'):
     
     # Modify portfolio
     st.divider()
-    modify = st.checkbox("Modify")
+    modify = st.checkbox("Modify") 
     if modify:
         password = st.text_input("Password", type="password")
         if password == DB_PASSWORD:
@@ -141,6 +142,7 @@ with st.expander(' :email: Message Me'):
     if st.button("Send"):
         if email_address is not "" and message is not "":
             ### Insert into adatabase
+            import time
             time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
             data = (email_address, message, time)
@@ -296,7 +298,7 @@ with st.sidebar:
     # st.divider()
     st.markdown("""
                 * :gray[:copyright: Built by [Matt R.](https://)]
-                * :gray[:cloud: Deployed using Google Cloud]
+                * :gray[:cloud: Deployed on Google Cloud]
                 """)
     # st.divider()
     
