@@ -1,5 +1,5 @@
 #---------Application Name Environment Variables----------#
-VERSION="vi"
+VERSION="vii" # Change this
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
@@ -40,14 +40,12 @@ APP_CUSTOM_ROLE="appCustomRole.$VERSION"
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
 
-
 #----------Delete Resources----------#
 gcloud compute instances delete $DB_INSTANCE_NAME --zone=$ZONE --quiet
 gcloud compute addresses delete $STATIC_IP_ADDRESS_NAME --region $REGION --quiet
 gcloud compute firewall-rules delete $FIREWALL_RULES_NAME --quiet
 gcloud artifacts repositories delete $APP_ARTIFACT_NAME --location=$REGION --quiet
-gcloud run services delete $APP_NAME --region=$REGION --quiet
-gcloud iam service-accounts delete $APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com --quiet
+gcloud run services delete $APP_NAME --region=$REGION --quietiet
 gcloud storage rm -r gs://$BUCKET_NAME
 gcloud storage rm -r gs://$(gcloud config get project)_cloudbuild
 
@@ -57,7 +55,6 @@ gcloud projects remove-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
     --role=roles/storage.objectViewer
-echo "\n #----------Bucket Service Account IAM has been successfully removed.----------# \n"
 
 # Remove IAM Policy Binding to the App Service Account
 gcloud projects remove-iam-policy-binding \
@@ -72,14 +69,17 @@ gcloud projects remove-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
     --role=roles/aiplatform.user
-echo "\n #----------App Service Account has been successfully binded.----------# \n"
 
 # Remove IAM Policy Binding to the App Service Account
 gcloud projects remove-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
     --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
-    
+
+gcloud iam service-accounts delete $APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com --qu
+
+
+
 echo "\n #----------Services and Resources have been Successfully deleted.----------# \n"
 
 
@@ -94,7 +94,7 @@ gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
 #    --project=$(gcloud config get project)
 
 # Delete
-gcloud iam roles delete $APP_CUSTOM_ROLEE \
+gcloud iam roles delete $APP_CUSTOM_ROLE \
     --project=$(gcloud config get project)
 
 # Undelete
