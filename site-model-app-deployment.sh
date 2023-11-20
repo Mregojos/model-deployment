@@ -1,4 +1,5 @@
 # site-model-app-deployment
+# sh site-model-app-deployment.sh
 
 # Objective
 # * To deploy a pre-trained model on GCP
@@ -13,7 +14,7 @@ cd site-model-app-deployment
 
 # TO DO: In prodcution, change these values.
 #---------Application Name Environment Variables----------#
-VERSION="vii" # Change this
+VERSION="viii" # Change this
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
