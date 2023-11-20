@@ -12,7 +12,9 @@ git push
 # password/token
 
 # Cleanup environment variables
-rm -f ./env.*
-rm -f ./*/env.*
-rm -f ./*/*/env.*
+rm -f ./.env.*
+rm -f ./*/.env.*
+rm -f ./*/*/.env.*
+rm -f ./*/*/*/.env.*
+rm -f ./*/*/*/*/.env.*
 echo "Cleanup Successful"
