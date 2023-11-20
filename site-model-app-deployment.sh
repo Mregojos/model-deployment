@@ -87,9 +87,8 @@ gcloud projects remove-iam-policy-binding \
     --role=roles/storage.objectViewer
 echo "\n #----------Bucket Service Account IAM has been successfully removed.----------# \n"
 
-# TO DO: In prodution change this to custom IAM service account
-# To create a custom role
-# It needs Project Owner Role
+#----------To create a custom role. Use this in Production.----------#
+# It needs Project Owner Role.
 
 # To describe and list IAM Roles 
 # gcloud iam roles describe roles/storage.objectUser
@@ -104,14 +103,14 @@ gcloud iam roles create $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
 gcloud projects add-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=projects/$(gcloud config get project)/roles/$CUSTOM_OBJECT_GETS_ROLE
+    --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROL
 
 # Delete
-gcloud iam roles delete $CUSTOM_OBJECT_GETS_ROLE \
+gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
     --project=$(gcloud config get project)
 
 # Undelete
-gcloud iam roles undelete $CUSTOM_OBJECT_GETS_ROLE \
+gcloud iam roles undelete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
     --project=$(gcloud config get project)
 
 
