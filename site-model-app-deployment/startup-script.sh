@@ -1,6 +1,6 @@
 # Environment
 # TO DO: In production, change the values to be more secure. 
-export VERSION="v"
+export VERSION="vi"
 export APP_NAME="site-model-app-deployment-$VERSION"
 export DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
 export DB_NAME="$APP_NAME-db"

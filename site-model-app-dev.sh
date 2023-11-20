@@ -10,7 +10,7 @@ gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregi
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #----------Environment Variables----------#
-VERSION="v"
+VERSION="vi"
 APP_NAME="site-model-app-dev-$VERSION"
 FIREWALL_RULES_NAME="ports"
 INSTANCE_NAME="matt"
@@ -32,7 +32,7 @@ APP_ADRESS= # change the value in production
 DOMAIN_NAME= # change the value in production
 SPECIAL_NAME='Matt' # change the value in production
 
-#----------Database----------#
+#----------Database for local development----------#
 # With volume/data connected
 # cd app-model 
 # cd app-model
@@ -69,7 +69,7 @@ docker run -p 8000:80 \
 # export DBPASSWORD='password' 
 # export PROJECT_NAME='$(gcloud config get project)'
 
-#----------Local Development using container----------#
+#----------Local Development using container with deployment environment variables----------#
 # For App Development
 cd site-model-app-dev
 

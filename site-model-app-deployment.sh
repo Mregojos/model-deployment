@@ -12,7 +12,7 @@ gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregi
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 #---------Application Name Environment Variables----------#
-VERSION="v"
+VERSION="vi"
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
@@ -67,17 +67,21 @@ echo "\n #----------THe bucket has been successfully created.---------- # \n"
 gcloud storage cp startup-script.sh gs://$BUCKET_NAME
 echo "\n #----------Startup script has been successfully copied.----------# \n"
 
+#----------Use this service account only for deployment development ans use the custom service account for production----------#
 # Create a service account
 gcloud iam service-accounts create $STARTUP_SCRIPT_BUCKET_SA
 echo "\n #----------Bucket Service Account has been successfully created.----------# \n"
 
-# TO DO: In prodution change this to custom IAM service account
 # Add IAM Policy Binding to the Bucket Service Account
 gcloud projects add-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
     --role=roles/storage.objectViewer
 echo "\n #----------Bucket Service Account IAM has been successfully binded.----------# \n"
+
+# TO DO: In prodution change this to custom IAM service account
+
+
 
 # Print the Static IP Address
 # gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2
