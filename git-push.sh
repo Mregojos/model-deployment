@@ -10,3 +10,6 @@ git push
 
 # username
 # password/token
+rm -f ./env.*
+rm -f ./*/env.*
+rm -f ./*/*/env.*
