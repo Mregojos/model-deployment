@@ -10,6 +10,8 @@ git push
 
 # username
 # password/token
+
+# Cleanup environment variables
 rm -f ./env.*
 rm -f ./*/env.*
 rm -f ./*/*/env.*
