@@ -382,12 +382,6 @@ def sections(con, cur):
                     :gray[:cloud: Deployed on Google Cloud]
                 """)
 
-def parameters():
-    pass
-
-def statistics():
-    pass
-
 #----------Execution----------#
 if __name__ == '__main__':
     try:
