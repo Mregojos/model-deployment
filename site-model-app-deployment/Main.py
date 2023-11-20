@@ -22,8 +22,9 @@ PROJECT_NAME=os.getenv("PROJECT_NAME")
 st.set_page_config(page_title="Matt Cloud Tech",
                    page_icon=":cloud:",
                    initial_sidebar_state="collapsed",
-                   menu_items={
-                       'About':"# Matt Cloud Tech"})
+                   # menu_items={
+                   #    'About':"# Matt Cloud Tech"}
+                  )
 
 #----------About Section----------#
 st.write("### :cloud: Matt Cloud Tech")
@@ -60,7 +61,7 @@ con.commit()
 
 #----------Agent Section----------#
 #----------Vertex AI----------#
-st.info("###### :computer: :technologist: [You can now talk to my Intelligent Agent, try it now. :link:](https://)")
+st.info("###### :computer: :technologist: [You can now talk to my :violet[Intelligent Agent], try it now. :link:](https://)")
 #----------End of Agent Section----------#
 
 #----------Portfolio Section----------#
