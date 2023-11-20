@@ -284,23 +284,17 @@ def sections(con, cur):
     #----------End of External links---------#
 
     # Close Connection
-    # cur.close()
-    # con.close()
+    cur.close()
+    con.close()
 
 
 #----------Footer----------#
 #----------Sidebar Footer----------#
 with st.sidebar:
-    # st.markdown(""""
-    #            <footer> Created by: Matt R.
-    #            <footer/>
-    #            """)
-    # st.divider()
     st.markdown("""
                 * :gray[:copyright: Built by [Matt R.](https://)]
                 * :gray[:cloud: Deployed on Google Cloud]
                 """)
-    # st.divider()
 
 #----------Execution----------#
 if __name__ == '__main__':
