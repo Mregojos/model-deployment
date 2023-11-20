@@ -103,8 +103,14 @@ gcloud iam roles create $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
 gcloud projects add-iam-policy-binding \
     $(gcloud config get project) \
     --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROL
-
+    --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE
+    
+# Remove IAM Policy Binding to the App Service Account
+gcloud projects remove-iam-policy-binding \
+    $(gcloud config get project) \
+    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
+    --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE
+    
 # Delete
 gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
     --project=$(gcloud config get project)
