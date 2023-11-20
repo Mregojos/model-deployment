@@ -175,21 +175,21 @@ DB_USER:
 DB_HOST:
     '$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
 DB_PORT:
-    '5000'
+    '$DB_PORT'
 DB_PASSWORD:
-    'password'
+    '$DB_PASSWORD'
 PROJECT_NAME:
     '$(gcloud config get project)'
 ADMIN_PASSWORD:
-    'password'
+    '$ADMIN_PASSWORD'
 APP_PORT:
-    '9000'
+    '$APP_PORT'
 APP_ADDRESS:
-    ''
+    '$APP_ADDRESS'
 DOMAIN_NAME:
-    ''
+    '$DOMAIN_NAME'
 SPECIAL_NAME:
-    'Matt'
+    '$PECIAL_NAME'
 """ > .env.yaml
 
 
