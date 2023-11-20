@@ -11,6 +11,7 @@ echo "\n #----------Services have been successfully enabled.----------# \n"
 # Directory
 cd site-model-app-deployment
 
+# TO DO: In prodcution, change these values.
 #---------Application Name Environment Variables----------#
 VERSION="vi"
 APP_NAME="site-model-app-deployment-$VERSION"
@@ -45,10 +46,16 @@ SPECIAL_NAME='Matt' # change the value in production
 
 #----------Deployment Environment Variables----------#
 CLOUD_BUILD_REGION="us-west2"
+REGION="us-west1"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
 APP_SERVICE_ACCOUNT_NAME="app-service-account"
 APP_CUSTOM_ROLE="appCustomRole.$VERSION"
+APP_PORT=9000
+APP_ENV_FILE=".env.yaml"
+MIN_INSTANCES=1
+MAX_INSTANCES=1
+
 
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
@@ -189,14 +196,14 @@ APP_ADDRESS:
 DOMAIN_NAME:
     '$DOMAIN_NAME'
 SPECIAL_NAME:
-    '$PECIAL_NAME'
+    '$SPECIAL_NAME'
 """ > .env.yaml
 
 
 # Deploy the app using Cloud Run
 gcloud run deploy $APP_NAME \
-    --max-instances=1 --min-instances=1 --port=9000 \
-    --env-vars-file=.env.yaml \
+    --max-instances=$MAX_INSTANCES --min-instances=$MIN_INSTANCES --port=$APP_PORT \
+    --env-vars-file=$APP_ENV_FILE \
     --image=$REGION-docker.pkg.dev/$(gcloud config get project)/$APP_ARTIFACT_NAME/$APP_NAME:$APP_VERSION \
     --allow-unauthenticated \
     --region=$REGION \
