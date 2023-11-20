@@ -1,13 +1,14 @@
 # sh g* 
 # sh git-push.sh
 
+# For Security
 # Cleanup environment variables
 rm -f ./.env.*
 rm -f ./*/.env.*
 rm -f ./*/*/.env.*
 rm -f ./*/*/*/.env.*
 rm -f ./*/*/*/*/.env.*
-echo "Cleanup Successful"
+echo "Successfully removed .env.* files ready to be pushed to repository."
 
 git add .
 # git config --global user.email "<EMAIL_ADDRESS>"
