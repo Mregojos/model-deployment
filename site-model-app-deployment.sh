@@ -26,6 +26,7 @@ FIREWALL_RULES_NAME="$APP_NAME-ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
 STARTUP_SCRIPT_BUCKET_SA="startup-script-bucket-sa"
+STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
@@ -79,7 +80,39 @@ gcloud projects add-iam-policy-binding \
     --role=roles/storage.objectViewer
 echo "\n #----------Bucket Service Account IAM has been successfully binded.----------# \n"
 
+# Remove IAM Policy Binding to the Bucket Service Account
+gcloud projects remove-iam-policy-binding \
+    $(gcloud config get project) \
+    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
+    --role=roles/storage.objectViewer
+echo "\n #----------Bucket Service Account IAM has been successfully removed.----------# \n"
+
 # TO DO: In prodution change this to custom IAM service account
+# To create a custom role
+# It needs Project Owner Role
+
+# To describe and list IAM Roles 
+# gcloud iam roles describe roles/storage.objectUser
+gcloud iam roles create $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
+    --project=$(gcloud config get project) \
+    --title=$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
+    --description="Get the object only" \
+    --permissions=storage.objects.get \
+    --stage=GA
+
+# Add IAM Policy Binding to the App Service Account
+gcloud projects add-iam-policy-binding \
+    $(gcloud config get project) \
+    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
+    --role=projects/$(gcloud config get project)/roles/$CUSTOM_OBJECT_GETS_ROLE
+
+# Delete
+gcloud iam roles delete $CUSTOM_OBJECT_GETS_ROLE \
+    --project=$(gcloud config get project)
+
+# Undelete
+gcloud iam roles undelete $CUSTOM_OBJECT_GETS_ROLE \
+    --project=$(gcloud config get project)
 
 
 
