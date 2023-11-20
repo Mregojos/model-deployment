@@ -3,13 +3,13 @@
 # Objective
 # * To deploy a pre-trained model on GCP
 
-# Directory
-cd site-model-app-deployment
-
 #----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
 # !gcloud services list --available
 gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
+
+# Directory
+cd site-model-app-deployment
 
 #---------Application Name Environment Variables----------#
 VERSION="vi"
@@ -118,7 +118,6 @@ gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
 # Undelete
 gcloud iam roles undelete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROL \
     --project=$(gcloud config get project)
-
 
 
 # Print the Static IP Address
