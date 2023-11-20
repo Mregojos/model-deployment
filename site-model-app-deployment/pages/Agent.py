@@ -2,7 +2,7 @@
 import streamlit as st
 import psycopg2
 import os
-import time
+import time as t
 import vertexai
 from vertexai.language_models import ChatModel, InputOutputTextPair
 from vertexai.language_models import CodeChatModel
@@ -136,7 +136,7 @@ def sections(con, cur):
             elif save and input_name == "":
                 st.info("Save your name first.")
             agent = st.toggle("**:violet[Let's talk to Agent]**")
-            time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+            time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
             time_date = time[0:15]
             if agent:
     #----------For Guest Daily Limit----------#
@@ -183,11 +183,10 @@ def sections(con, cur):
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True:
             prompt_history = "Hi"
-            import time
             st.write("#### :gray[Start the Conversation]")
             if agent:
                 prompt_user = st.chat_input("What do you want to talk about?")
-                current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+                current_time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if prompt_user:
                     count_prompt = 1
                     if model == "Chat":
@@ -281,7 +280,7 @@ def sections(con, cur):
             st.write("#### :gray[Start the Conversation]")
             if agent:
                 prompt_user = st.chat_input("What do you want to talk about?")
-                current_time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+                current_time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 if prompt_user:
                     count_prompt = 1
                     if model == "Chat":
@@ -378,9 +377,16 @@ def sections(con, cur):
     with st.sidebar:
         st.divider()
         st.markdown("""
-                    * :gray[:copyright: Built by [Matt R.](https://)]
-                    * :gray[:cloud: Deployed on Google Cloud]
+                    :gray[:copyright: Built by [Matt R.](https://)]
+                    
+                    :gray[:cloud: Deployed on Google Cloud]
                 """)
+
+def parameters():
+    pass
+
+def statistics():
+    pass
 
 #----------Execution----------#
 if __name__ == '__main__':
@@ -392,3 +398,4 @@ if __name__ == '__main__':
         con.close()
     except:
         st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
+    
