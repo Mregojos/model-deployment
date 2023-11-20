@@ -84,7 +84,7 @@ echo "\n #----------Services and Resources have been Successfully deleted.------
 
 
 
-#----------Project Owner Permission----------#
+#----------Requires Project Owner Permission----------#
 # Delete
 gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
     --project=$(gcloud config get project)
@@ -100,3 +100,5 @@ gcloud iam roles delete $APP_CUSTOM_ROLE \
 # Undelete
 # gcloud iam roles undelete $APP_CUSTOM_ROLE \
 #    --project=$(gcloud config get project) 
+
+echo "\n #----------Custom Roles have been Successfully deleted.----------# \n"
