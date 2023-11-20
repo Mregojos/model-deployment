@@ -15,3 +15,4 @@ git push
 rm -f ./env.*
 rm -f ./*/env.*
 rm -f ./*/*/env.*
+echo "Cleanup Successful"
