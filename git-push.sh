@@ -8,6 +8,9 @@ rm -f ./*/.env.*
 rm -f ./*/*/.env.*
 rm -f ./*/*/*/.env.*
 rm -f ./*/*/*/*/.env.*
+rm -rf .ipynb_checkpoints
+rm -rf ./*/.ipynb_checkpoints
+rm -rf ./*/*/.ipynb_checkpoints
 echo "Successfully removed .env.* files ready to be pushed to repository."
 
 git add .
