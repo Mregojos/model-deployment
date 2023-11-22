@@ -10,11 +10,12 @@ DB_USER=os.getenv("DB_USER")
 DB_HOST= os.getenv("DB_HOST")
 DB_PORT=os.getenv("DB_PORT")
 DB_PASSWORD=os.getenv("DB_PASSWORD")
+ADMIN_PASSWORD=os.getenv("ADMIN_PASSWORD")
 APP_PORT=os.getenv("APP_PORT")
 APP_ADDRESS=os.getenv("APP_ADDRESS")
 DOMAIN_NAME=os.getenv("DOMAIN_NAME")
 SPECIAL_NAME=os.getenv("SPECIAL_NAME")
-# Cloud Credentials
+# Cloud Credential
 PROJECT_NAME=os.getenv("PROJECT_NAME")
 
 
@@ -155,6 +156,23 @@ def sections(con, cur):
                 st.snow()
             else:
                 st.info("Please add Email Address and Message before sending.")
+        st.divider()
+        messages = st.checkbox("Messages")
+        if messages:
+            password = st.text_input("Password", type="password")
+            if password == ADMIN_PASSWORD:
+                st.info("Login success")
+                cur.execute("""
+                            SELECT * 
+                            FROM messages
+                            """)
+                for id, email_address, message, time in cur.fetchall():
+                    st.write(f"Email Address: {email_address}")
+                    st.write(f"Message: {message}")
+                    st.write(f"Time: {time}")
+                    st.divider()
+            
+            
     #----------End of Message Section----------#
 
     #----------Notepad Section----------#
