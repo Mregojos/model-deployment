@@ -292,8 +292,8 @@ def sections(con, cur):
 #----------Sidebar Footer----------#
 with st.sidebar:
     st.markdown("""
-                :gray[:copyright: Portfolio Website by [Matt R.](https://)] \n
-                :gray[:cloud: Deployed on Google Cloud]
+                > :gray[:copyright: Portfolio Website by [Matt R.](https://)]            
+                > :gray[:cloud: Deployed on Google Cloud]
                 """)
 
 #----------Execution----------#
