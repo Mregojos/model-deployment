@@ -52,7 +52,6 @@ def connection():
 #----------Variables----------#
 credential = False 
 agent = False
-tuning = False
 
 #----------Models----------#
 def models():
@@ -389,6 +388,7 @@ def sections(con, cur):
 def stats():
     with st.sidebar:
         stats = st.checkbox("Stats")
+        
 #----------Execution----------#
 if __name__ == '__main__':
     try:
@@ -399,8 +399,9 @@ if __name__ == '__main__':
         # Close Connection
         cur.close()
         con.close()
-    except:
+    except Exception as e:
         st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
+        st.write("e")
     
     #----------Footer----------#
     #----------Sidebar Footer----------#
