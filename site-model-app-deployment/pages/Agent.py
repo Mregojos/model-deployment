@@ -49,7 +49,13 @@ def connection():
     con.commit()
     return con, cur
 
+#----------Variables----------#
+context_addition = ""
+credential = False 
+agent = False
+
 #----------Vertex AI Chat----------#
+
 chat_parameters = {
     "candidate_count": 1,
     "max_output_tokens": 1024,
@@ -59,7 +65,7 @@ chat_parameters = {
 }
 chat_model = ChatModel.from_pretrained("chat-bison")
 chat = chat_model.start_chat(
-    context="""I am an agent for Matt."""
+    context=f"""I am an agent for Matt. {context_addition}"""
 )
 
 #----------Vertex AI Code----------#
@@ -73,7 +79,17 @@ code_chat = code_chat_model.start_chat(
     context="""I am an agent for Matt."""
 )
 
+
+def context():
+    with st.sidebar:
+        tuning = st.checkbox("Tune the model")
+def stats():
+    with st.sidebar:
+        stats = st.checkbox("Stats")
+
 def sections(con, cur):
+    credential = False 
+    agent = False
     #----------Agent----------#
     with st.sidebar:
         st.header(":computer: Agent ",divider="rainbow")
@@ -176,9 +192,9 @@ def sections(con, cur):
     #----------For Admin----------#    
     if login and not guest:
         if credential is False:
-            st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation.")
+            st.info("Save your name and toggle the :violet[Let's talk to Agent] to start the conversation.")
         elif credential is True and agent is False:
-            st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
+            st.info("Save your name and toggle the :violet[Let's talk to Agent] to start the conversation. Enjoy chatting :smile:")
         elif credential is True and agent is True and input_name == "":
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True:
@@ -269,9 +285,9 @@ def sections(con, cur):
     #----------For Guest----------#    
     elif guest and not login:
         if credential is False:
-            st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation.")
+            st.info("Save your name and toggle the :violet[Let's talk to Agent] to start the conversation.")
         elif credential is True and agent is False:
-            st.info("Save your name and toggle the :violet[Let's talk to Agent] toggle to start the conversation. Enjoy chatting :smile:")
+            st.info("Save your name and toggle the :violet[Let's talk to Agent] to start the conversation. Enjoy chatting :smile:")
         elif credential is True and agent is True and input_name == "":
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True and total_count < LIMIT:
@@ -373,23 +389,34 @@ def sections(con, cur):
     cur.close()
     con.close()
 
-    #----------Sidebar Footer----------#
-    with st.sidebar:
-        st.divider()
-        st.markdown("""
-                    :gray[:copyright: Built by [Matt R.](https://)]
-                    
-                    :gray[:cloud: Deployed on Google Cloud]
-                """)
+    return credential, agent
 
 #----------Execution----------#
 if __name__ == '__main__':
     try:
+        # Connection
         con, cur = connection()
-        sections(con, cur)
+        
+        # Sections
+        credential, agent = sections(con, cur)
+        
+        # Context and Stats
+        if credential is True and agent is True:
+            context()
+            stats()
+            
         # Close Connection
         cur.close()
         con.close()
     except:
         st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
     
+    #----------Footer----------#
+    #----------Sidebar Footer----------#
+    with st.sidebar:
+        st.markdown("""
+                    ---
+                    > :gray[:copyright: Portfolio Website by [Matt R.](https://)]            
+                    > :gray[:cloud: Deployed on [Google Cloud](https://)]
+                    ---
+                    """)
