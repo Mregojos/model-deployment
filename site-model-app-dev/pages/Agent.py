@@ -50,12 +50,12 @@ def connection():
     return con, cur
 
 #----------Variables----------#
-context_addition = ""
 credential = False 
 agent = False
+tuning = False
 
 #----------Models----------#
-def models(context_addition ):
+def models():
     #----------Vertex AI Chat----------#
     chat_parameters = {
         "candidate_count": 1,
@@ -66,7 +66,7 @@ def models(context_addition ):
     }
     chat_model = ChatModel.from_pretrained("chat-bison")
     chat = chat_model.start_chat(
-        context=f"""I am an agent for Matt. {context_addition}"""
+        context=f"""I am an agent for Matt."""
     )
 
     #----------Vertex AI Code----------#
@@ -77,7 +77,7 @@ def models(context_addition ):
     }
     code_chat_model = CodeChatModel.from_pretrained("codechat-bison")
     code_chat = code_chat_model.start_chat(
-        context=f"""I am an agent for Matt. {context_addition}"""
+        context=f"""I am an agent for Matt."""
     )
     
     return chat, chat_parameters, code_chat, code_parameters
@@ -118,9 +118,9 @@ def sections(con, cur):
                 agent = st.toggle("**:violet[Let's talk to Agent]**")
                 if agent:
                     if input_name is not "":
-                        reset = st.button(":white[Refresh Conversation]")
-                        if reset:
-                            st.rerun()
+                        # reset = st.button(":white[Refresh Conversation]")
+                        # if reset:
+                        #    st.rerun()
                         prune = st.button(":red[Prune History]")
                         if prune:
                             cur.execute(f"""
@@ -389,14 +389,13 @@ def sections(con, cur):
 def stats():
     with st.sidebar:
         stats = st.checkbox("Stats")
-        
 #----------Execution----------#
 if __name__ == '__main__':
     try:
         # Connection
         con, cur = connection()
-        chat, chat_parameters, code_chat, code_parameters = models(context_addition)
-        credential, agent = sections(con, cur)
+        chat, chat_parameters, code_chat, code_parameters = models()
+        sections(con, cur)
         # Close Connection
         cur.close()
         con.close()
