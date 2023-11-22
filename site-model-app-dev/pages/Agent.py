@@ -129,6 +129,7 @@ def sections(con, cur):
                                         """)
                             con.commit()
                             st.info(f"History by {input_name} is successfully deleted.")
+
             else:
                 st.info("Wrong credential")
     #----------For Guest Login----------#            
@@ -275,6 +276,7 @@ def sections(con, cur):
                         message = st.chat_message("assistant")
                         message.write(output)
                         message.caption(f"{time} | Model: {model}") 
+                        
     #----------For Guest----------#    
     elif guest and not login:
         if credential is False:
@@ -382,12 +384,9 @@ def sections(con, cur):
     #----------Close Connection----------#
     cur.close()
     con.close()
-
+    
     return credential, agent
-
-def stats():
-    with st.sidebar:
-        stats = st.checkbox("Stats")
+        
         
 #----------Execution----------#
 if __name__ == '__main__':
@@ -399,9 +398,9 @@ if __name__ == '__main__':
         # Close Connection
         cur.close()
         con.close()
-    except Exception as:
+    except:
         st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
-    
+        
     #----------Footer----------#
     #----------Sidebar Footer----------#
     with st.sidebar:
