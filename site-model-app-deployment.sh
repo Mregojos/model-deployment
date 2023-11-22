@@ -14,7 +14,7 @@ cd site-model-app-deployment
 
 # TO DO: In prodcution, change these values.
 #---------Application Name Environment Variables----------#
-VERSION="viii" # Change this
+VERSION="viiii" # Change this
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
