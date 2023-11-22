@@ -399,9 +399,8 @@ if __name__ == '__main__':
         # Close Connection
         cur.close()
         con.close()
-    except Exception as e:
+    except Exception as:
         st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
-        st.write("e")
     
     #----------Footer----------#
     #----------Sidebar Footer----------#
