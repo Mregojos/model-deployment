@@ -96,7 +96,7 @@ def sections(con, cur):
         modify = st.checkbox("Modify") 
         if modify:
             password = st.text_input("Password", type="password")
-            if password == DB_PASSWORD:
+            if password == ADMIN_PASSWORD:
                 option = st.text_input("Portfolio or Manual")
                 if option == "Portfolio":
                     name = st.text_input("Name", name)
