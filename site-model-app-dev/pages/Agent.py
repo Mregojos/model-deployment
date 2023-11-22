@@ -83,7 +83,13 @@ def tuning():
     with st.sidebar:
         tuning = st.checkbox("Tune the model")
         if tuning:
-            
+            file = st.selectbox("Paste Text or Upload", ("Paste Text", "Upload"))
+            if file == "Paste Text":
+                context_addition = st.text_area("Paste Text Here")
+            else:
+                st.file_uploader("Upload a file for Model Context")
+    return context_addition
+
 def stats():
     with st.sidebar:
         stats = st.checkbox("Stats")
@@ -405,7 +411,7 @@ if __name__ == '__main__':
         if credential is True and agent is True:
             tuning()
             stats()
-            
+
         # Close Connection
         cur.close()
         con.close()
@@ -421,3 +427,4 @@ if __name__ == '__main__':
                     > :gray[:cloud: Deployed on [Google Cloud](https://)]
                     ---
                     """)
+    st.write(context_addition)

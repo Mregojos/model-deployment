@@ -55,7 +55,6 @@ credential = False
 agent = False
 
 #----------Vertex AI Chat----------#
-
 chat_parameters = {
     "candidate_count": 1,
     "max_output_tokens": 1024,
@@ -69,20 +68,28 @@ chat = chat_model.start_chat(
 )
 
 #----------Vertex AI Code----------#
-code_chat_model = CodeChatModel.from_pretrained("codechat-bison")
 code_parameters = {
     "candidate_count": 1,
     "max_output_tokens": 1024,
     "temperature": 0.2
 }
+code_chat_model = CodeChatModel.from_pretrained("codechat-bison")
 code_chat = code_chat_model.start_chat(
-    context="""I am an agent for Matt."""
+    context=f"""I am an agent for Matt. {context_addition}"""
 )
 
-
-def context():
+#----------Tuning and Stats---------#
+def tuning():
     with st.sidebar:
         tuning = st.checkbox("Tune the model")
+        if tuning:
+            file = st.selectbox("Paste Text or Upload", ("Paste Text", "Upload"))
+            if file == "Paste Text":
+                context_addition = st.text_area("Paste Text Here")
+            else:
+                st.file_uploader("Upload a file for Model Context")
+    return context_addition
+
 def stats():
     with st.sidebar:
         stats = st.checkbox("Stats")
@@ -400,11 +407,11 @@ if __name__ == '__main__':
         # Sections
         credential, agent = sections(con, cur)
         
-        # Context and Stats
+        # Tuning and Stats
         if credential is True and agent is True:
-            context()
+            tuning()
             stats()
-            
+
         # Close Connection
         cur.close()
         con.close()
@@ -420,3 +427,4 @@ if __name__ == '__main__':
                     > :gray[:cloud: Deployed on [Google Cloud](https://)]
                     ---
                     """)
+    st.write(context_addition)
