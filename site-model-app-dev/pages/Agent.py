@@ -53,7 +53,6 @@ def connection():
 context_addition = ""
 credential = False 
 agent = False
-tuning = False
 
 #----------Models----------#
 def models(context_addition ):
@@ -390,33 +389,19 @@ def sections(con, cur):
 def stats():
     with st.sidebar:
         stats = st.checkbox("Stats")
+        
 #----------Execution----------#
 if __name__ == '__main__':
-    # try:
-    # Connection
-    con, cur = connection()
-
-    # Sections
-    credential, agent = sections(con, cur)
-    if credential == True & agent == True:
-        with st.sidebar:
-            tuning = st.checkbox("Tune the model")
-            if tuning:
-                file = st.selectbox("Paste Text or Upload", ("Paste Text", "Upload"))
-                if file == "Paste Text":
-                    context_addition = st.text_area("Paste Text Here")
-                    context_addition_button = st.button("Update")
-                    if context_addition or context_addition_button:
-                        st.info("Updated")
-                        chat, chat_parameters, code_chat, code_parameters = models(context_addition)
-                else:
-                    st.file_uploader("Upload a file for Model Context")
-
-    # Close Connection
-    cur.close()
-    con.close()
-    # except:
-    # st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
+    try:
+        # Connection
+        con, cur = connection()
+        chat, chat_parameters, code_chat, code_parameters = models(context_addition)
+        credential, agent = sections(con, cur)
+        # Close Connection
+        cur.close()
+        con.close()
+    except:
+        st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
     
     #----------Footer----------#
     #----------Sidebar Footer----------#
