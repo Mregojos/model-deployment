@@ -57,7 +57,6 @@ tuning = False
 
 #----------Models----------#
 def models(context_addition ):
-    
     #----------Vertex AI Chat----------#
     chat_parameters = {
         "candidate_count": 1,
@@ -83,11 +82,6 @@ def models(context_addition ):
     )
     
     return chat, chat_parameters, code_chat, code_parameters
-
-
-def stats():
-    with st.sidebar:
-        stats = st.checkbox("Stats")
 
 def sections(con, cur):
     credential = False 
@@ -171,10 +165,10 @@ def sections(con, cur):
                         total_count = total
                         # st.write(f"{total_count}")
 
-                if input_name is not "" and total_count < LIMIT:
-                    reset = st.button(":white[Refresh Conversation]")
-                    if reset:
-                        st.rerun()
+                # if input_name is not "" and total_count < LIMIT:
+                    # reset = st.button(":white[Refresh Conversation]")
+                    # if reset:
+                    #    st.rerun()
                 # Only for Special Name
                 if input_name == SPECIAL_NAME:
                     prune = st.button(":red[Prune History]")
@@ -393,6 +387,9 @@ def sections(con, cur):
 
     return credential, agent
 
+def stats():
+    with st.sidebar:
+        stats = st.checkbox("Stats")
 #----------Execution----------#
 if __name__ == '__main__':
     # try:
@@ -400,8 +397,6 @@ if __name__ == '__main__':
     con, cur = connection()
 
     # Sections
-
-    chat, chat_parameters, code_chat, code_parameters = models(context_addition)
     credential, agent = sections(con, cur)
     if credential == True & agent == True:
         with st.sidebar:
@@ -410,11 +405,13 @@ if __name__ == '__main__':
                 file = st.selectbox("Paste Text or Upload", ("Paste Text", "Upload"))
                 if file == "Paste Text":
                     context_addition = st.text_area("Paste Text Here")
-                    if context_addition:
+                    context_addition_button = st.button("Update")
+                    if context_addition or context_addition_button:
                         st.info("Updated")
-                        models(context_addition)
+                        chat, chat_parameters, code_chat, code_parameters = models(context_addition)
                 else:
                     st.file_uploader("Upload a file for Model Context")
+
     # Close Connection
     cur.close()
     con.close()
