@@ -65,7 +65,7 @@ def connection():
 def sections(con, cur):
     #----------Agent Section----------#
     #----------Vertex AI----------#
-    st.info("###### :computer: :technologist: [You can now talk to my :violet[Intelligent Agent], try it now. :link:](https://)")
+    st.info("###### :computer: :technologist: [You can now talk to :violet[Intelligent Agent], try it now. :link:](https://)")
     #----------End of Agent Section----------#
 
     #----------Portfolio Section----------#
