@@ -80,6 +80,7 @@ code_chat = code_chat_model.start_chat(
 
 #----------Tuning and Stats---------#
 def tuning():
+    context_addition = ""
     with st.sidebar:
         tuning = st.checkbox("Tune the model")
         if tuning:
@@ -409,9 +410,8 @@ if __name__ == '__main__':
         
         # Tuning and Stats
         if credential is True and agent is True:
-            tuning()
+            context_addition=tuning()
             stats()
-
         # Close Connection
         cur.close()
         con.close()
@@ -427,4 +427,3 @@ if __name__ == '__main__':
                     > :gray[:cloud: Deployed on [Google Cloud](https://)]
                     ---
                     """)
-    st.write(context_addition)
