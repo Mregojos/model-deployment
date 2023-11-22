@@ -1,5 +1,5 @@
 #---------Application Name Environment Variables----------#
-VERSION="vii" # Change this
+VERSION="viiii" # Change this
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
@@ -45,16 +45,16 @@ gcloud compute instances delete $DB_INSTANCE_NAME --zone=$ZONE --quiet
 gcloud compute addresses delete $STATIC_IP_ADDRESS_NAME --region $REGION --quiet
 gcloud compute firewall-rules delete $FIREWALL_RULES_NAME --quiet
 gcloud artifacts repositories delete $APP_ARTIFACT_NAME --location=$REGION --quiet
-gcloud run services delete $APP_NAME --region=$REGION --quietiet
+gcloud run services delete $APP_NAME --region=$REGION --quiet
 gcloud storage rm -r gs://$BUCKET_NAME
 gcloud storage rm -r gs://$(gcloud config get project)_cloudbuild
 
 
 # Remove IAM Policy Binding to the Bucket Service Account
-gcloud projects remove-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=roles/storage.objectViewer
+# gcloud projects remove-iam-policy-binding \
+#    $(gcloud config get project) \
+#    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
+#    --role=roles/storage.objectViewer
 
 # Remove IAM Policy Binding to the App Service Account
 gcloud projects remove-iam-policy-binding \
@@ -65,10 +65,10 @@ gcloud projects remove-iam-policy-binding \
 gcloud iam service-accounts delete $STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com --quiet
 
 # Add IAM Policy Binding to the App Service Account
-gcloud projects remove-iam-policy-binding \
-    $(gcloud config get project) \
-    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
-    --role=roles/aiplatform.user
+# gcloud projects remove-iam-policy-binding \
+#    $(gcloud config get project) \
+#    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
+#    --role=roles/aiplatform.user
 
 # Remove IAM Policy Binding to the App Service Account
 gcloud projects remove-iam-policy-binding \
@@ -76,7 +76,7 @@ gcloud projects remove-iam-policy-binding \
     --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
     --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
 
-gcloud iam service-accounts delete $APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com --qu
+gcloud iam service-accounts delete $APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com --quiet
 
 
 
