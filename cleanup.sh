@@ -1,5 +1,5 @@
 #---------Application Name Environment Variables----------#
-VERSION="viiii" # Change this
+VERSION="x" # Change this
 APP_NAME="site-model-app-deployment-$VERSION"
 
 #----------Database Instance Environment Variables----------#
