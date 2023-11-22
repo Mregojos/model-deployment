@@ -53,43 +53,37 @@ def connection():
 context_addition = ""
 credential = False 
 agent = False
+tuning = False
 
-#----------Vertex AI Chat----------#
-chat_parameters = {
-    "candidate_count": 1,
-    "max_output_tokens": 1024,
-    "temperature": 0.2,
-    "top_p": 0.8,
-    "top_k": 40
-}
-chat_model = ChatModel.from_pretrained("chat-bison")
-chat = chat_model.start_chat(
-    context=f"""I am an agent for Matt. {context_addition}"""
-)
+#----------Models----------#
+def models(context_addition ):
+    
+    #----------Vertex AI Chat----------#
+    chat_parameters = {
+        "candidate_count": 1,
+        "max_output_tokens": 1024,
+        "temperature": 0.2,
+        "top_p": 0.8,
+        "top_k": 40
+    }
+    chat_model = ChatModel.from_pretrained("chat-bison")
+    chat = chat_model.start_chat(
+        context=f"""I am an agent for Matt. {context_addition}"""
+    )
 
-#----------Vertex AI Code----------#
-code_parameters = {
-    "candidate_count": 1,
-    "max_output_tokens": 1024,
-    "temperature": 0.2
-}
-code_chat_model = CodeChatModel.from_pretrained("codechat-bison")
-code_chat = code_chat_model.start_chat(
-    context=f"""I am an agent for Matt. {context_addition}"""
-)
+    #----------Vertex AI Code----------#
+    code_parameters = {
+        "candidate_count": 1,
+        "max_output_tokens": 1024,
+        "temperature": 0.2
+    }
+    code_chat_model = CodeChatModel.from_pretrained("codechat-bison")
+    code_chat = code_chat_model.start_chat(
+        context=f"""I am an agent for Matt. {context_addition}"""
+    )
+    
+    return chat, chat_parameters, code_chat, code_parameters
 
-#----------Tuning and Stats---------#
-def tuning():
-    context_addition = ""
-    with st.sidebar:
-        tuning = st.checkbox("Tune the model")
-        if tuning:
-            file = st.selectbox("Paste Text or Upload", ("Paste Text", "Upload"))
-            if file == "Paste Text":
-                context_addition = st.text_area("Paste Text Here")
-            else:
-                st.file_uploader("Upload a file for Model Context")
-    return context_addition
 
 def stats():
     with st.sidebar:
@@ -289,7 +283,6 @@ def sections(con, cur):
                         message = st.chat_message("assistant")
                         message.write(output)
                         message.caption(f"{time} | Model: {model}") 
-
     #----------For Guest----------#    
     elif guest and not login:
         if credential is False:
@@ -386,13 +379,14 @@ def sections(con, cur):
                         message.caption(f"{time} | Model: {model}") 
         elif total_count >= LIMIT:
             st.info("You've reached your limit.")
-
+            
     elif login and guest:
         st.info("Choose only one")
 
     elif not login and not guest:
         st.info("Login first or continue as a guest")
-
+    
+   
     #----------Close Connection----------#
     cur.close()
     con.close()
@@ -401,22 +395,31 @@ def sections(con, cur):
 
 #----------Execution----------#
 if __name__ == '__main__':
-    try:
-        # Connection
-        con, cur = connection()
-        
-        # Sections
-        credential, agent = sections(con, cur)
-        
-        # Tuning and Stats
-        if credential is True and agent is True:
-            context_addition=tuning()
-            stats()
-        # Close Connection
-        cur.close()
-        con.close()
-    except:
-        st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
+    # try:
+    # Connection
+    con, cur = connection()
+
+    # Sections
+
+    chat, chat_parameters, code_chat, code_parameters = models(context_addition)
+    credential, agent = sections(con, cur)
+    if credential == True & agent == True:
+        with st.sidebar:
+            tuning = st.checkbox("Tune the model")
+            if tuning:
+                file = st.selectbox("Paste Text or Upload", ("Paste Text", "Upload"))
+                if file == "Paste Text":
+                    context_addition = st.text_area("Paste Text Here")
+                    if context_addition:
+                        st.info("Updated")
+                        models(context_addition)
+                else:
+                    st.file_uploader("Upload a file for Model Context")
+    # Close Connection
+    cur.close()
+    con.close()
+    # except:
+    # st.info("##### :computer: ```The app can't connect to the database right now. Please try again later.```")
     
     #----------Footer----------#
     #----------Sidebar Footer----------#
