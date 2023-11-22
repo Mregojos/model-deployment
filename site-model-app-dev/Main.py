@@ -167,11 +167,16 @@ def sections(con, cur):
                             FROM messages
                             """)
                 for id, email_address, message, time in cur.fetchall():
+                    st.write(f"ID: {id}")
                     st.write(f"Email Address: {email_address}")
                     st.write(f"Message: {message}")
                     st.write(f"Time: {time}")
+                    if st.button(f"DELETE ID #: {id}"):
+                        cur.execute(f"DELETE FROM messages WHERE id = {id}")
+                        con.commit()
+                        st.info("Successfully Deleted.")
+                        st.button(":blue[Done]")
                     st.divider()
-            
             
     #----------End of Message Section----------#
 
