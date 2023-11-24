@@ -1,14 +1,10 @@
 #----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI----------#
-# !gcloud services list --available
-gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
-echo "\n #----------Services have been successfully enabled.----------# \n"
-
 # Directory
 cd app-dev
 
 #---------Application Name Environment Variables----------#
 # TO DO: In prodcution, change these values.
-VERSION="ii"
+VERSION="iii"
 APP_NAME="app-prod-$VERSION"
 
 #---------Project Environment Variables---------#

@@ -52,8 +52,6 @@ MAX_INSTANCES=1
 
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
-
-
 #----------Delete Resources----------#
 gcloud compute instances delete $DB_INSTANCE_NAME --zone=$ZONE --quiet
 gcloud compute addresses delete $STATIC_IP_ADDRESS_NAME --region $REGION --quiet

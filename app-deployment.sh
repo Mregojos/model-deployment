@@ -8,7 +8,7 @@ cd app-deployment
 
 #---------Application Name Environment Variables----------#
 # TO DO: In prodcution, change these values.
-VERSION="ii"
+VERSION="iii"
 APP_NAME="app-prod-$VERSION"
 
 #---------Project Environment Variables---------#
