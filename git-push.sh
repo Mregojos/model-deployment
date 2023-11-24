@@ -11,7 +11,7 @@ rm -f ./*/*/*/*/.env.*
 rm -rf .ipynb_checkpoints
 rm -rf ./*/.ipynb_checkpoints
 rm -rf ./*/*/.ipynb_checkpoints
-echo "Successfully removed .env.* files ready to be pushed to repository."
+echo "Successfully removed .env.* and checkpoints files ready to be pushed to repository."
 
 git add .
 # git config --global user.email "<EMAIL_ADDRESS>"
