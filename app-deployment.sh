@@ -33,8 +33,8 @@ STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 # For Notebook 
-NOTEBOOK_REGION='us-central'
-RANGE_C='10.300.0.0/20'
+NOTEBOOK_REGION='us-central1'
+RANGE_C='10.150.0.0/20'
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"

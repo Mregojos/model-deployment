@@ -7,6 +7,10 @@ APP_NAME="app-prod-$VERSION"
 PROJECT_NAME=$(gcloud config get project)
 
 #----------Database Instance Environment Variables----------#
+VPC_NAME="$APP_NAME-vpc"
+SUBNET_NAME="$APP_NAME-subnet"
+RANGE_A='10.100.0.0/20'
+RANGE_B='10.200.0.0/20'
 DB_INSTANCE_NAME="$APP_NAME-db"
 MACHINE_TYPE="e2-micro"
 REGION="us-west1"
@@ -20,8 +24,11 @@ STARTUP_SCRIPT_BUCKET_SA="startup-script-bucket-sa"
 STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
+# For Notebook 
+NOTEBOOK_REGION='us-central1'
+RANGE_C='10.150.0.0/20'
+
 #---------Database Credentials----------#
-VPC_NAME='$APP_NAME-vpc'
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
 DB_NAME="$APP_NAME-admin"
 DB_USER="$APP_NAME-admin" 
@@ -113,6 +120,11 @@ gcloud iam roles delete $APP_CUSTOM_ROLE \
 # Undelete
 # gcloud iam roles undelete $APP_CUSTOM_ROLE \
 #    --project=$(gcloud config get project) 
+
+# Delete Subnets
+gcloud compute networks subnets delete $SUBNET_NAME-$REGION --region=$REGION --quiet
+gcloud compute networks subnets delete $SUBNET_NAME-$CLOUD_BUILD_REGION --region=$CLOUD_BUILD_REGION --quiet
+gcloud compute networks subnets delete $SUBNET_NAME-$NOTEBOOK_REGION --region=$NOTEBOOK_REGION --quiet
 
 # Delete Custom VPC
 gcloud compute networks delete $VPC_NAME --quiet
