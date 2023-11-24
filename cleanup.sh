@@ -32,6 +32,7 @@ RANGE_C='10.150.0.0/20'
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
 DB_NAME="$APP_NAME-admin"
 DB_USER="$APP_NAME-admin" 
+# DB_HOST=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
 # TO DO
