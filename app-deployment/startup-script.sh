@@ -1,11 +1,11 @@
 # Environment
 # TO DO: In production, change the values to be more secure. 
-export VERSION="i" # Change this
-export APP_NAME="-$VERSION"
-export DB_PASSWORD='' # change the value in production 
+export VERSION="ii" # Change this
+export APP_NAME="app-prod-$VERSION" # change the value in production 
+export DB_PASSWORD=$APP_NAME # change the value in production 
 
 export DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
-export DB_NAME="$APP_NAME-db"
+# export DB_NAME="$APP_NAME-admin"
 export DB_USER="$APP_NAME-admin" 
 
 # docs.docker.com
