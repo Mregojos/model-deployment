@@ -123,7 +123,7 @@ gcloud compute instances create $DB_INSTANCE_NAME \
     --boot-disk-size=$BOOT_DISK_SIZE \
     --service-account=$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com  \
     --metadata=startup-script-url=gs://$BUCKET_NAME/startup-script.sh \
-    --network-interface=address=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
+    --network-interface=address=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2),subnet=$SUBNET_NAME-$REGION
 echo "\n #----------Compute Instance has been successfully created.----------# \n"
 
 # Create a firewall rule (GCP)
