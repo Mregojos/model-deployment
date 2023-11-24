@@ -1,7 +1,10 @@
 #---------Application Name Environment Variables----------#
 # TO DO: In prodcution, change these values.
-VERSION="i" # Change this
-APP_NAME="-$VERSION"
+VERSION="ii"
+APP_NAME="app-prod-$VERSION"
+
+#---------Project Environment Variables---------#
+PROJECT_NAME=$(gcloud config get project)
 
 #----------Database Instance Environment Variables----------#
 DB_INSTANCE_NAME="$APP_NAME-db"
@@ -19,19 +22,21 @@ STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
-# DB_NAME="$APP_NAME-db"
+DB_NAME="$APP_NAME-admin"
 DB_USER="$APP_NAME-admin" 
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
-DB_PASSWORD='sitedbapp' # change the value in production 
+# TO DO
+DB_PASSWORD=$APP_NAME # change the value in production 
 PROJECT_NAME='$(gcloud config get project)'
 # TO DO
-ADMIN_PASSWORD= # change the value in production
+ADMIN_PASSWORD=$APP_NAME # change the value in production
 APP_PORT=9000
-APP_ADRESS= # change the value in production
-DOMAIN_NAME= "site.mattcloudtech.com" # change the value in production
+# APP_ADDRESS= # change the value in production
 # TO DO
-SPECIAL_NAME='' # change the value in production
+DOMAIN_NAME="" # change the value in production
+# TO DO
+SPECIAL_NAME=$APP_NAME # change the value in production
 
 #----------Deployment Environment Variables----------#
 CLOUD_BUILD_REGION="us-west2"
@@ -44,6 +49,7 @@ APP_PORT=9000
 APP_ENV_FILE=".env.yaml"
 MIN_INSTANCES=1
 MAX_INSTANCES=1
+
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
 

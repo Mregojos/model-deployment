@@ -1,20 +1,18 @@
-# app-production-i
-
-# Objective
-# * To deploy a pre-trained model on GCP
-
 #----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
 # !gcloud services list --available
 gcloud services enable iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
 # Directory
-cd app-production
+cd app-deployment
 
 #---------Application Name Environment Variables----------#
 # TO DO: In prodcution, change these values.
-VERSION="i" # Change this
-APP_NAME="-$VERSION"
+VERSION="ii"
+APP_NAME="app-prod-$VERSION"
+
+#---------Project Environment Variables---------#
+PROJECT_NAME=$(gcloud config get project)
 
 #----------Database Instance Environment Variables----------#
 DB_INSTANCE_NAME="$APP_NAME-db"
@@ -32,20 +30,21 @@ STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
-# DB_NAME="$APP_NAME-db"
+DB_NAME="$APP_NAME-admin"
 DB_USER="$APP_NAME-admin" 
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
 # TO DO
-DB_PASSWORD='' # change the value in production 
+DB_PASSWORD=$APP_NAME # change the value in production 
 PROJECT_NAME='$(gcloud config get project)'
 # TO DO
-ADMIN_PASSWORD= # change the value in production
+ADMIN_PASSWORD=$APP_NAME # change the value in production
 APP_PORT=9000
-APP_ADRESS= # change the value in production
-DOMAIN_NAME= "site.mattcloudtech.com" # change the value in production
+# APP_ADDRESS= # change the value in production
 # TO DO
-SPECIAL_NAME='' # change the value in production
+DOMAIN_NAME="" # change the value in production
+# TO DO
+SPECIAL_NAME=$APP_NAME # change the value in production
 
 #----------Deployment Environment Variables----------#
 CLOUD_BUILD_REGION="us-west2"
@@ -58,6 +57,7 @@ APP_PORT=9000
 APP_ENV_FILE=".env.yaml"
 MIN_INSTANCES=1
 MAX_INSTANCES=1
+
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
 #----------Database Instance Section----------#
@@ -177,17 +177,17 @@ echo "\n #----------App Service Account has been successfully binded.----------#
 # TO DO: In prodcution, change these values.
 echo """
 DB_NAME:
-    '$APP_NAME-admin'
+    '$DB_NAME'
 DB_USER:
-    '$APP_NAME-admin'
+    '$DB_USER'
 DB_HOST:
-    '$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
+    '$DB_HOST'
 DB_PORT:
     '$DB_PORT'
 DB_PASSWORD:
     '$DB_PASSWORD'
 PROJECT_NAME:
-    '$(gcloud config get project)'
+    '$PROJECT_NAME'
 ADMIN_PASSWORD:
     '$ADMIN_PASSWORD'
 APP_PORT:
