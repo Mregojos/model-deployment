@@ -15,6 +15,7 @@ APP_NAME="app-prod-$VERSION"
 PROJECT_NAME=$(gcloud config get project)
 
 #----------Database Instance Environment Variables----------#
+VPC_NAME='$APP_NAME-vpc'
 DB_INSTANCE_NAME="$APP_NAME-db"
 MACHINE_TYPE="e2-micro"
 REGION="us-west1"
@@ -61,6 +62,10 @@ MAX_INSTANCES=1
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
 #----------Database Instance Section----------#
+# Create a Custom
+gcloud compute networks create $VPC_NAME --subnet-mode=custom
+
+
 # Create a static external ip address
 gcloud compute addresses create $STATIC_IP_ADDRESS_NAME --region $REGION
 echo "\n #----------Static IP Address has been successfully created.----------# \n"

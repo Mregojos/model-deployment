@@ -1,6 +1,6 @@
 #---------Application Name Environment Variables----------#
 # TO DO: In prodcution, change these values.
-VERSION="ii"
+VERSION="iii"
 APP_NAME="app-prod-$VERSION"
 
 #---------Project Environment Variables---------#
@@ -21,6 +21,7 @@ STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 #---------Database Credentials----------#
+VPC_NAME='$APP_NAME-vpc'
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
 DB_NAME="$APP_NAME-admin"
 DB_USER="$APP_NAME-admin" 
@@ -112,5 +113,8 @@ gcloud iam roles delete $APP_CUSTOM_ROLE \
 # Undelete
 # gcloud iam roles undelete $APP_CUSTOM_ROLE \
 #    --project=$(gcloud config get project) 
+
+# Delete Custom VPC
+gcloud compute networks delete $VPC_NAME --quiet
 
 echo "\n #----------Custom Roles have been Successfully deleted.----------# \n"
