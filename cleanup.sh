@@ -1,6 +1,7 @@
 #---------Application Name Environment Variables----------#
-VERSION="x" # Change this
-APP_NAME="site-model-app-deployment-$VERSION"
+# TO DO: In prodcution, change these values.
+VERSION="i" # Change this
+APP_NAME="-$VERSION"
 
 #----------Database Instance Environment Variables----------#
 DB_INSTANCE_NAME="$APP_NAME-db"
@@ -22,22 +23,29 @@ DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
 DB_USER="$APP_NAME-admin" 
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
-DB_PASSWORD='password' # change the value in production 
+DB_PASSWORD='sitedbapp' # change the value in production 
 PROJECT_NAME='$(gcloud config get project)'
-ADMIN_PASSWORD=password # change the value in production
+# TO DO
+ADMIN_PASSWORD= # change the value in production
 APP_PORT=9000
 APP_ADRESS= # change the value in production
-DOMAIN_NAME= # change the value in production
-SPECIAL_NAME='Matt' # change the value in production
+DOMAIN_NAME= "site.mattcloudtech.com" # change the value in production
+# TO DO
+SPECIAL_NAME='' # change the value in production
 
 #----------Deployment Environment Variables----------#
 CLOUD_BUILD_REGION="us-west2"
+REGION="us-west1"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
 APP_SERVICE_ACCOUNT_NAME="app-service-account"
 APP_CUSTOM_ROLE="appCustomRole.$VERSION"
-
+APP_PORT=9000
+APP_ENV_FILE=".env.yaml"
+MIN_INSTANCES=1
+MAX_INSTANCES=1
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
+
 
 
 #----------Delete Resources----------#

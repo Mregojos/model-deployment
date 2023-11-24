@@ -65,7 +65,7 @@ def connection():
 def sections(con, cur):
     #----------Agent Section----------#
     #----------Vertex AI----------#
-    st.info("###### :computer: :technologist: [You can now talk to :violet[Intelligent Agent], try it now. :link:](https://)")
+    st.info("###### :computer: :technologist: [You can now talk to :violet[Intelligent Agent], try it now. :link:](https://site.mattcloudtech.com/Agent)")
     #----------End of Agent Section----------#
 
     #----------Portfolio Section----------#
@@ -299,11 +299,11 @@ def sections(con, cur):
 
     #----------External links---------#
     with st.expander(' :link: External Links'):
-        st.write(":link: :computer: [Personal Website](https://)")
-        st.write(":link: :computer: [Intelligent Agent Website](https://)")
-        st.write(":link: :book: [Project Repository](https://)")
+        st.write(":link: :computer: [Personal Website](https://site.mattcloudtech.com)")
+        st.write(":link: :computer: [Intelligent Agent Website](https://site.mattcloudtech.com/Agent)")
+        st.write(":link: :book: [Project Repository](https://github.com/mregojos)")
         # st.write(":link: :notebook: [Blog](https://)")
-        st.write(":link: :hand: [Connect with me](https://)")
+        # st.write(":link: :hand: [Connect with me](https://)")
     #----------End of External links---------#
 
     # Close Connection
@@ -315,9 +315,10 @@ def sections(con, cur):
 #----------Sidebar Footer----------#
 with st.sidebar:
     st.markdown("""
-                > :gray[:copyright: Portfolio Website by [Matt R.](https://)]            
-                > :gray[:cloud: Deployed on [Google Cloud](https://)]
+                > :gray[:copyright: Portfolio Website by [Matt R.](https://github.com/mregojos)]            
+                > :gray[:cloud: Deployed on [Google Cloud](https://cloud.google.com)]
                 """)
+    st.divider()
 
 #----------Execution----------#
 if __name__ == '__main__':
