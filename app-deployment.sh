@@ -16,6 +16,7 @@ PROJECT_NAME=$(gcloud config get project)
 
 #----------Database Instance Environment Variables----------#
 VPC_NAME='$APP_NAME-vpc'
+SUBNET_NAME='$APP_NAME-subnet'
 DB_INSTANCE_NAME="$APP_NAME-db"
 MACHINE_TYPE="e2-micro"
 REGION="us-west1"
@@ -28,6 +29,10 @@ BUCKET_NAME="$APP_NAME-startup-script"
 STARTUP_SCRIPT_BUCKET_SA="startup-script-bucket-sa"
 STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
+
+# For Notebook 
+NOTEBOOK_REGION='us-central'
+
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
@@ -62,8 +67,14 @@ MAX_INSTANCES=1
 echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
 #----------Database Instance Section----------#
-# Create a Custom
+# Create a Custom VPC
 gcloud compute networks create $VPC_NAME --subnet-mode=custom
+
+# Create subnets
+gcloud compute networks subnet create $SUBNET_NAME-$REGION --network=$VPC_NAME --range=$RANGE_A --region=$REGION
+gcloud compute networks subnet create $SUBNET_NAME-us-west --network=$VPC_NAME --range=$RANGE_B --region=$CLOUD_BUILD_REGION
+gcloud compute networks subnet create $SUBNET_NAME-us-central --network=$VPC_NAME --range=$RANGE_C --region=$NOTEBOOK_REGION
+
 
 
 # Create a static external ip address
