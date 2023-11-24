@@ -406,7 +406,7 @@ if __name__ == '__main__':
     with st.sidebar:
         st.markdown("""
                     ---
-                    > :gray[:copyright: Portfolio Website by [Matt R.](https://)]            
-                    > :gray[:cloud: Deployed on [Google Cloud](https://)]
+                    > :gray[:copyright: Portfolio Website by [Matt R.](https://github.com/mregojos)]            
+                    > :gray[:cloud: Deployed on [Google Cloud](https://cloud.google.com)]
                     ---
                     """)
