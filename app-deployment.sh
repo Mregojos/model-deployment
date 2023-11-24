@@ -15,8 +15,10 @@ APP_NAME="app-prod-$VERSION"
 PROJECT_NAME=$(gcloud config get project)
 
 #----------Database Instance Environment Variables----------#
-VPC_NAME='$APP_NAME-vpc'
-SUBNET_NAME='$APP_NAME-subnet'
+VPC_NAME="$APP_NAME-vpc"
+SUBNET_NAME="$APP_NAME-subnet"
+RANGE_A='10.100.0.0/20'
+RANGE_B='10.200.0.0/20'
 DB_INSTANCE_NAME="$APP_NAME-db"
 MACHINE_TYPE="e2-micro"
 REGION="us-west1"
@@ -32,7 +34,7 @@ STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 
 # For Notebook 
 NOTEBOOK_REGION='us-central'
-
+RANGE_C='10.300.0.0/20'
 
 #---------Database Credentials----------#
 DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
@@ -71,11 +73,9 @@ echo "\n #----------Exporting Environment Variables is done.----------# \n"
 gcloud compute networks create $VPC_NAME --subnet-mode=custom
 
 # Create subnets
-gcloud compute networks subnet create $SUBNET_NAME-$REGION --network=$VPC_NAME --range=$RANGE_A --region=$REGION
-gcloud compute networks subnet create $SUBNET_NAME-us-west --network=$VPC_NAME --range=$RANGE_B --region=$CLOUD_BUILD_REGION
-gcloud compute networks subnet create $SUBNET_NAME-us-central --network=$VPC_NAME --range=$RANGE_C --region=$NOTEBOOK_REGION
-
-
+gcloud compute networks subnets create $SUBNET_NAME-$REGION --network=$VPC_NAME --range=$RANGE_A --region=$REGION
+gcloud compute networks subnets create $SUBNET_NAME-$CLOUD_BUILD_REGION --network=$VPC_NAME --range=$RANGE_B --region=$CLOUD_BUILD_REGION
+gcloud compute networks subnets create $SUBNET_NAME-$NOTEBOOK_REGION --network=$VPC_NAME --range=$RANGE_C --region=$NOTEBOOK_REGION
 
 # Create a static external ip address
 gcloud compute addresses create $STATIC_IP_ADDRESS_NAME --region $REGION
