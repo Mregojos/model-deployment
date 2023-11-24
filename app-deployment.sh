@@ -1,5 +1,5 @@
 #----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
-# !gcloud services list --available
+# gcloud services list --available
 gcloud services enable compute.googleapis.com iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
 echo "\n #----------Services have been successfully enabled.----------# \n"
 
@@ -82,17 +82,11 @@ echo "\n #----------Startup script has been successfully copied.----------# \n"
 gcloud iam service-accounts create $STARTUP_SCRIPT_BUCKET_SA
 echo "\n #----------Bucket Service Account has been successfully created.----------# \n"
 
-# Add IAM Policy Binding to the Bucket Service Account
-# gcloud projects add-iam-policy-binding \
-#    $(gcloud config get project) \
-#    --member=serviceAccount:$STARTUP_SCRIPT_BUCKET_SA@$(gcloud config get project).iam.gserviceaccount.com \
-#    --role=roles/storage.objectViewer
-
-#----------To create a custom role. Use this in Production.----------#
-# It needs Project Owner Role.
-
+#----------To create a custom role. Use this in Production.----------#\
 # To describe and list IAM Roles 
 # gcloud iam roles describe roles/storage.objectUser
+
+# Custom role needs Project Owner Role.
 gcloud iam roles create $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
     --project=$(gcloud config get project) \
     --title=$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
@@ -107,9 +101,6 @@ gcloud projects add-iam-policy-binding \
     --role=projects/$(gcloud config get project)/roles/$STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE
 echo "\n #----------Bucket Service Account IAM has been successfully binded.----------# \n"
 
-# Print the Static IP Address
-# gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2
-
 # Create an instance with these specifications
 gcloud compute instances create $DB_INSTANCE_NAME \
     --machine-type=$MACHINE_TYPE --zone=$ZONE --tags=$TAGS \
@@ -122,8 +113,8 @@ echo "\n #----------Compute Instance has been successfully created.----------# \
 # Create a firewall rule (GCP)
 # TO DO: In production, only open the DB port and add tags
 gcloud compute --project=$(gcloud config get project) firewall-rules create $FIREWALL_RULES_NAME \
-    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000 --source-ranges=0.0.0.0/0  \
-    --target-tags=$TAGS
+    --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:5000,tcp:8000 --source-ranges=0.0.0.0/0  # \
+    # --target-tags=$TAGS
 echo "\n #----------Firewall Rules has been successfully created.----------# \n"
 
 #----------Deployment Section----------#
@@ -147,12 +138,6 @@ echo "\n #----------Docker image has been successfully built.----------# \n"
 gcloud iam service-accounts create $APP_SERVICE_ACCOUNT_NAME
 echo "\n #----------Service Account has been successfully created.----------# \n"
 
-# Add IAM Policy Binding to the App Service Account
-# gcloud projects add-iam-policy-binding \
-#    $(gcloud config get project) \
-#    --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
-#    --role=roles/aiplatform.user
-
 # To create a custom role it needs Project Owner Role
 # App Custom Role
 gcloud iam roles create $APP_CUSTOM_ROLE \
@@ -169,12 +154,7 @@ gcloud projects add-iam-policy-binding \
     --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
 echo "\n #----------App Service Account has been successfully binded.----------# \n"
 
-# Change the directory
-# cd site-model-app-deployment
-# touch env.yaml
-
 # Environment Variables for the app
-# TO DO: In prodcution, change these values.
 echo """
 DB_NAME:
     '$DB_NAME'
