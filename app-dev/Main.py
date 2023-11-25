@@ -2,7 +2,7 @@
 import streamlit as st
 import psycopg2
 import os
-import time
+import time as t
 
 #----------Database Credentials----------# 
 DB_NAME=os.getenv("DB_NAME")
@@ -65,7 +65,7 @@ def connection():
 def sections(con, cur):
     #----------Agent Section----------#
     #----------Vertex AI----------#
-    st.info("###### :computer: :technologist: [You can now talk to :violet[Intelligent Agent], try it now. :link:](https://site.mattcloudtech.com/Agent)")
+    st.info(f"###### :computer: :technologist: [You can now talk to :violet[Intelligent Agent], try it now. :link:](https://{DOMAIN_NAME}/Agent)")
     #----------End of Agent Section----------#
 
     #----------Portfolio Section----------#
@@ -146,8 +146,7 @@ def sections(con, cur):
         if st.button("Send"):
             if email_address is not "" and message is not "":
                 ### Insert into adatabase
-                import time
-                time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+                time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 SQL = "INSERT INTO messages (email_address, message, time) VALUES(%s, %s, %s);"
                 data = (email_address, message, time)
                 cur.execute(SQL, data)
@@ -194,7 +193,7 @@ def sections(con, cur):
         import time
         if st.button("Add a note"):
             if name is not "" and header is not "" and note is not "":
-                time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+                time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
                 st.write(f"##### :pencil: {header} \n")
                 st.text(f"{note} \n")
                 st.write(f":man: {name}")
@@ -256,8 +255,7 @@ def sections(con, cur):
                     """)
         st.subheader("",divider="rainbow")
         # Counter
-        import time
-        time = time.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+        time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
         view = 1
         ### Insert into a database
         SQL = "INSERT INTO counter (view, time) VALUES(%s, %s);"
@@ -284,7 +282,6 @@ def sections(con, cur):
         # Previous views
         st.divider()
         views = st.checkbox("See Previous Views")
-        # TODO: Total views today (Visualization)
         if views:
             st.write("**Previous Views**")
             cur.execute("""
