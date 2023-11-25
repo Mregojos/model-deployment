@@ -95,7 +95,7 @@ def sections(con, cur):
         guest = st.checkbox("Continue as a guest")
         credential = False
         # guest daily limit
-        LIMIT = 20
+        LIMIT = 30
         total_count= 0
     #----------Login or Guest----------#
         if login and guest:
@@ -193,7 +193,7 @@ def sections(con, cur):
         elif credential is True and agent is True and input_name == "":
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True:
-            prompt_history = "Hi"
+            prompt_history = "Hi. You are an intelligent Agent."
             st.write("#### :gray[Start the Conversation]")
             if agent:
                 prompt_user = st.chat_input("What do you want to talk about?")
@@ -213,7 +213,11 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
-                            output = response.text
+                            if response == "":
+                                output = "Oh snap. Could your repeat the prompt?"
+                            else:
+                                output = response.text
+                            
                         except:
                             output = "Sorry for that. Could your repeat the prompt?"
 
@@ -231,6 +235,10 @@ def sections(con, cur):
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
                             output = response.text
+                            if response == "":
+                                output = "Oh snap. Could your repeat the prompt?"
+                            else:
+                                output = response.text
                         except:
                             output = "I didn't catch that. Could your repeat the prompt?"
 
@@ -308,6 +316,10 @@ def sections(con, cur):
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
                             output = response.text
+                            if response == "":
+                                output = "Oh snap. Could your repeat the prompt?"
+                            else:
+                                output = response.text
                         except:
                             output = "Sorry for that. Could your repeat the prompt?"
 
@@ -326,6 +338,10 @@ def sections(con, cur):
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
                             output = response.text
+                            if response == "":
+                                output = "Oh snap. Could your repeat the prompt?"
+                            else:
+                                output = response.text
                         except:
                             output = "I didn't catch that. Could your repeat the prompt?"
 
