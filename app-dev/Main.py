@@ -296,8 +296,8 @@ def sections(con, cur):
 
     #----------External links---------#
     with st.expander(' :link: External Links'):
-        st.write(":link: :computer: [Personal Website](https://site.mattcloudtech.com)")
-        st.write(":link: :computer: [Intelligent Agent Website](https://site.mattcloudtech.com/Agent)")
+        st.write(f":link: :computer: [Personal Website](https://{DOMAIN_NAME})")
+        st.write(f":link: :computer: [Intelligent Agent Website](https://{DOMAIN_NAME}/Agent)")
         st.write(":link: :book: [Project Repository](https://github.com/mregojos)")
         # st.write(":link: :notebook: [Blog](https://)")
         # st.write(":link: :hand: [Connect with me](https://)")

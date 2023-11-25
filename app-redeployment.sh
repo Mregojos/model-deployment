@@ -5,19 +5,23 @@ gcloud builds submit \
     --tag $REGION-docker.pkg.dev/$(gcloud config get-value project)/$APP_ARTIFACT_NAME/$APP_NAME:$APP_VERSION
 echo "\n #----------Docker image has been successfully built.----------# \n"
 
+# DB_HOST Static IP Address
+DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
+
+# Environment Variables for the app
 echo """
 DB_NAME:
-    '$APP_NAME-admin'
+    '$DB_NAME'
 DB_USER:
-    '$APP_NAME-admin'
+    '$DB_USER'
 DB_HOST:
-    '$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)")'
+    '$DB_HOST'
 DB_PORT:
     '$DB_PORT'
 DB_PASSWORD:
     '$DB_PASSWORD'
 PROJECT_NAME:
-    '$(gcloud config get project)'
+    '$PROJECT_NAME'
 ADMIN_PASSWORD:
     '$ADMIN_PASSWORD'
 APP_PORT:
