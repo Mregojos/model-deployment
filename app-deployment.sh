@@ -12,7 +12,7 @@ VERSION="iii"
 APP_NAME="app-prod-$VERSION"
 
 #---------Project Environment Variables---------#
-PROJECT_NAME=$(gcloud config get project)
+PROJECT_NAME="$(gcloud config get project)"
 
 #----------Database Instance Environment Variables----------#
 VPC_NAME="$APP_NAME-vpc"
@@ -170,6 +170,9 @@ gcloud projects add-iam-policy-binding \
     --member=serviceAccount:$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com \
     --role=projects/$(gcloud config get project)/roles/$APP_CUSTOM_ROLE
 echo "\n #----------App Service Account has been successfully binded.----------# \n"
+
+# DB_HOST Static IP Address
+DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 
 # Environment Variables for the app
 echo """

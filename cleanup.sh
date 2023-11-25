@@ -4,7 +4,7 @@ VERSION="iii"
 APP_NAME="app-prod-$VERSION"
 
 #---------Project Environment Variables---------#
-PROJECT_NAME=$(gcloud config get project)
+PROJECT_NAME="$(gcloud config get project)"
 
 #----------Database Instance Environment Variables----------#
 VPC_NAME="$APP_NAME-vpc"
@@ -37,7 +37,7 @@ DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --form
 DB_PORT=5000
 # TO DO
 DB_PASSWORD=$APP_NAME # change the value in production 
-PROJECT_NAME='$(gcloud config get project)'
+PROJECT_NAME="$(gcloud config get project)"
 # TO DO
 ADMIN_PASSWORD=$APP_NAME # change the value in production
 APP_PORT=9000

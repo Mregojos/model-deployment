@@ -8,7 +8,7 @@ VERSION="iii"
 APP_NAME="app-prod-$VERSION"
 
 #---------Project Environment Variables---------#
-PROJECT_NAME=$(gcloud config get project)
+PROJECT_NAME="$(gcloud config get project)"
 
 #----------Database Instance Environment Variables----------#
 DB_INSTANCE_NAME="$APP_NAME-db"
