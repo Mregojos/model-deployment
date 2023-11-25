@@ -32,7 +32,7 @@ DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --form
 DB_PORT=5000
 # TO DO
 DB_PASSWORD=$APP_NAME # change the value in production 
-PROJECT_NAME='$(gcloud config get project)'
+PROJECT_NAME="$(gcloud config get project)"
 # TO DO
 ADMIN_PASSWORD=$APP_NAME # change the value in production
 APP_PORT=9000
