@@ -128,4 +128,7 @@ gcloud compute networks subnets delete $SUBNET_NAME-$NOTEBOOK_REGION --region=$N
 # Delete Custom VPC
 gcloud compute networks delete $VPC_NAME --quiet
 
+# For Dev Firewall Rule
+gcloud compute firewall-rules delete $FIREWALL_RULES_NAME-dev --quiet
+
 echo "\n #----------DONE----------# \n"
