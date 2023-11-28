@@ -40,7 +40,7 @@ NOTEBOOK_REGION='us-central1'
 RANGE_C='10.150.0.0/20'
 
 #---------Database Credentials----------#
-DB_CONTAINER_NAME="$APP_NAME-postgres-sql"
+DB_CONTAINER_NAME="$APP_NAME-sql"
 DB_NAME="$APP_NAME-admin"
 DB_USER="$APP_NAME-admin" 
 # DB_HOST=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
@@ -58,7 +58,7 @@ CLOUD_BUILD_REGION="us-west2"
 REGION="us-west1"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
-APP_SERVICE_ACCOUNT_NAME="app-service-account"
+APP_SERVICE_ACCOUNT_NAME="$APP_NAME-app-service-account"
 APP_CUSTOM_ROLE="appCustomRole.$VERSION"
 APP_PORT=9000
 APP_ENV_FILE=".env.yaml"
