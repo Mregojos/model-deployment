@@ -185,7 +185,7 @@ def sections(con, cur):
         elif credential is True and agent is True and input_name == "":
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True:
-            prompt_history = "Hi. You are an intelligent Agent."
+            prompt_history = "You are an intelligent Agent."
             st.write("#### :gray[Start the Conversation]")
             if agent:
                 prompt_user = st.chat_input("What do you want to talk about?")
@@ -257,7 +257,7 @@ def sections(con, cur):
                         message.text(f"{prompt}")
                         message.caption(f"{time}")
                         message = st.chat_message("assistant")
-                        message.write(output)
+                        message.markdown(output)
                         message.caption(f"{time} | Model: {model}")            
 
                 else:
@@ -274,7 +274,7 @@ def sections(con, cur):
                         message.text(f"{prompt}")
                         message.caption(f"{time}")
                         message = st.chat_message("assistant")
-                        message.write(output)
+                        message.markdown(output)
                         message.caption(f"{time} | Model: {model}") 
                         
     #----------For Guest----------#    
@@ -286,7 +286,7 @@ def sections(con, cur):
         elif credential is True and agent is True and input_name == "":
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True and total_count < LIMIT:
-            prompt_history = "Hi"
+            prompt_history = "You are an intelligent Agent."
             import time
             st.write("#### :gray[Start the Conversation]")
             if agent:
@@ -360,7 +360,7 @@ def sections(con, cur):
                         message.text(f"{prompt}")
                         message.caption(f"{time}")
                         message = st.chat_message("assistant")
-                        message.write(output)
+                        message.markdown(output)
                         message.caption(f"{time} | Model: {model}")            
 
                 else:
@@ -377,7 +377,7 @@ def sections(con, cur):
                         message.text(f"{prompt}")
                         message.caption(f"{time}")
                         message = st.chat_message("assistant")
-                        message.write(output)
+                        message.markdown(output)
                         message.caption(f"{time} | Model: {model}") 
         elif total_count >= LIMIT:
             st.info("You've reached your limit.")
