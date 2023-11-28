@@ -7,9 +7,12 @@ echo "\n #----------Services have been successfully enabled.----------# \n"
 cd app-deployment
 
 #---------Application Name Environment Variables----------#
-# TO DO: In prodcution, change these values.
-VERSION="iv"
+# In production, change these values.
+VERSION="v"
 APP_NAME="app-prod-$VERSION"
+DB_PASSWORD="password"
+ADMIN_PASSWORD="password"
+SPECIAL_NAME="guest"
 
 #---------Project Environment Variable---------#
 PROJECT_NAME="$(gcloud config get project)"
@@ -28,7 +31,7 @@ TAGS="db"
 FIREWALL_RULES_NAME="$APP_NAME-ports"
 STATIC_IP_ADDRESS_NAME="db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
-STARTUP_SCRIPT_BUCKET_SA="startup-script-bucket-sa"
+STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-bucket-sa"
 STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
@@ -43,17 +46,12 @@ DB_USER="$APP_NAME-admin"
 # DB_HOST=$(gcloud compute addresses describe $STATIC_IP_ADDRESS_NAME --region $REGION | grep "address: " | cut -d " " -f2)
 DB_HOST=$(gcloud compute instances list --filter="name=$DB_INSTANCE_NAME" --format="value(networkInterfaces[0].accessConfigs[0].natIP)") 
 DB_PORT=5000
-# TO DO
-DB_PASSWORD=$APP_NAME # change the value in production 
-PROJECT_NAME="$(gcloud config get project)"
-# TO DO
-ADMIN_PASSWORD=$APP_NAME # change the value in production
+DB_PASSWORD=$DB_PASSWORD
+ADMIN_PASSWORD=$ADMIN_PASSWORD
 APP_PORT=9000
-# APP_ADDRESS= # change the value in production
-# TO DO
-DOMAIN_NAME="" # change the value in production
-# TO DO
-SPECIAL_NAME=$APP_NAME # change the value in production
+APP_ADDRESS=""
+DOMAIN_NAME="" 
+SPECIAL_NAME=$SPECIAL_NAME
 
 #----------Deployment Environment Variables----------#
 CLOUD_BUILD_REGION="us-west2"
