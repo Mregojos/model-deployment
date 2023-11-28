@@ -1,8 +1,7 @@
-# Environment
-# TO DO: In production, change the values to be more secure. 
-export VERSION="v" # Change this
-export APP_NAME="app-prod-$VERSION" # change the value in production 
-export DB_PASSWORD="password" # change the value in production 
+# Environment Variables
+export VERSION="v" 
+export APP_NAME="app-prod-$VERSION" 
+export DB_PASSWORD="password" 
 
 export DB_CONTAINER_NAME="$APP_NAME-sql"
 # export DB_NAME="$APP_NAME-admin"
