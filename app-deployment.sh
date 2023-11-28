@@ -29,10 +29,10 @@ ZONE="us-west1-a"
 BOOT_DISK_SIZE="30"
 TAGS="db"
 FIREWALL_RULES_NAME="$APP_NAME-ports"
-STATIC_IP_ADDRESS_NAME="db-static-ip-address"
+STATIC_IP_ADDRESS_NAME="$APP_NAME-db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
 STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-bucket-sa"
-STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
+STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="appDeploymentBucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 # For Notebook 
@@ -59,7 +59,7 @@ REGION="us-west1"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
 APP_SERVICE_ACCOUNT_NAME="$APP_NAME-app-service-account"
-APP_CUSTOM_ROLE="appCustomRole.$VERSION"
+APP_CUSTOM_ROLE="appDeploymentCustomRole.$VERSION"
 APP_PORT=9000
 APP_ENV_FILE=".env.yaml"
 MIN_INSTANCES=1
@@ -208,6 +208,8 @@ gcloud run deploy $APP_NAME \
     --region=$REGION \
     --service-account=$APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com 
 echo "\n #----------The application has been successfully deployed.----------# \n"
+
+echo "\n #----------DONE----------# \n"
 
 
 

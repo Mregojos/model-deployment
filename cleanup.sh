@@ -1,11 +1,3 @@
-#----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
-# gcloud services list --available
-gcloud services enable compute.googleapis.com iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
-echo "\n #----------Services have been successfully enabled.----------# \n"
-
-# Directory
-cd app-deployment
-
 #---------Application Name Environment Variables----------#
 # In production, change these values.
 VERSION="v"
@@ -29,10 +21,10 @@ ZONE="us-west1-a"
 BOOT_DISK_SIZE="30"
 TAGS="db"
 FIREWALL_RULES_NAME="$APP_NAME-ports"
-STATIC_IP_ADDRESS_NAME="db-static-ip-address"
+STATIC_IP_ADDRESS_NAME="$APP_NAME-db-static-ip-address"
 BUCKET_NAME="$APP_NAME-startup-script"
 STARTUP_SCRIPT_BUCKET_SA="$APP_NAME-bucket-sa"
-STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="bucketCustomRole.$VERSION"
+STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE="appDeploymentBucketCustomRole.$VERSION"
 # STARTUP_SCRIPT_NAME="$APP_NAME-startup-script.sh"
 
 # For Notebook 
@@ -59,7 +51,7 @@ REGION="us-west1"
 APP_ARTIFACT_NAME="$APP_NAME-artifact-registry"
 APP_VERSION="latest"
 APP_SERVICE_ACCOUNT_NAME="$APP_NAME-app-service-account"
-APP_CUSTOM_ROLE="appCustomRole.$VERSION"
+APP_CUSTOM_ROLE="appDeploymentCustomRole.$VERSION"
 APP_PORT=9000
 APP_ENV_FILE=".env.yaml"
 MIN_INSTANCES=1
@@ -136,4 +128,4 @@ gcloud compute networks subnets delete $SUBNET_NAME-$NOTEBOOK_REGION --region=$N
 # Delete Custom VPC
 gcloud compute networks delete $VPC_NAME --quiet
 
-echo "\n #----------Custom Roles have been Successfully deleted.----------# \n"
+echo "\n #----------DONE----------# \n"
