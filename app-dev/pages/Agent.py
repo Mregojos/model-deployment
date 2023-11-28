@@ -21,14 +21,10 @@ vertexai.init(project=PROJECT_NAME, location="us-central1")
 
 #----------Page Configuration----------# 
 st.set_page_config(page_title="Matt Cloud Tech",
-                   page_icon=":cloud:",
-                   # layout="wide",
-                   # menu_items={
-                   #    'About':"# Matt Cloud Tech"}
-                  )
+                   page_icon=":cloud:")
 
 # Title
-st.write("#### Pre-Trained Model Deployment")
+st.write("#### Pre-Trained Language Model Deployment")
 
 #----------Connect to a database----------# 
 def connection():
@@ -48,10 +44,6 @@ def connection():
     cur.execute("CREATE TABLE IF NOT EXISTS total_prompts(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt int)")
     con.commit()
     return con, cur
-
-#----------Variables----------#
-credential = False 
-agent = False
 
 #----------Models----------#
 def models():
@@ -136,7 +128,7 @@ def sections(con, cur):
         elif guest:
             credential = True
             st.write("You will be my agent's :blue[guest].")
-            st.write(f":violet[Your chat will be stored in a database, use the same name to see your past conversations.]")
+            st.write(f":violet[Your chat will be stored in a database. Use the same name to see your past conversations.]")
             st.caption(":warning: :red[Do not add sensitive data.]")
             model = st.selectbox("Choose Chat or Code Generation?", ('Chat', 'Code'))
             input_name = st.text_input("Your Name")
@@ -213,7 +205,7 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
-                            if response == "":
+                            if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
                                 output = response.text
@@ -235,7 +227,7 @@ def sections(con, cur):
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
                             output = response.text
-                            if response == "":
+                            if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
                                 output = response.text
@@ -316,7 +308,7 @@ def sections(con, cur):
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
                             output = response.text
-                            if response == "":
+                            if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
                                 output = response.text
@@ -338,7 +330,7 @@ def sections(con, cur):
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
                             output = response.text
-                            if response == "":
+                            if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
                                 output = response.text
