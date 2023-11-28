@@ -65,7 +65,7 @@ def connection():
 def sections(con, cur):
     #----------Agent Section----------#
     #----------Vertex AI----------#
-    st.info(f"###### :computer: :technologist: [You can now talk to :violet[Intelligent Agent], try it now. :link:](https://{DOMAIN_NAME}/Agent)")
+    st.info(f"###### :computer: :technologist: [:violet[Intelligent Agent] is here, try it now. :link:](https://{DOMAIN_NAME}/Agent)")
     #----------End of Agent Section----------#
 
     #----------Portfolio Section----------#
@@ -158,8 +158,8 @@ def sections(con, cur):
         st.divider()
         messages = st.checkbox("Messages")
         if messages:
-            password = st.text_input("Password", type="password")
-            if password == ADMIN_PASSWORD:
+            messages_password = st.text_input("Password", type="password")
+            if messages_password == ADMIN_PASSWORD:
                 st.info("Login success")
                 cur.execute("""
                             SELECT * 
@@ -199,7 +199,7 @@ def sections(con, cur):
                 st.write(f":man: {name}")
                 st.caption(f":watch: {time}")
                 st.info("Successfully Added.")
-                # st.balloons()
+                st.balloons()
                 ### Insert into adatabase
                 SQL = "INSERT INTO notes (name, header, note, time) VALUES(%s, %s, %s, %s);"
                 data = (name, header, note, time)
@@ -234,7 +234,7 @@ def sections(con, cur):
                         data = (id, name, header, note, id)
                         cur.execute(SQL, data)
                         con.commit()
-                        st.success("Successfully Edited.")
+                        st.info("Successfully Edited.")
                         st.button(":blue[Done]")
                     if st.button(f"DELETE ID #: {id}"):
                         cur.execute(f"DELETE FROM notes WHERE id = {id}")
