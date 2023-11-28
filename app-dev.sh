@@ -2,11 +2,6 @@
 # Directory
 cd app-dev
 
-#----------Enable Artifact Registry, Cloud Build, and Cloud Run, Vertex AI
-# gcloud services list --available
-gcloud services enable compute.googleapis.com iam.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com run.googleapis.com aiplatform.googleapis.com cloudresourcemanager.googleapis.com
-echo "\n #----------Services have been successfully enabled.----------# \n"
-
 # Directory
 # cd app-deployment
 
