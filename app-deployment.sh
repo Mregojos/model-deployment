@@ -69,6 +69,10 @@ echo "\n #----------Exporting Environment Variables is done.----------# \n"
 
 #----------Database Instance Section----------#
 # Create a Custom VPC
+# gcloud compute networks list | grep -a $VPC_NAME
+# if [ $? #? ]; then
+#    echo "VPC already exists"
+# fi
 gcloud compute networks create $VPC_NAME --subnet-mode=custom
 
 # Create subnets
