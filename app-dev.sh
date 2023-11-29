@@ -7,7 +7,7 @@ cd app-dev
 
 #---------Application Name Environment Variables----------#
 # In production, change these values.
-VERSION="v"
+VERSION="vi"
 APP_NAME="app-prod-$VERSION"
 DB_PASSWORD="password"
 ADMIN_PASSWORD="password"
