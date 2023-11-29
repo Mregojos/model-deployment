@@ -205,7 +205,7 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
-                            if response != "":
+                            if response != " ":
                                 output = response.text
                             elif response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
@@ -228,7 +228,7 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
-                            if response != "":
+                            if response != " ":
                                 output = response.text
                             elif response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
@@ -310,7 +310,7 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
-                            if response != "":
+                            if response != " ":
                                 output = response.text
                             elif response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
@@ -333,7 +333,7 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
-                            if response != "":
+                            if response != " ":
                                 output = response.text
                             elif response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
