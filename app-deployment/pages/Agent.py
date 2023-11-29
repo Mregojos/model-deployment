@@ -106,7 +106,7 @@ def sections(con, cur):
                     st.info(f"Your name for this conversation is :blue[{input_name}]")
                 elif save and input_name == "":
                     st.info("Save your name first.")
-                agent = st.toggle("**:violet[Let's talk to Agent]**")
+                agent = st.toggle("**:violet[Start the conversation]**")
                 if agent:
                     if input_name is not "":
                         # reset = st.button(":white[Refresh Conversation]")
@@ -179,9 +179,9 @@ def sections(con, cur):
     #----------For Admin----------#    
     if login and not guest:
         if credential is False:
-            st.info("Save your name and toggle the :violet[Let's talk to Agent] to start the conversation.")
+            st.info("Save your name and toggle the :violet[Start the conversation].")
         elif credential is True and agent is False:
-            st.info("Save your name and toggle the :violet[Let's talk to Agent] to start the conversation. Enjoy chatting :smile:")
+            st.info("Save your name and toggle the :violet[Start the conversation]. Enjoy chatting :smile:")
         elif credential is True and agent is True and input_name == "":
             st.info("Don't forget to save your name to continue.")
         elif credential is True and agent is True:
@@ -226,7 +226,6 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
-                            output = response.text
                             if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
@@ -307,7 +306,6 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = chat.send_message(prompt_history, **chat_parameters)
                             response = chat.send_message(prompt_user, **chat_parameters)
-                            output = response.text
                             if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
@@ -329,7 +327,6 @@ def sections(con, cur):
                                 prompt_history = prompt_history + "\n " + f"{name}: {prompt}" + "\n " + f"Model Output: {output}"
                             response = code_chat.send_message(prompt_history, **code_parameters)
                             response = code_chat.send_message(prompt_user, **code_parameters)
-                            output = response.text
                             if response == "" or response == None:
                                 output = "Oh snap. Could your repeat the prompt?"
                             else:
