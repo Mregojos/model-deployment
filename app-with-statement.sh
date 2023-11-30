@@ -20,6 +20,7 @@ else
     gcloud compute networks subnets create $SUBNET_NAME-$REGION --network=$VPC_NAME --range=$RANGE_A --region=$REGION
 fi
 
+
 # Create subnets
 if gcloud compute networks subnets list | grep -q $SUBNET_NAME-$CLOUD_BUILD_REGION; then
     echo "Subnet already exists"
@@ -59,17 +60,3 @@ fi
 sed -i s/VERSION=".*"/VERSION=\""$VERSION"\"/g startup-script.sh
 sed -i s/APP_NAME=".*"/APP_NAME=\""$APP_NAME"\"/g startup-script.sh
 sed -i s/DB_PASSWORD=".*"/DB_PASSWORD=\""$DB_PASSWORD"\"/g startup-script.sh
-
-# Copy the file to Cloud Storage
-# gcloud storage cp startup-script.sh gs://$BUCKET_NAME
-# echo "\n #----------Startup script has been successfully copied.----------# \n"
-
-
-#----------Use this service account only for deployment development ans use the custom service account for production----------#
-# Create a service account
-if gcloud iam service-accounts list | grep -q $STARTUP_SCRIPT_BUCKET_SA; then
-    echo "Bucket Service Account already exists"
-else
-    gcloud iam service-accounts create $STARTUP_SCRIPT_BUCKET_SA
-    echo "\n #----------Bucket Service Account has been successfully created.----------# \n"
-fi
