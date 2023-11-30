@@ -11,12 +11,12 @@ Prerequisite:
 
 ```sh
 # Start the app
-sh environment-variables.sh
+source environment-variables.sh
 sh app-deployment.sh # For Google Cloud Deployment
 sh app-dev # For Development
 
 # Cleanup
-sh environment-variables.sh
+source environment-variables.sh
 sh cleanup.sh
 ```
 
