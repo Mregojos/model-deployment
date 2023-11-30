@@ -1,7 +1,7 @@
-# Web App and Model Deployment
+# Pre-Trained Language Model Deployment
 
 ## Objective
-* To develop a web app and deploy models using Google Cloud Services.
+* To develop a web app and deploy language models using Google Cloud Services.
 
 ---
 ### Start the app
