@@ -62,7 +62,11 @@ gcloud compute networks subnets delete $SUBNET_NAME-$NOTEBOOK_REGION --region=$N
 gcloud compute networks delete $VPC_NAME --quiet
 
 # For Dev Firewall Rule
-gcloud compute firewall-rules delete $FIREWALL_RULES_NAME-dev --quiet
+if gcloud compute firewall-rules list --filter="name=$FIREWALL_RULES_NAME-dev" --format="table(name)" | grep -q $FIREWALL_RULES_NAME-dev; then
+    gcloud compute firewall-rules delete $FIREWALL_RULES_NAME-dev --quiet
+# else
+    # echo "$FIREWALL_RULES_NAME-dev Firewall Rule doesn't exist." 
+fi
 
 echo "\n #----------Services and Resources have been Successfully deleted.----------# \n"
 
