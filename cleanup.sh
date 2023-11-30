@@ -36,12 +36,6 @@ gcloud projects remove-iam-policy-binding \
 
 gcloud iam service-accounts delete $APP_SERVICE_ACCOUNT_NAME@$(gcloud config get project).iam.gserviceaccount.com --quiet
 
-
-
-echo "\n #----------Services and Resources have been Successfully deleted.----------# \n"
-
-
-
 #----------Requires Project Owner Permission----------#
 # Delete
 gcloud iam roles delete $STARTUP_SCRIPT_BUCKET_CUSTOM_ROLE \
@@ -69,5 +63,7 @@ gcloud compute networks delete $VPC_NAME --quiet
 
 # For Dev Firewall Rule
 gcloud compute firewall-rules delete $FIREWALL_RULES_NAME-dev --quiet
+
+echo "\n #----------Services and Resources have been Successfully deleted.----------# \n"
 
 echo "\n #----------DONE----------# \n"
