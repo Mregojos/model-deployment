@@ -28,13 +28,7 @@ st.set_page_config(page_title="Matt Cloud Tech",
                   )
 
 
-title = "### :cloud: Matt Cloud Tech"
-about = """
-##### Good day :wave:.
-##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
-##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
-"""
-notification = f"###### :computer: :technologist: [:violet[Intelligent Agent] is here, try it now. :link:](https://{DOMAIN_NAME}/Agent)"
+
 
 def connection():
 #----------Connect to a database----------#
@@ -64,7 +58,9 @@ def connection():
 
 def sections(con, cur):
     #----------About Section----------#
-
+    title = "### :cloud: Matt Cloud Tech"
+    about = "##### Good day :wave:.\n##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist: \n##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems."
+    notification = f"###### :computer: :technologist: [:violet[Intelligent Agent] is here, try it now. :link:](https://{DOMAIN_NAME}/Agent)"
     
     cur.execute("""
                 SELECT *
