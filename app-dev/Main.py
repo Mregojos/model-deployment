@@ -27,17 +27,14 @@ st.set_page_config(page_title="Matt Cloud Tech",
                    #    'About':"# Matt Cloud Tech"}
                   )
 
-#----------About Section----------#
-st.write("### :cloud: Matt Cloud Tech")
-st.header("", divider="rainbow")
 
-st.write("""
-        ##### Good day :wave:.
-        ##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
-        ##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
-        """) 
-# st.divider()
-#----------End of About Section----------#
+title = "### :cloud: Matt Cloud Tech"
+about = """
+##### Good day :wave:.
+##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist:
+##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems. 
+"""
+notification = f"###### :computer: :technologist: [:violet[Intelligent Agent] is here, try it now. :link:](https://{DOMAIN_NAME}/Agent)"
 
 def connection():
 #----------Connect to a database----------#
@@ -49,6 +46,9 @@ def connection():
                            password={DB_PASSWORD}
                            """)
     cur = con.cursor()
+    # Create a about table if not exists
+    # cur.execute("DROP TABLE about")
+    cur.execute("CREATE TABLE IF NOT EXISTS about(title varchar, about varchar, notification varchar)")
     # Create a portfolio_section table if not exists
     cur.execute("CREATE TABLE IF NOT EXISTS portfolio_section(id serial PRIMARY KEY, name varchar, portfolio varchar)")
     # Create a portfolio table if not exists
@@ -63,10 +63,19 @@ def connection():
     return con, cur
 
 def sections(con, cur):
-    #----------Agent Section----------#
-    #----------Vertex AI----------#
-    st.info(f"###### :computer: :technologist: [:violet[Intelligent Agent] is here, try it now. :link:](https://{DOMAIN_NAME}/Agent)")
-    #----------End of Agent Section----------#
+    #----------About Section----------#
+
+    
+    cur.execute("""
+                SELECT *
+                FROM about
+                """)
+    for title, about, notification in cur.fetchall():
+        title, about, notification = title, about, notification
+    st.write(title)
+    st.header("", divider="rainbow")
+    st.write(about)     
+    st.info(notification)
 
     #----------Portfolio Section----------#
     with st.expander(' :notebook: Portfolio'):
@@ -233,8 +242,20 @@ def sections(con, cur):
             password = st.text_input("Password", type="password")
             if password == ADMIN_PASSWORD:
                 st.info("Login Success")
-                option = st.text_input("Portfolio, Messages, Counter")
-                if option == "Portfolio":
+                option = st.text_input("About, Portfolio, Messages, Counter")
+                if option == "About":
+                    title= st.text_input("Title", title)
+                    about = st.text_area("About", about)
+                    notification = st.text_area("", notification)
+                    save = st.button("Save changes")
+                    if save:
+                        SQL = "INSERT INTO about (title, about, notification) VALUES(%s, %s, %s);"
+                        data = (title, about, notification)
+                        cur.execute(SQL, data)
+                        con.commit()
+                        st.info("Successfully Added.")
+                        st.button(":blue[Done]") 
+                elif option == "Portfolio":
                     option_portfolio = st.text_input("Portfolio or Manual")
                     if option_portfolio == "Portfolio":
                         name = st.text_input("Name", name)
@@ -302,6 +323,7 @@ def sections(con, cur):
                                     """)
                         for _, _, time in cur.fetchall():
                             st.caption(f"{time}")
+   
     #----------End of External links---------#
 
     # Close Connection
