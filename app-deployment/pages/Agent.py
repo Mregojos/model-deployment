@@ -24,7 +24,7 @@ st.set_page_config(page_title="Matt Cloud Tech",
                    page_icon=":cloud:")
 
 # Title
-st.write("#### Pre-Trained Language Model Deployment")
+st.write("#### Pre-Trained Language Model Deployment ")
 
 #----------Connect to a database----------# 
 def connection():
@@ -42,6 +42,7 @@ def connection():
     # cur.execute("CREATE TABLE IF NOT EXISTS users(id serial PRIMARY KEY, name varchar, password varchar)")
     # cur.execute("DROP TABLE total_prompts")
     cur.execute("CREATE TABLE IF NOT EXISTS total_prompts(id serial PRIMARY KEY, name varchar, prompt varchar, output varchar, model varchar, time varchar, count_prompt int)")
+    cur.execute("CREATE TABLE IF NOT EXISTS chat_view_counter(id serial PRIMARY KEY, view int, time varchar)")
     con.commit()
     return con, cur
 
@@ -89,6 +90,13 @@ def sections(con, cur):
         # guest daily limit
         LIMIT = 30
         total_count= 0
+        # Chat View Counter
+        time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
+        view = 1
+        SQL = "INSERT INTO chat_view_counter (view, time) VALUES(%s, %s);"
+        data = (view, time)
+        cur.execute(SQL, data)
+        con.commit()
     #----------Login or Guest----------#
         if login and guest:
             st.info("Choose only one")
@@ -121,6 +129,41 @@ def sections(con, cur):
                                         """)
                             con.commit()
                             st.info(f"History by {input_name} is successfully deleted.")
+                counter = st.checkbox("Counter")
+                if counter:
+                    st.header("Counter")
+                    st.caption("""
+                                Count every request in this app.
+                                """)
+                    st.subheader("",divider="rainbow")
+                    # Total views
+                    cur.execute("""
+                                SELECT SUM(view) 
+                                FROM chat_view_counter
+                                """)
+                    st.write(f"#### Total views: **{cur.fetchone()[0]}**")
+                    # Current view
+                    st.write(f"Current: {time}")
+                    # Total views today
+                    time_date = time[0:15]
+                    cur.execute(f"""
+                                SELECT SUM(view) 
+                                FROM chat_view_counter
+                                WHERE time LIKE '{time_date}%'
+                                """)
+                    st.write(f"#### Total views today: **{cur.fetchone()[0]}**")
+                    st.divider()
+                    # Previous views
+                    views = st.checkbox("See Previous Views")
+                    if views:
+                        st.write("**Previous Views**")
+                        cur.execute("""
+                                    SELECT * 
+                                    FROM counter
+                                    ORDER BY time DESC
+                                    """)
+                        for _, _, time in cur.fetchall():
+                            st.caption(f"{time}")
 
             else:
                 st.info("Wrong credential")
