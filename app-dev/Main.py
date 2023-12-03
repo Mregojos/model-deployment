@@ -90,51 +90,6 @@ def sections(con, cur):
             st.write(f"### [{project_name}]({link})")
             st.write(f"{description}")
             st.divider()
-
-        # Modify portfolio
-        st.divider()
-        modify = st.checkbox("Modify") 
-        if modify:
-            password = st.text_input("Password", type="password")
-            if password == ADMIN_PASSWORD:
-                option = st.text_input("Portfolio or Manual")
-                if option == "Portfolio":
-                    name = st.text_input("Name", name)
-                    portfolio_section = st.text_area("Portfolio", portfolio_section)
-                    save = st.button("Save changes")
-                    if save:
-                        SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
-                        data = (name, portfolio_section)
-                        cur.execute(SQL, data)
-                        con.commit()
-                        st.info("Successfully Added.")
-                        st.button(":blue[Done]")                
-                elif option == "Manual":
-                    modify = st.text_input("Add or Delete")
-                    if modify == "Add":
-                        project_name = st.text_input("Project Name")
-                        description = st.text_input("Description")
-                        link = st.text_input("Link")
-                        ### Insert into adatabase
-                        save = st.button("Save")
-                        if save:
-                            SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
-                            data = (project_name, description, link)
-                            cur.execute(SQL, data)
-                            con.commit()
-                            st.write("Successfully Added.")
-                            st.button(":blue[Done]")
-                    elif modify == "Delete":
-                        project_name = st.text_input("Project Name")
-                        delete = st.button("Delete")
-                        if delete:
-                            cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
-                            # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
-                            # data = (project_name)
-                            # cur.execute(SQL, data)
-                            con.commit()
-                            st.success("Successfully Deleted.")
-                            st.button(":blue[Done]")
     #----------End of Portfolio Section----------#
 
     #----------Message Section----------#
@@ -301,6 +256,57 @@ def sections(con, cur):
         st.write(":link: :book: [Project Repository](https://github.com/mregojos)")
         # st.write(":link: :notebook: [Blog](https://)")
         # st.write(":link: :hand: [Connect with me](https://)")
+        
+        # Admin
+        st.divider()
+        Admin = st.checkbox("MATT CLOUD TECH")
+        if Admin:
+            password = st.text_input("Password", type="password")
+            if password == ADMIN_PASSWORD:
+                st.info("Login Success")
+                option = st.text_input("PORTFOLIO, MESSAGES, COUNTER")
+                if option == "PORTFOLIO":
+                    option_portfolio = st.text_input("Portfolio or Manual")
+                    if option_portfolio == "Portfolio":
+                        name = st.text_input("Name", name)
+                        portfolio_section = st.text_area("Portfolio", portfolio_section)
+                        save = st.button("Save changes")
+                        if save:
+                            SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
+                            data = (name, portfolio_section)
+                            cur.execute(SQL, data)
+                            con.commit()
+                            st.info("Successfully Added.")
+                            st.button(":blue[Done]")                
+                    elif option_portfolio == "Manual":
+                        modify = st.text_input("Add or Delete")
+                        if modify == "Add":
+                            project_name = st.text_input("Project Name")
+                            description = st.text_input("Description")
+                            link = st.text_input("Link")
+                            ### Insert into adatabase
+                            save = st.button("Save")
+                            if save:
+                                SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
+                                data = (project_name, description, link)
+                                cur.execute(SQL, data)
+                                con.commit()
+                                st.write("Successfully Added.")
+                                st.button(":blue[Done]")
+                        elif modify == "Delete":
+                            project_name = st.text_input("Project Name")
+                            delete = st.button("Delete")
+                            if delete:
+                                cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
+                                # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
+                                # data = (project_name)
+                                # cur.execute(SQL, data)
+                                con.commit()
+                                st.success("Successfully Deleted.")
+                                st.button(":blue[Done]") 
+                elif option == "MESSAGES":
+                    st.write("MESSAGES")
+                    
     #----------End of External links---------#
 
     # Close Connection
