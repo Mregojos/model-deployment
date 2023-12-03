@@ -60,7 +60,7 @@ def sections(con, cur):
     #----------About Section----------#
     title = "### :cloud: Matt Cloud Tech"
     about = "##### Good day :wave:.\n##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist: \n##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems."
-    notification = f"###### :computer: :technologist: [:violet[Intelligent Agent] is here, try it now. :link:](https://{DOMAIN_NAME}/Agent)"
+    notification = f"###### :computer: :technologist: [:violet[Intelligent Agent] is here. Try it now. :link:](https://{DOMAIN_NAME}/Agent)"
     
     cur.execute("""
                 SELECT *
