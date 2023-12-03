@@ -1,6 +1,6 @@
 #---------Application Name Environment Variables----------#
 # In production, change these values.
-export VERSION="ii"
+export VERSION="i"
 export APP_NAME="app-prod-$VERSION"
 export DB_PASSWORD="password"
 export ADMIN_PASSWORD="password"
