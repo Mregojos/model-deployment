@@ -90,6 +90,7 @@ def sections(con, cur):
             st.write(f"### [{project_name}]({link})")
             st.write(f"{description}")
             st.divider()
+        st.divider()
     #----------End of Portfolio Section----------#
 
     #----------Message Section----------#
@@ -111,27 +112,6 @@ def sections(con, cur):
             else:
                 st.info("Please add Email Address and Message before sending.")
         st.divider()
-        messages = st.checkbox("Messages")
-        if messages:
-            messages_password = st.text_input("Password", type="password")
-            if messages_password == ADMIN_PASSWORD:
-                st.info("Login success")
-                cur.execute("""
-                            SELECT * 
-                            FROM messages
-                            """)
-                for id, email_address, message, time in cur.fetchall():
-                    st.write(f"ID: {id}")
-                    st.write(f"Email Address: {email_address}")
-                    st.write(f"Message: {message}")
-                    st.write(f"Time: {time}")
-                    if st.button(f"DELETE ID #: {id}"):
-                        cur.execute(f"DELETE FROM messages WHERE id = {id}")
-                        con.commit()
-                        st.info("Successfully Deleted.")
-                        st.button(":blue[Done]")
-                    st.divider()
-            
     #----------End of Message Section----------#
 
     #----------Notepad Section----------#
@@ -234,18 +214,7 @@ def sections(con, cur):
                     WHERE time LIKE '{time_date}%'
                     """)
         st.write(f"#### Total views today: **{cur.fetchone()[0]}**")
-        # Previous views
         st.divider()
-        views = st.checkbox("See Previous Views")
-        if views:
-            st.write("**Previous Views**")
-            cur.execute("""
-                        SELECT * 
-                        FROM counter
-                        ORDER BY time DESC
-                        """)
-            for _, _, time in cur.fetchall():
-                st.caption(f"{time}")
     #----------End of Counter----------#
 
 
@@ -264,8 +233,8 @@ def sections(con, cur):
             password = st.text_input("Password", type="password")
             if password == ADMIN_PASSWORD:
                 st.info("Login Success")
-                option = st.text_input("PORTFOLIO, MESSAGES, COUNTER")
-                if option == "PORTFOLIO":
+                option = st.text_input("Portfolio, Messages, Counter")
+                if option == "Portfolio":
                     option_portfolio = st.text_input("Portfolio or Manual")
                     if option_portfolio == "Portfolio":
                         name = st.text_input("Name", name)
@@ -304,9 +273,35 @@ def sections(con, cur):
                                 con.commit()
                                 st.success("Successfully Deleted.")
                                 st.button(":blue[Done]") 
-                elif option == "MESSAGES":
-                    st.write("MESSAGES")
-                    
+                elif option == "Messages":
+                    st.info("Login success")
+                    cur.execute("""
+                                SELECT * 
+                                FROM messages
+                                """)
+                    for id, email_address, message, time in cur.fetchall():
+                        st.write(f"ID: {id}")
+                        st.write(f"Email Address: {email_address}")
+                        st.write(f"Message: {message}")
+                        st.write(f"Time: {time}")
+                        if st.button(f"DELETE ID #: {id}"):
+                            cur.execute(f"DELETE FROM messages WHERE id = {id}")
+                            con.commit()
+                            st.info("Successfully Deleted.")
+                            st.button(":blue[Done]")
+                        st.divider()
+                elif option == "Counter":
+                    # Previous views
+                    views = st.checkbox("See Previous Views")
+                    if views:
+                        st.write("**Previous Views**")
+                        cur.execute("""
+                                    SELECT * 
+                                    FROM counter
+                                    ORDER BY time DESC
+                                    """)
+                        for _, _, time in cur.fetchall():
+                            st.caption(f"{time}")
     #----------End of External links---------#
 
     # Close Connection

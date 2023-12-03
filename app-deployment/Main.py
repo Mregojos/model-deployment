@@ -90,51 +90,7 @@ def sections(con, cur):
             st.write(f"### [{project_name}]({link})")
             st.write(f"{description}")
             st.divider()
-
-        # Modify portfolio
         st.divider()
-        modify = st.checkbox("Modify") 
-        if modify:
-            password = st.text_input("Password", type="password")
-            if password == ADMIN_PASSWORD:
-                option = st.text_input("Portfolio or Manual")
-                if option == "Portfolio":
-                    name = st.text_input("Name", name)
-                    portfolio_section = st.text_area("Portfolio", portfolio_section)
-                    save = st.button("Save changes")
-                    if save:
-                        SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
-                        data = (name, portfolio_section)
-                        cur.execute(SQL, data)
-                        con.commit()
-                        st.info("Successfully Added.")
-                        st.button(":blue[Done]")                
-                elif option == "Manual":
-                    modify = st.text_input("Add or Delete")
-                    if modify == "Add":
-                        project_name = st.text_input("Project Name")
-                        description = st.text_input("Description")
-                        link = st.text_input("Link")
-                        ### Insert into adatabase
-                        save = st.button("Save")
-                        if save:
-                            SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
-                            data = (project_name, description, link)
-                            cur.execute(SQL, data)
-                            con.commit()
-                            st.write("Successfully Added.")
-                            st.button(":blue[Done]")
-                    elif modify == "Delete":
-                        project_name = st.text_input("Project Name")
-                        delete = st.button("Delete")
-                        if delete:
-                            cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
-                            # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
-                            # data = (project_name)
-                            # cur.execute(SQL, data)
-                            con.commit()
-                            st.success("Successfully Deleted.")
-                            st.button(":blue[Done]")
     #----------End of Portfolio Section----------#
 
     #----------Message Section----------#
@@ -156,27 +112,6 @@ def sections(con, cur):
             else:
                 st.info("Please add Email Address and Message before sending.")
         st.divider()
-        messages = st.checkbox("Messages")
-        if messages:
-            messages_password = st.text_input("Password", type="password")
-            if messages_password == ADMIN_PASSWORD:
-                st.info("Login success")
-                cur.execute("""
-                            SELECT * 
-                            FROM messages
-                            """)
-                for id, email_address, message, time in cur.fetchall():
-                    st.write(f"ID: {id}")
-                    st.write(f"Email Address: {email_address}")
-                    st.write(f"Message: {message}")
-                    st.write(f"Time: {time}")
-                    if st.button(f"DELETE ID #: {id}"):
-                        cur.execute(f"DELETE FROM messages WHERE id = {id}")
-                        con.commit()
-                        st.info("Successfully Deleted.")
-                        st.button(":blue[Done]")
-                    st.divider()
-            
     #----------End of Message Section----------#
 
     #----------Notepad Section----------#
@@ -279,18 +214,7 @@ def sections(con, cur):
                     WHERE time LIKE '{time_date}%'
                     """)
         st.write(f"#### Total views today: **{cur.fetchone()[0]}**")
-        # Previous views
         st.divider()
-        views = st.checkbox("See Previous Views")
-        if views:
-            st.write("**Previous Views**")
-            cur.execute("""
-                        SELECT * 
-                        FROM counter
-                        ORDER BY time DESC
-                        """)
-            for _, _, time in cur.fetchall():
-                st.caption(f"{time}")
     #----------End of Counter----------#
 
 
@@ -301,6 +225,83 @@ def sections(con, cur):
         st.write(":link: :book: [Project Repository](https://github.com/mregojos)")
         # st.write(":link: :notebook: [Blog](https://)")
         # st.write(":link: :hand: [Connect with me](https://)")
+        
+        # Admin
+        st.divider()
+        Admin = st.checkbox("MATT CLOUD TECH")
+        if Admin:
+            password = st.text_input("Password", type="password")
+            if password == ADMIN_PASSWORD:
+                st.info("Login Success")
+                option = st.text_input("Portfolio, Messages, Counter")
+                if option == "Portfolio":
+                    option_portfolio = st.text_input("Portfolio or Manual")
+                    if option_portfolio == "Portfolio":
+                        name = st.text_input("Name", name)
+                        portfolio_section = st.text_area("Portfolio", portfolio_section)
+                        save = st.button("Save changes")
+                        if save:
+                            SQL = "INSERT INTO portfolio_section (name, portfolio) VALUES(%s, %s);"
+                            data = (name, portfolio_section)
+                            cur.execute(SQL, data)
+                            con.commit()
+                            st.info("Successfully Added.")
+                            st.button(":blue[Done]")                
+                    elif option_portfolio == "Manual":
+                        modify = st.text_input("Add or Delete")
+                        if modify == "Add":
+                            project_name = st.text_input("Project Name")
+                            description = st.text_input("Description")
+                            link = st.text_input("Link")
+                            ### Insert into adatabase
+                            save = st.button("Save")
+                            if save:
+                                SQL = "INSERT INTO portfolio (project_name, description, link) VALUES(%s, %s, %s);"
+                                data = (project_name, description, link)
+                                cur.execute(SQL, data)
+                                con.commit()
+                                st.write("Successfully Added.")
+                                st.button(":blue[Done]")
+                        elif modify == "Delete":
+                            project_name = st.text_input("Project Name")
+                            delete = st.button("Delete")
+                            if delete:
+                                cur.execute(f"DELETE FROM portfolio WHERE project_name = '{project_name}';")
+                                # SQL = "DELETE FROM portfolio WHERE project_name = %s;"
+                                # data = (project_name)
+                                # cur.execute(SQL, data)
+                                con.commit()
+                                st.success("Successfully Deleted.")
+                                st.button(":blue[Done]") 
+                elif option == "Messages":
+                    st.info("Login success")
+                    cur.execute("""
+                                SELECT * 
+                                FROM messages
+                                """)
+                    for id, email_address, message, time in cur.fetchall():
+                        st.write(f"ID: {id}")
+                        st.write(f"Email Address: {email_address}")
+                        st.write(f"Message: {message}")
+                        st.write(f"Time: {time}")
+                        if st.button(f"DELETE ID #: {id}"):
+                            cur.execute(f"DELETE FROM messages WHERE id = {id}")
+                            con.commit()
+                            st.info("Successfully Deleted.")
+                            st.button(":blue[Done]")
+                        st.divider()
+                elif option == "Counter":
+                    # Previous views
+                    views = st.checkbox("See Previous Views")
+                    if views:
+                        st.write("**Previous Views**")
+                        cur.execute("""
+                                    SELECT * 
+                                    FROM counter
+                                    ORDER BY time DESC
+                                    """)
+                        for _, _, time in cur.fetchall():
+                            st.caption(f"{time}")
     #----------End of External links---------#
 
     # Close Connection
