@@ -60,7 +60,7 @@ def sections(con, cur):
     #----------About Section----------#
     title = "### :cloud: Matt Cloud Tech"
     about = "##### Good day :wave:.\n##### My name is :blue[Matt]. I am a Cloud Technology Enthusiast. :technologist: \n##### Currently, I am learning and building Cloud Infrastructure, Data and CI/CD Pipelines, and Intelligent Systems."
-    notification = f"###### :computer: :technologist: Chat with [:violet[Multimodal Agent]. :link:](https://{DOMAIN_NAME}/Agent)"
+    notification = f"###### :computer: :technologist: Chat with [:violet[Multimodal Agent] :link:](https://{DOMAIN_NAME}/Agent)"
     
     cur.execute("""
                 SELECT *
@@ -226,7 +226,7 @@ def sections(con, cur):
     #----------External links---------#
     with st.expander(' :link: External Links'):
         st.write(f":link: :computer: [Personal Website](https://{DOMAIN_NAME})")
-        st.write(f":link: :computer: [Intelligent Agent Website](https://{DOMAIN_NAME}/Agent)")
+        st.write(f":link: :computer: [Multimodal Agent Website](https://{DOMAIN_NAME}/Agent)")
         st.write(":link: :book: [Project Repository](https://github.com/mregojos)")
         # st.write(":link: :notebook: [Blog](https://)")
         # st.write(":link: :hand: [Connect with me](https://)")
@@ -236,7 +236,8 @@ def sections(con, cur):
         Admin = st.checkbox("MATT CLOUD TECH")
         if Admin:
             password = st.text_input("Password", type="password")
-            if password == ADMIN_PASSWORD:
+            login = st.toggle("Login")
+            if password == ADMIN_PASSWORD and login:
                 st.info("Login Success")
                 option = st.text_input("About, Portfolio, Messages, Counter, Data")
                 
@@ -327,44 +328,29 @@ def sections(con, cur):
                 elif option == "Data":
                     prune_data = st.button(f"Prune (Messages, Notes, Counter)")
                     if prune_data:
-                        cur.execute("""
-                                    cur.execute("DROP TABLE messages")
-                                    """)
-                        cur.execute("""
-                                    cur.execute("DROP TABLE notes")
-                                    """)
-                        cur.execute("""
-                                    cur.execute("DROP TABLE counter")
-                                    """)
+                        cur.execute("DROP TABLE messages")
+                        cur.execute("DROP TABLE notes")
+                        cur.execute("DROP TABLE counter")
                         st.info("Messages, Notes, and Counter were successfully deleted.")
                         con.commit()
-                        st.rerun()
                     
+                    prune_all_messages = st.button(f"Prune Messages")
                     if prune_all_messages:
-                        cur.execute("""
-                                    cur.execute("DROP TABLE messages")
-                                    """)
+                        cur.execute("DROP TABLE messages")
                         st.info("Messages were successfully deleted.")
                         con.commit()
-                        st.rerun()
                         
                     prune_all_notes = st.button(f"Prune All Notes")
                     if prune_all_notes:
-                        cur.execute("""
-                                    cur.execute("DROP TABLE notes")
-                                    """)
+                        cur.execute("DROP TABLE notes")
                         st.info("Notes were successfully deleted.")
                         con.commit()
-                        st.rerun()
                         
                     prune_all_counter = st.button(f"Prune All Counter")
                     if prune_all_counter:
-                        cur.execute("""
-                                    cur.execute("DROP TABLE counter")
-                                    """)
+                        cur.execute("DROP TABLE counter")
                         st.info("Views were successfully deleted.")
                         con.commit()
-                        st.rerun()
                     
    
     #----------End of External links---------#
