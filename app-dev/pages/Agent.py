@@ -136,6 +136,8 @@ def multimodal(con, cur):
     character_limit_w = "ten thousand characters"
     output = ""
     current_model = ""
+    prompt_character_limit = 5000 # Only Applicable to Guest
+    prompt_character_limit_text = f""":red[CHARACTER LIMIT]: Exceeds the prompt character limit of :blue[{prompt_character_limit}]""" 
     
     #------------------ Admin --------------------------#
     with st.sidebar:
@@ -180,7 +182,7 @@ def multimodal(con, cur):
         #------------------ Prompt starts --------------------------#
         if (GUEST == False) or (GUEST == True and total_count < LIMIT): 
             model = st.selectbox("Choose Model", (["Multimodal", "Multimodal (Four Turn)", "Multimodal with DB", "Vision (One Turn)", "Vision (One Turn) with DB", "Chat Text Only", "Chat Text Only (Four Turn)", "Chat Text Only with DB", "Chat Text Only (Latest vs Old Version)", "Chat Text Only (Old Version)", "Code (Old Version)" ]))
-            prompt_user = st.text_area("Prompt")
+            prompt_user = st.text_area("Prompt")                
             uploaded_file = None
             current_image_detail = ""
             image_data_base_string = ""
@@ -244,13 +246,15 @@ def multimodal(con, cur):
                     image_data_base_string = ""
             
             current_time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-            button = st.button("Send")   
+            button = st.button("Send")
             if button or prompt_user_chat:
                 if prompt_user_chat:
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
                     cur.execute(f"""
                             SELECT * 
@@ -367,8 +371,9 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
                     cur.execute(f"""
                             SELECT * 
@@ -467,8 +472,9 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
                     
                     cur.execute(f"""
@@ -560,6 +566,7 @@ def multimodal(con, cur):
 
     #-------------------Vision---------------------#
     if model == "Vision (One Turn)":
+        current_model = "Vision (One Turn)"
         st.info(vision_info_)
         with st.sidebar:
             if prompt_user == "":
@@ -578,12 +585,13 @@ def multimodal(con, cur):
                         # st.image(image_data_base_string_data)
                         image = Part.from_data(data=base64.b64decode(image_data_base), mime_type="image/png")
                 start_time = t.time() 
-                current_model = "Vision (One Turn)"
                 button = st.button("Send")
                 if button:
+                    if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                        st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
                     if uploaded_file is None:
                         st.info("Upload file first")
-                    else:
+                    if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                         responses = multimodal_model.generate_content([prompt_user, image], generation_config=multimodal_generation_config)
                         output = responses.text
                         end_time = t.time()
@@ -601,6 +609,7 @@ def multimodal(con, cur):
 
     #-------------------Vision with DB--------------------#
     if model == "Vision (One Turn) with DB":
+        current_model = "Vision (One Turn) with DB"
         # Vision (One Turn) with Database only; No memory of the past conversations.
         st.info(vision_info_)
         with st.sidebar:
@@ -620,14 +629,12 @@ def multimodal(con, cur):
                     image = Part.from_data(data=base64.b64decode(image_data_base), mime_type="image/png")            
             button = st.button("Send")
             if button:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
                 if uploaded_file is None:
                     st.info("Upload file first")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
-                    current_model = "Vision (One Turn) with DB"
-                    output = "Upload file first" 
-                else:
-                    current_start_time = t.time() 
-                    current_model = "Vision (One Turn) with DB"
                     cur.execute(f"""
                             SELECT * 
                             FROM vision_db
@@ -696,8 +703,9 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
                     cur.execute(f"""
                             SELECT * 
@@ -776,8 +784,9 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
                     cur.execute(f"""
                             SELECT * 
@@ -829,6 +838,7 @@ def multimodal(con, cur):
         
     #-------------------Chat Text Only with DB---------------------#
     if model == "Chat Text Only with DB":
+        current_model = "Chat Text Only with DB"
         st.info(info_sample_prompts)
         prompt_user_chat = st.chat_input(prompt_user_chat_)
         with st.sidebar:
@@ -838,10 +848,10 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    current_model = "Chat Text Only with DB"
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
-                    current_model = "Chat Text Only with DB"
                     cur.execute(f"""
                             SELECT * 
                             FROM chats_mm_db
@@ -914,7 +924,7 @@ def multimodal(con, cur):
             message.markdown(output_history)
             message.caption(f"{time} | Model: {model} | Processing Time: {round(end_time-start_time, round_number)} seconds | Output Characters: {total_output_characters}")
             
-    #-------------------Comparison: Chat Only (Latest vs Old Version)---------------------------------------#
+    #-------------------Comparison: Chat Text Only (Latest vs Old Version)---------------------------------------#
     if model == "Chat Text Only (Latest vs Old Version)":
         st.info(info_sample_prompts)
         prompt_user_chat = st.chat_input(prompt_user_chat_)
@@ -926,8 +936,9 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    current_model = "Chat Text Only with DB"
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     #-------------------Chat Text Only Latest Version---------------------#
                     current_start_time = t.time() 
                     current_model = "Latest Version"
@@ -1015,6 +1026,7 @@ def multimodal(con, cur):
                 message = st.chat_message("assistant")
                 message.markdown(output)
                 message.caption(f"{time} | Model: {model} | Processing Time: {round(end_time-start_time, round_number)} seconds | Output Characters: {total_output_characters}")
+            model = "Latest Version"
         
         with col_B:
             #-------------------Chat Only Old Version---------------------#
@@ -1032,10 +1044,12 @@ def multimodal(con, cur):
                 message = st.chat_message("assistant")
                 message.markdown(output_history)
                 message.caption(f"{time} | Model: {model} | Processing Time: {round(end_time-start_time, round_number)} seconds | Output Characters: {total_output_characters}") 
+            model = "Old Version"
 
     #-------------------Old Version---------------------------------#
     #-------------------Chat Only (Old Version)---------------------#
     if model == "Chat Text Only (Old Version)":
+        current_model = "Chat Text Only (Old Version)"
         st.info(info_sample_prompts)
         prompt_user_chat = st.chat_input(prompt_user_chat_)
         with st.sidebar: 
@@ -1046,10 +1060,10 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    current_model = "Chat Text Only (Old Version)"
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time()
-                    current_model = "Chat Text Only (Old Version)"
                     cur.execute(f"""
                             SELECT * 
                             FROM chats
@@ -1104,6 +1118,7 @@ def multimodal(con, cur):
                 
     #-------------------Code (Old Version)---------------------#
     if model == "Code (Old Version)":
+        current_model = "Code (Old Version)"
         st.info(info_sample_prompts)
         prompt_user_chat = st.chat_input("What do you want to talk about?")
         with st.sidebar: 
@@ -1114,10 +1129,10 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                    current_model = "Code (Old Version)"
-                else:
+                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                    st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
+                if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time()
-                    current_model = "Code (Old Version)"
                     cur.execute(f"""
                             SELECT * 
                             FROM chats
@@ -1186,8 +1201,9 @@ def multimodal(con, cur):
             message = st.chat_message("assistant")
             message.markdown(output_history)
             message.caption(f"{time} | Model: {model} | Processing Time: {round(end_time-start_time, round_number)} seconds | Output Characters: {total_output_characters}") 
-
-
+            
+        model = "Chat Text Only (Old Version)"
+        
     #------------------For Multimodal Guest Limits-----------------------#
     if (guest_limit == True and button) or (guest_limit == True and prompt_user_chat):
         ### Insert into a database
@@ -1235,14 +1251,12 @@ def multimodal(con, cur):
                     con.commit()
                     st.rerun()
                 
-                
     #---------------- Insert into a table (total_prompts) ----------------#
     if button or prompt_user_chat:
         SQL = "INSERT INTO total_prompts (name, prompt, output, model, time, count_prompt) VALUES(%s, %s, %s, %s, %s, %s);"
         data = (input_name, prompt_user, output, current_model, current_time, count_prompt)
         cur.execute(SQL, data)
         con.commit()
-    
     
 #----------Execution----------#
 if __name__ == '__main__':

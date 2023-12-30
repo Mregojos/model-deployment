@@ -9,8 +9,6 @@ print:
 
 infra_setup:
 	sh infra*sh
-
-dev_setup:
 	sh app-dev*sh
 
 cleanup:
@@ -19,3 +17,17 @@ cleanup:
 run_test:
 	sh test/test.sh
 	python test/test.py
+
+# For Development
+
+dev_setup:
+	sh app-dev.sh
+
+dev_cleanup:
+	sh app-dev-cleanup.sh
+
+
+
+
+
+
