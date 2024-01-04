@@ -7,27 +7,41 @@ target: print
 print:
 	echo "Makefile's working."
 
-infra_setup:
-	sh infra*sh
-	sh app-dev*sh
+# Deployment and Development
 
-cleanup:
+run_infra:
+	# source env*
+	sh infra*sh
+	sh app-dev-multimodal.sh
+
+run_cleanup:
 	sh cleanup*sh
 
 run_test:
 	sh test/test.sh
 	python test/test.py
 
-# For Development
+# For Development (with its own dedicated database)
 
-dev_setup:
+run_dev:
 	sh app-dev.sh
 
-dev_cleanup:
+run_dev_cleanup:
 	sh app-dev-cleanup.sh
 
 
+# For Development (Version II)
 
+run_dev_ii:
+	sh app-dev-ii.sh
 
+run_dev_ii_cleanup:
+	sh app-dev-ii-cleanup.sh
 
+# For CLI Development
 
+run_dev_cli:
+	sh app-dev-cli.sh
+
+run_dev_cli_cleanup:
+	sh app-dev-cli-cleanup.sh
