@@ -7,12 +7,11 @@ target: print
 print:
 	echo "Makefile's working."
 
-# Deployment and Development
+# Deployment
 
 run_infra:
 	# source env*
 	sh infra*sh
-	sh app-dev-multimodal.sh
 
 run_cleanup:
 	sh cleanup*sh
@@ -30,18 +29,19 @@ run_dev_cleanup:
 	sh app-dev-cleanup.sh
 
 
-# For Development (Version II)
+# For Multimodal App Collection
 
-run_dev_ii:
-	sh app-dev-ii.sh
+run_apps:
+	sh app-collection.sh
 
-run_dev_ii_cleanup:
-	sh app-dev-ii-cleanup.sh
+run_apps_cleanup:
+	sh app-collection-cleanup.sh
 
-# For CLI Development
+# For Multimodal in Terminal (CLI)
 
-run_dev_cli:
-	sh app-dev-cli.sh
+run_cli:
+	# cd app-cli
+	# README.md
 
-run_dev_cli_cleanup:
-	sh app-dev-cli-cleanup.sh
+run_cli_cleanup:
+	sh app-cli/app-cli-cleanup.sh
