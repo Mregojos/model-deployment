@@ -151,12 +151,12 @@ def multimodal(con, cur):
     # if GUEST == False or (GUEST == True and total_count < LIMIT):
     info_sample_prompts = """
                 You can now start the conversation by prompting in the text bar. :smile: You can ask:
-                * List down the things you can do 
-                * What is Cloud Computing?
+                * List the things you are capable of doing 
+                * What is Cloud Computing? Explain it at different levels, such as beginner, intermediate, and advanced
                 * What is Google Cloud? Important Google Cloud Services to know
                 * Compare Site Reliability Engineering with DevOps
                 * Tell me about different cloud services
-                * Explain Cloud Computing in simple terms
+                * Explain Multimodal Model in simple terms
                 """
     vision_info_ = """
                 You can now upload an image to analyze.
@@ -173,7 +173,7 @@ def multimodal(con, cur):
             current_time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
 
         #------------------ prompt_info ------------------#
-        prompt_history = "You are an intelligent Agent."
+        prompt_history = ""
         
         vision_info = f":violet[{model}] analyzes the photo you uploaded."
         vision_db_info = f":violet[{model}] analyzes the photo you uploaded and saves to the database. This model does not have chat capability."
@@ -205,6 +205,10 @@ def multimodal(con, cur):
         prompt_history = ""
         with st.sidebar:
             image = st.checkbox("Add a photo")
+            add_data = st.checkbox("Add additional information")
+            if add_data:
+                prompt_history = st.text_area("Additional Information")
+                prompt_history = "Additional information: " + "\n\n" + prompt_history + "\n\n"
             if image:
                 uploaded_file = st.file_uploader("Upload a photo", type=["png"])
                 if uploaded_file is not None:
@@ -216,8 +220,8 @@ def multimodal(con, cur):
                     # image_data_base_string_data = base64.b64decode(image_data_base_string)
                     # st.image(image_data_base_string_data)
                     image = Part.from_data(data=base64.b64decode(image_data_base), mime_type="image/png")
-                    responses = multimodal_model.generate_content(["Explain the image in detail", image], generation_config=multimodal_generation_config)
-                    current_image_detail = responses.text
+                    # responses = multimodal_model.generate_content(["Explain the image in detail", image], generation_config=multimodal_generation_config)
+                    # current_image_detail = responses.text
                 else:
                     image_data_base_string = ""
             
@@ -228,10 +232,11 @@ def multimodal(con, cur):
                     prompt_user = prompt_user_chat
                 if prompt_user == "":
                     st.info("Prompt cannot be empty.")
-                if (len(prompt_user) >= prompt_character_limit) and GUEST:
+                if (len(prompt_user + prompt_history) >= prompt_character_limit) and GUEST:
                     st.info(f"{prompt_character_limit_text}  \n\n Total Input Characters: {len(prompt_user)}")
                 if prompt_user != "" and (len(prompt_user) <= prompt_character_limit or not GUEST):
                     current_start_time = t.time() 
+                    
                     cur.execute(f"""
                             SELECT * 
                             FROM multimodal
@@ -246,25 +251,31 @@ def multimodal(con, cur):
 
                             if prompt_history == "":
                                 if uploaded_file is not None:
-                                    response = mm_model.generate_content(f"{prompt_user}. I add an image: {current_image_detail}")
-                                    output = response.text
+                                    responses = multimodal_model.generate_content([prompt_user, image], generation_config=multimodal_generation_config)
+                                    current_image_detail = responses.text
+                                    output = responses.text
                                 if uploaded_file is None:
                                     response = mm_model.generate_content(prompt_user)
                                     output = response.text
                             if prompt_history != "":
                                 if uploaded_file is not None:
-                                    prompt_history = prompt_history + f"\n\n Prompt ID: Latest" + f"\n\n User: {prompt_user}" 
-                                    response = mm_model.generate_content(f"{prompt_history}. I add an image: {current_image_detail}")
+                                    responses = multimodal_model.generate_content([prompt_user, image], generation_config=multimodal_generation_config)
+                                    current_image_detail = responses.text
+                                    # prompt_history = prompt_history + f"\n\n Prompt ID: Latest" + f"\n\n User: {prompt_user}" 
+                                    # response = mm_model.generate_content(f"{prompt_history}. Image information: {current_image_detail}")
+                                    # prompt_history = prompt_history + f"\n\n Prompt ID: Latest" + f"\n\n User: {prompt_user}" 
+                                    response = multimodal_model.generate_content([prompt_user, image], generation_config=multimodal_generation_config)
                                     output = response.text
                                 if uploaded_file is None:
                                     prompt_history = prompt_history + f"\n\n Prompt ID: Latest" + f"\n\n User: {prompt_user}" 
                                     response = mm_model.generate_content(prompt_history)
                                     output = response.text
                         # st.write(prompt_history)
-                    except: # Exception as e:
-                        # if not GUEST:
-                        #    st.write(e)
+                    except: 
                         output = prompt_error
+                    # except Exception as e:
+                    #    if not GUEST:
+                    #        st.write(e)
 
                     input_characters = len(prompt_user)
                     output_characters = len(output)

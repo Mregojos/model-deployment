@@ -14,3 +14,6 @@ secondaryBackgroundColor = "lightblue"
 
 [ui]
 hideTopBar = true
+
+[logger]
+level = "error"

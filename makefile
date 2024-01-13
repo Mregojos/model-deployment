@@ -10,11 +10,11 @@ print:
 # Deployment
 
 run_infra:
-	# source env*
-	sh infra*sh
+	# source app-env.sh
+	sh app-infra-automation.sh
 
 run_cleanup:
-	sh cleanup*sh
+	sh app-cleanup*sh
 
 run_test:
 	sh test/test.sh
@@ -32,10 +32,10 @@ run_dev_cleanup:
 # For Multimodal App Collection
 
 run_apps:
-	sh app-collection.sh
+	sh app-toolkit.sh
 
 run_apps_cleanup:
-	sh app-collection-cleanup.sh
+	sh app-toolkit-cleanup.sh
 
 # For Multimodal in Terminal (CLI)
 
