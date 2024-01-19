@@ -10,14 +10,10 @@
 
 ---
 ## Resources
-* Development and Testing Repository for https://mattcloudtech.com.
-* Repository: https://github.com/mregojos/model-deployment
-* Multimodal Model Deployment Repository: https://github.com/mregojos/GCP-LLM-Deployment
-* Deployed Web App: https://mattcloudtech.com/Agent
+* Git Repository: https://github.com/mregojos/model-deployment
+* Generative AI (Multimodal Model) Deployment Repository: https://github.com/mregojos/GCP-LLM-Deployment
 * Infrastructure Automation Repository: https://github.com/mregojos/infrastructure-automation-gcp
 * CI/CD Repository: https://github.com/mregojos/ci-cd-gcp
-
-
 
 ---
 ## Setup 
@@ -25,7 +21,7 @@
 * Google Cloud Project Owner Role
 
 ```sh
-# Start the app
+# Enviroment Variables
 source environment-variables.sh
 # For Google Cloud Deployment
 sh app-deployment.sh 
