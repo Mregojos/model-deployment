@@ -1223,7 +1223,7 @@ if __name__ == '__main__':
             guest = st.checkbox("Continue as a guest")
             # Chat View Counter
             time = t.strftime("Date: %Y-%m-%d | Time: %H:%M:%S UTC")
-            view = 
+            view = 1
             SQL = "INSERT INTO chat_view_counter (view, time) VALUES(%s, %s);"
             data = (view, time)
             cur.execute(SQL, data)
