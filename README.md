@@ -6,7 +6,7 @@
 
 ---
 ## About
-* Staging Reposuitory for https://mattcloudtech.com
+* Staging Repository for https://mattcloudtech.com
 
 ---
 ## Resources
