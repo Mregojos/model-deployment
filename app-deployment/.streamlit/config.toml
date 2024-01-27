@@ -1,7 +1,7 @@
 [client]
 showErrorDetails = false
 showSidebarNavigation = false
-caching = false
+# caching = false
 
 [browser]
 gatherUsageStats = false
