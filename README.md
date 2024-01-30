@@ -1,8 +1,8 @@
 # Web Application
 
-* Deployed Web App: https://mattcloudtech.com
-* Generative AI (Multimodal Model) Chatbot: https://mattcloudtech.com/Agent
-* AI-Powered Cloud Toolkit: https://mattcloudtech.com/Toolkit
+* Deployed Web App: https://www.mattcloudtech.com or https://app.mattcloudtech.com
+* Generative AI (Multimodal Model) Chatbot: https://www.mattcloudtech.com/Agent or https://app.mattcloudtech.com/Agent
+* AI-Powered Cloud Toolkit: https://www.mattcloudtech.com/Toolkit or https://app.mattcloudtech.com/Toolkit
 
 ---
 ## About
